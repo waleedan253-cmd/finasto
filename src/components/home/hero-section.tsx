@@ -24,20 +24,23 @@ export function HeroSection() {
         };
 
   return (
-    <section className="relative overflow-hidden bg-cream">
+    <section className="relative isolate  overflow-hidden bg-cream">
       {/* Bali temple/landscape background.
           Mobile: full-bleed low-opacity backdrop behind everything.
           sm+: fades in from the right edge, widening with the viewport. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-20 sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[55%] sm:opacity-100 md:w-[55%] lg:w-[57%] xl:w-[55%]"
-        style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 22%, black 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 22%, black 100%)",
-        }}
+        className="pointer-events-none absolute inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent,black_45%,black_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_45%,black_100%)] sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[55%] sm:opacity-100 sm:[mask-image:linear-gradient(to_right,transparent,black_22%,black_100%)] sm:[-webkit-mask-image:linear-gradient(to_right,transparent,black_22%,black_100%)] md:w-[55%] lg:w-[57%] xl:w-[55%]"
       >
+        <div
+          className="absolute inset-0 hidden sm:block"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, black 22%, black 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 22%, black 100%)",
+          }}
+        />
         <Image
           src="/hero/hero-bg-temple.png"
           alt=""
@@ -50,7 +53,7 @@ export function HeroSection() {
 
       <div className="relative z-10 mx-auto grid w-full max-w-[1440px] grid-cols-1 items-end gap-8 overflow-x-hidden px-4 pb-0 pt-10 sm:gap-10 sm:px-6 sm:pt-14 md:px-8 lg:grid-cols-2 lg:gap-6 lg:overflow-visible lg:pt-20">
         {/* Copy column */}
-        <div className="min-w-0 max-w-xl pb-10 sm:pb-14 lg:pb-28">
+        <div className="relative z-20 min-w-0 max-w-xl pb-10 sm:pb-14 lg:pb-28">
           <motion.p
             {...riseIn(0)}
             className="mb-3 font-sans text-[11px] uppercase tracking-[0.22em] text-copper sm:mb-4 sm:text-[12px] md:text-[13px]"

@@ -38,3 +38,11 @@ export const trustItems: TrustItem[] = [
     description: "Indonesia & beyond.",
   },
 ];
+
+export const storyContent = {
+  eyebrow: "Our Story",
+  heading: ["Rooted in Bali.", "Made for Your Wellness."],
+  paragraph:
+    "Finasto is more than just a tea brand — it's a journey of nature, culture and care. Inspired by Bali's rich botanical heritage, we bring you pure, natural blends for a healthier, more balanced life.",
+  cta: { label: "Learn More", href: "/our-story" },
+};

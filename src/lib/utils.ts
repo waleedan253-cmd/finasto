@@ -8,3 +8,16 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Format a minor-unit-free amount (e.g. IDR, which has no decimals) in the
+ * given currency using Indonesian locale grouping. Extend with a currency
+ * -> locale map if more markets are added later.
+ */
+export function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
