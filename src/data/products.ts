@@ -37,6 +37,7 @@ export const products: Product[] = [
     image: "/product/velora.png",
     state: "new",
     accentTint: "green",
+
     features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],
   },
   {

@@ -42,9 +42,33 @@ export const activeMarket: Market = {
   currencyCode: "IDR",
 };
 
-// Markets the switcher is built to support once enabled; only
-// `activeMarket` is selectable at launch.
-export const availableMarkets: Market[] = [activeMarket];
+export const availableMarkets: Market[] = [
+  {
+    countryCode: "ID",
+    countryLabel: "Indonesia",
+    currencyCode: "IDR",
+  },
+  {
+    countryCode: "MY",
+    countryLabel: "Malaysia",
+    currencyCode: "MYR",
+  },
+  {
+    countryCode: "GB",
+    countryLabel: "United Kingdom",
+    currencyCode: "GBP",
+  },
+  {
+    countryCode: "US",
+    countryLabel: "United States",
+    currencyCode: "USD",
+  },
+  {
+    countryCode: "PK",
+    countryLabel: "Pakistan",
+    currencyCode: "PKR",
+  },
+];
 
 export type FooterColumn = {
   title: string;
@@ -65,7 +89,6 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { label: "Shipping & Delivery", href: "/shipping" },
       { label: "Returns & Refunds", href: "/returns" },
-      { label: "Payment Options", href: "/payment-options" },
       { label: "FAQ", href: "/faq" },
     ],
   },
@@ -74,7 +97,6 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { label: "Our Story", href: "/our-story" },
       { label: "Sustainability", href: "/sustainability" },
-      { label: "Blog", href: "/blog" },
       { label: "Contact", href: "/contact" },
     ],
   },

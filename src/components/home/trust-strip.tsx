@@ -15,7 +15,7 @@ const icons = {
 export function TrustStrip() {
   return (
     <div className="relative z-10 border-t border-border bg-cream-soft">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-8 px-5 py-10 sm:px-8 lg:grid-cols-4 lg:gap-8 lg:py-8">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-y-6 px-5 py-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-8 sm:px-8 lg:grid-cols-4 lg:gap-8 lg:py-8">
         {trustItems.map((item) => {
           const Icon = icons[item.id as keyof typeof icons] ?? Check;
           return (

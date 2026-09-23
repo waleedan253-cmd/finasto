@@ -27,7 +27,7 @@ export function BrandStory() {
       {/* Tea cup panel, diagonal clip, right side */}
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 right-0 hidden w-[46%] bg-cream-soft sm:block"
+        className="absolute bottom-0 right-0 z-0 h-[42%] w-[48%] bg-transparent sm:inset-y-0 sm:h-auto sm:w-[46%] sm:bg-cream-soft"
         style={{
           clipPath: "polygon(18% 0, 100% 0, 100% 100%, 0% 100%)",
         }}
@@ -38,7 +38,7 @@ export function BrandStory() {
             alt="Glass cup of brewed Finasto tea surrounded by fresh tea leaves and a frangipani flower"
             fill
             sizes="46vw"
-            className="object-contain object-center p-6 pl-16"
+            className="object-contain object-center p-3 sm:p-9 sm:pl-16s"
           />
         </div>
       </div>

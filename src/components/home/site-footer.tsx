@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { activeMarket, footerColumns, socialLinks } from "@/data/site";
+import { footerColumns, socialLinks } from "@/data/site";
 import { Flag } from "@/components/ui/flag";
 
 const socialIcons = {
@@ -19,7 +19,7 @@ export function SiteFooter() {
           <div className="flex flex-col gap-6">
             <Link
               href="/"
-              className="flex items-center"
+              className="flex items-center  "
               aria-label="Finasto home"
             >
               <Image
@@ -27,18 +27,9 @@ export function SiteFooter() {
                 alt="Finasto"
                 width={140}
                 height={105}
-                className="h-16 w-auto"
+                className="h-16 w-auto rounded-md bg-cream-soft p-1"
               />
             </Link>
-            <span
-              className="flex w-fit items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 font-sans text-[13px] text-cream/70"
-              aria-label={`Market: ${activeMarket.countryLabel}, currency ${activeMarket.currencyCode}`}
-            >
-              <Flag code={activeMarket.countryCode} />
-              <span>{activeMarket.countryCode}</span>
-              <span className="text-white/25">|</span>
-              <span>{activeMarket.currencyCode}</span>
-            </span>
           </div>
 
           {/* Link columns */}
