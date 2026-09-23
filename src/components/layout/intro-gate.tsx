@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const HOLD_MS = 400; // how long the closed gate shows the logo
-const OPEN_MS = 800; // how long the gate takes to open
+const HOLD_MS = 500; // how long the closed gate shows the logo
+const OPEN_MS = 1200; // how long the gate takes to open
 
 function Logo() {
   return (
@@ -48,56 +48,9 @@ export default function IntroGate() {
   if (phase === "done") return null;
 
   const opening = phase === "opening";
-
   const panel =
     "absolute inset-y-0 w-1/2 overflow-hidden bg-cream " +
-    "transition-transform duration-[1200ms] " +
-    "ease-[cubic-bezier(0.77,0,0.175,1)]";
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] overflow-hidden bg-cream"
-      aria-hidden="true"
-    >
-      {/* Soft cinematic glow behind the logo */}
-      <div
-        className={`absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-700 ${
-          opening ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        <div className="absolute h-72 w-72 rounded-full bg-white/30 blur-3xl" />
-
-        <div
-          className={`relative transition-all duration-700 ease-out ${
-            opening ? "scale-110 opacity-0" : "scale-100 opacity-100"
-          }`}
-        >
-          <Logo />
-        </div>
-      </div>
-
-      {/* LEFT curtain */}
-      <div
-        className={`${panel} left-0 border-r border-copper/40 ${
-          opening ? "-translate-x-full" : "translate-x-0"
-        }`}
-      />
-
-      {/* RIGHT curtain */}
-      <div
-        className={`${panel} right-0 border-l border-copper/40 ${
-          opening ? "translate-x-full" : "translate-x-0"
-        }`}
-      />
-
-      {/* Center light line */}
-      <div
-        className={`absolute left-1/2 top-0 z-20 h-full w-px -translate-x-1/2 bg-copper/30 transition-opacity duration-500 ${
-          opening ? "opacity-0" : "opacity-100"
-        }`}
-      />
-    </div>
-  );
+    "transition-transform duration-[1200ms] ease-[cubic-bezier(0.77,0,0.175,1)]";
 
   return (
     <div className="fixed inset-0 z-[100]" aria-hidden="true">

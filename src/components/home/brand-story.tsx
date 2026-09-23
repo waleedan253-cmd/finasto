@@ -27,7 +27,7 @@ export function BrandStory() {
       {/* Tea cup panel, diagonal clip, right side */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 right-0 z-0 h-[42%] w-[48%] bg-transparent sm:inset-y-0 sm:h-auto sm:w-[46%] sm:bg-cream-soft"
+        className="absolute bottom-0 right-0 z-0 h-[42%] w-[48%] bg-transparent sm:inset-y-0 sm:h-auto sm:w-[46%] sm:bg-cream-soft sm: hidden"
         style={{
           clipPath: "polygon(18% 0, 100% 0, 100% 100%, 0% 100%)",
         }}
