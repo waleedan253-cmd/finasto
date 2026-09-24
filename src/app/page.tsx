@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <AnnouncementBar />
-      <SiteHeader cartCount={0} />
+      <SiteHeader />
       <main className="flex-1 bg-cream">
         <HeroSection />
         <TrustStrip />

@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { activeMarket, availableMarkets, primaryNav } from "@/data/site";
+import { availableMarkets, primaryNav } from "@/data/site";
+import { useMarket } from "@/components/providers/market-provider";
+import { useCart } from "@/components/providers/cart-provider";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { Flag } from "@/components/ui/flag";
@@ -30,11 +32,8 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isMarketOpen, setIsMarketOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [selectedMarket, setSelectedMarket] = useState(
-    availableMarkets.find(
-      (m) => m.currencyCode === activeMarket.currencyCode,
-    ) ?? availableMarkets[0],
-  );
+  const { market: selectedMarket, setMarket } = useMarket();
+  const { count, openCart } = useCart();
   const marketRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -200,7 +199,7 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
                           role="option"
                           aria-selected={isSelected}
                           onClick={() => {
-                            setSelectedMarket(market);
+                            setMarket(market);
                             setIsMarketOpen(false);
                           }}
                           className="flex w-full items-center justify-between px-4 py-2.5 text-left font-sans text-[14px] text-espresso/85 transition-colors hover:bg-espresso/5 hover:text-espresso"
@@ -250,7 +249,22 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
                 strokeWidth={1.6}
               />
             </IconButton>
-
+            <Link
+              href="/cart"
+              aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"}
+              className="relative inline-flex h-11 w-11 items-center justify-center text-espresso/85 transition-colors hover:text-espresso"
+            >
+              <ShoppingBag
+                className="h-[19px] w-[19px]"
+                strokeWidth={1.6}
+                aria-hidden="true"
+              />
+              {cartCount > 0 && (
+                <span className="absolute right-1 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-copper px-1 font-sans text-[10px] font-semibold text-white">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(true)}

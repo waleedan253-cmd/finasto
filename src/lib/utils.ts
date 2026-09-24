@@ -14,10 +14,23 @@ export function cn(...inputs: ClassValue[]) {
  * given currency using Indonesian locale grouping. Extend with a currency
  * -> locale map if more markets are added later.
  */
+const currencyLocale: Record<string, string> = {
+  IDR: "id-ID",
+  MYR: "ms-MY",
+  GBP: "en-GB",
+  USD: "en-US",
+  PKR: "en-PK",
+};
+
+// Currencies shown without decimals. Everything else shows 2 decimals.
+const zeroDecimalCurrencies = new Set(["IDR", "PKR"]);
+
 export function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat("id-ID", {
+  const digits = zeroDecimalCurrencies.has(currency) ? 0 : 2;
+  return new Intl.NumberFormat(currencyLocale[currency] ?? "en-US", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   }).format(amount);
 }

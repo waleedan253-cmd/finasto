@@ -1,8 +1,11 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Coffee, Leaf, Sprout } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
-import type { Product } from "@/data/products";
+import { getPrice, type Product } from "@/data/products";
+import { useMarket } from "@/components/providers/market-provider";
+import { useCart } from "@/components/providers/cart-provider";
 
 const stateLabel: Record<Product["state"], string> = {
   new: "New",
@@ -27,6 +30,8 @@ const featureIcons = [Leaf, Coffee, Sprout];
 export function ProductCard({ product }: { product: Product }) {
   const isOutOfStock = product.state === "out-of-stock";
   const colors = tint[product.accentTint];
+  const { market } = useMarket();
+  const { addItem } = useCart();
 
   return (
     <article className="overflow-hidden rounded-[20px] border border-border bg-white shadow-[0_1px_2px_rgba(50,30,24,0.04)] transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)]">
@@ -71,7 +76,10 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
 
           <p className="mt-4 font-sans text-[17px] font-medium text-espresso">
-            {formatPrice(product.price, product.currency)}
+            {formatPrice(
+              getPrice(product, market.currencyCode),
+              market.currencyCode,
+            )}
           </p>
 
           <button
@@ -79,6 +87,7 @@ export function ProductCard({ product }: { product: Product }) {
               cursor: "pointer",
             }}
             type="button"
+            onClick={() => addItem(product.id)}
             disabled={isOutOfStock}
             className="mt-4 inline-flex h-11 w-fit items-center gap-2 rounded-full bg-espresso px-6 font-sans text-[14px] font-medium text-cream transition-colors hover:bg-espresso-deep disabled:cursor-not-allowed disabled:bg-disabled"
           >

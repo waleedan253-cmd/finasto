@@ -3,6 +3,9 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import IntroGate from "@/components/layout/intro-gate";
+import { MarketProvider } from "@/components/providers/market-provider";
+import { CartProvider } from "@/components/providers/cart-provider";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -32,7 +35,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-cream text-espresso font-sans">
         <IntroGate />
-        {children}
+        <MarketProvider>
+          <CartProvider>
+            {children}
+            <CartDrawer />
+          </CartProvider>
+        </MarketProvider>
       </body>
     </html>
   );

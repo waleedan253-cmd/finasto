@@ -88,6 +88,15 @@ body {
   }
 }
 
-.animate-kenburns {
-  animation: finasto-kenburns 6.5s ease-out forwards;
+.animate-water-wave {
+  animation: water-wave 10s ease-in-out infinite alternate;
+}
+
+@keyframes water-wave {
+  0% {
+    transform: scale(1.06) translateX(-2%);
+  }
+  100% {
+    transform: scale(1.06) translateX(2%);
+  }
 }

@@ -6,23 +6,11 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { whySlides } from "@/data/home";
 
-const SLIDE_DURATION_MS = 6000;
+const SLIDE_DURATION_MS = 15000;
 const TRANSITION_MS = 700;
 
 // Cycled per-slide panel background — keeps the "green family" palette
 // varied across slides instead of one flat wash.
-const PANEL_BG_CLASSES = [
-  "bg-botanical-mist",
-  "bg-sage-light",
-  "bg-pistachio-soft",
-  "bg-leaf-light",
-  "bg-mint-sage",
-  "bg-botanical-light",
-  "bg-forest-mist",
-  "bg-organic-green",
-  "bg-fresh-sage",
-  "bg-green-bloom",
-] as const;
 
 /**
  * Split carousel: text panel (left) + image panel (right).
@@ -84,8 +72,7 @@ export function WhyFinasto() {
         {/* TEXT PANEL — order-2 on mobile (under image), order-1 on desktop (left) */}
         <div
           className={cn(
-            "relative order-2 flex h-[320px] items-center overflow-hidden px-5 py-10 transition-colors duration-700 ease-in-out sm:px-8 lg:order-1 lg:h-[560px]",
-            PANEL_BG_CLASSES[active % PANEL_BG_CLASSES.length],
+            "relative order-2 flex h-[460px] items-center overflow-hidden bg-gradient-to-br from-cream-soft via-cream to-cream-soft px-5 py-10 sm:h-[420px] sm:px-8 lg:order-1 lg:h-[560px]",
           )}
         >
           <ul className="relative mx-auto w-full max-w-lg list-none p-0">
@@ -120,6 +107,17 @@ export function WhyFinasto() {
                   <p className="mt-4 font-sans text-[15px] leading-relaxed text-espresso-deep/80">
                     {slide.description}
                   </p>
+                  <ul className="mt-7 space-y-">
+                    {slide.details.map((d) => (
+                      <li
+                        key={d}
+                        className="flex items-start gap-2 font-sans text-[14px] text-espresso-deep/80"
+                      >
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-espresso" />
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
                 </li>
               );
             })}
@@ -151,7 +149,7 @@ export function WhyFinasto() {
         </div>
 
         {/* IMAGE PANEL — order-1 on mobile (on top), order-2 on desktop (right) */}
-        <div className="relative order-1 h-[280px] overflow-hidden bg-transparent sm:h-[360px] lg:order-9 lg:h-[450px]">
+        <div className="relative order-1 h-[280px] overflow-hidden bg-transparent sm:h-[360px] lg:order-2 lg:h-[450px]">
           {whySlides.map((slide, i) => {
             const diff = (i - active + total) % total;
             const translate =
@@ -178,7 +176,9 @@ export function WhyFinasto() {
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className={cn(
                     "object-cover object-center",
-                    i === active && !prefersReducedMotion && "animate-kenburns",
+                    i === active &&
+                      !prefersReducedMotion &&
+                      "animate-water-wave",
                   )}
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
