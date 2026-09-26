@@ -6,8 +6,8 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { whySlides } from "@/data/home";
 
-const SLIDE_DURATION_MS = 15000;
-const TRANSITION_MS = 700;
+const SLIDE_DURATION_MS = 5000;
+const TRANSITION_MS = 500;
 
 // Cycled per-slide panel background — keeps the "green family" palette
 // varied across slides instead of one flat wash.
@@ -57,7 +57,7 @@ export function WhyFinasto() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className="col-span-full px-5 py-10 text-center sm:px-8">
-          <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-green">
+          <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             Why Finasto
           </p>
           <h2 className="mt-2 font-display text-[36px] leading-tight text-espresso-deep sm:text-[48px]">
@@ -72,7 +72,7 @@ export function WhyFinasto() {
         {/* TEXT PANEL — order-2 on mobile (under image), order-1 on desktop (left) */}
         <div
           className={cn(
-            "relative order-2 flex h-[460px] items-center overflow-hidden bg-gradient-to-br from-cream-soft via-cream to-cream-soft px-5 py-10 sm:h-[420px] sm:px-8 lg:order-1 lg:h-[560px]",
+            "relative order-2 flex h-[460px] items-center overflow-hidden bg-green-bg px-5 py-10 sm:h-[420px] sm:px-8 lg:order-1 lg:h-[560px]",
           )}
         >
           <ul className="relative mx-auto w-full max-w-lg list-none p-0">
@@ -98,7 +98,7 @@ export function WhyFinasto() {
                   style={{ transitionDuration: `${TRANSITION_MS}ms` }}
                   aria-hidden={i !== active}
                 >
-                  <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-green">
+                  <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
                     {slide.eyebrow}
                   </p>
                   <h2 className="mt-3 font-display text-[32px] leading-tight text-espresso-deep sm:text-[40px]">
@@ -107,7 +107,7 @@ export function WhyFinasto() {
                   <p className="mt-4 font-sans text-[15px] leading-relaxed text-espresso-deep/80">
                     {slide.description}
                   </p>
-                  <ul className="mt-7 space-y-">
+                  <ul className="mt-7 space-y-2">
                     {slide.details.map((d) => (
                       <li
                         key={d}

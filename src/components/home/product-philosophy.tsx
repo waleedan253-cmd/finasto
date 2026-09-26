@@ -9,7 +9,7 @@ export function ProductPhilosophy() {
   const { eyebrow, heading, intro, steps } = philosophyContent;
 
   return (
-    <section className="bg-cream py-20 lg:py-28">
+    <section className="bg-r py-20 lg:py-28">
       <div className="mx-auto max-w-[1000px] px-5 text-center sm:px-8">
         <p className="flex items-center justify-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
           <span aria-hidden="true" className="h-px w-8 bg-copper-light" />
@@ -27,12 +27,12 @@ export function ProductPhilosophy() {
           {steps.map((step, i) => (
             <div
               key={step.id}
-              className="px-4 py-8 first:pt-0 sm:py-0 sm:first:pl-0 sm:last:pr-0"
+              className="flex flex-col items-center px-4 py-8 first:pt-0 sm:py-0 sm:first:pl-0 sm:last:pr-0"
             >
-              <span className="font-display text-[15px] italic text-copper">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-copper/40 font-display text-[16px] italic  bg-espresso  text-cream soft">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-2 font-display text-[24px] text-espresso">
+              <h3 className="mt-4 font-display text-[24px] text-espresso">
                 {step.title}
               </h3>
               <p className="mt-3 font-sans text-[14px] leading-relaxed text-warm-gray">

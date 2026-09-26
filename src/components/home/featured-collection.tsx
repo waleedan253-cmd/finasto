@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { collectionMode, products } from "@/data/products";
 import { ProductCard } from "@/components/home/product-card";
 
@@ -25,15 +26,15 @@ export function FeaturedCollection() {
   const copy = headingByMode[collectionMode];
 
   return (
-    <section className="relative overflow-hidden bg-white py-20 lg:py-28">
+    <section className="relative overflow-hidden bg-cream-soft py-20 lg:py-28">
       {/* Soft botanical-green touch — decorative, not a full-section block */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-24 -top-24 h-[360px] w-[360px] rounded-full bg-green-bg blur-3xl"
+        className="pointer-events-none absolute -left-24 -top-24 h-[360px] w-[360px] rounded-full bg-green/10 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-16 h-[300px] w-[300px] rounded-full bg-green-bg blur-3xl"
+        className="pointer-events-none absolute -bottom-32 -right-16 h-[300px] w-[300px] rounded-full bg-copper/10 blur-3xl"
       />
 
       <div className="relative mx-auto max-w-[1300px] px-5 sm:px-8">
@@ -50,6 +51,12 @@ export function FeaturedCollection() {
               {copy.subheading}
             </p>
           </div>
+          <Link
+            href="/shop"
+            className="inline-flex shrink-0 items-center gap-2 font-sans text-[14px] font-medium text-espresso underline-offset-4 hover:underline"
+          >
+            View All
+          </Link>
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">

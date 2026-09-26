@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const HOLD_MS = 500; // how long the closed gate shows the logo
-const OPEN_MS = 1200; // how long the gate takes to open
+const FADE_MS = 450; // total duration of the logo fade/scale-in
+const HOLD_MS = 500; // how long the logo stays before the gate dismisses
 
 function Logo() {
   return (
@@ -14,13 +14,13 @@ function Logo() {
       width={240}
       height={240}
       priority
-      className="animate-logo-in h-auto w-40 md:w-60"
+      className="h-auto w-32 md:w-44"
     />
   );
 }
 
 export default function IntroGate() {
-  const [phase, setPhase] = useState<"closed" | "opening" | "done">("closed");
+  const [phase, setPhase] = useState<"visible" | "fading" | "done">("visible");
 
   useEffect(() => {
     // Show the intro only once per browser session
@@ -29,54 +29,40 @@ export default function IntroGate() {
       return;
     }
 
-    document.body.style.overflow = "hidden";
-
-    const openTimer = setTimeout(() => setPhase("opening"), HOLD_MS);
+    const fadeTimer = setTimeout(() => setPhase("fading"), HOLD_MS);
     const doneTimer = setTimeout(() => {
       setPhase("done");
       sessionStorage.setItem("finasto-intro-seen", "1");
-      document.body.style.overflow = "";
-    }, HOLD_MS + OPEN_MS);
+    }, HOLD_MS + FADE_MS);
 
     return () => {
-      clearTimeout(openTimer);
+      clearTimeout(fadeTimer);
       clearTimeout(doneTimer);
-      document.body.style.overflow = "";
     };
   }, []);
 
   if (phase === "done") return null;
 
-  const opening = phase === "opening";
-  const panel =
-    "absolute inset-y-0 w-1/2 overflow-hidden bg-cream " +
-    "transition-transform duration-[1200ms] ease-[cubic-bezier(0.77,0,0.175,1)]";
-
   return (
-    <div className="fixed inset-0 z-[100]" aria-hidden="true">
-      {/* LEFT gate */}
-      <div
-        className={`${panel} left-0 border-r border-copper/40 ${
-          opening ? "-translate-x-full" : "translate-x-0"
+    <div
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-cream transition-opacity ease-out ${
+        phase === "fading" ? "opacity-0" : "opacity-100"
+      }`}
+      style={{ transitionDuration: `${FADE_MS}ms` }}
+      aria-hidden="true"
+    >
+      <Image
+        src="/brand/finasto-logo.png"
+        alt="Finasto"
+        width={240}
+        height={240}
+        priority
+        className={`h-auto w-32 transition-all ease-out md:w-44 ${
+          phase === "fading"
+            ? "scale-100 opacity-0"
+            : "scale-95 opacity-0 animate-[finasto-logo-in_400ms_ease-out_forwards]"
         }`}
-      >
-        {/* full-width layer aligned to the panel's left edge, so the logo center lands on the seam */}
-        <div className="absolute inset-y-0 left-0 flex w-screen items-center justify-center">
-          <Logo />
-        </div>
-      </div>
-
-      {/* RIGHT gate */}
-      <div
-        className={`${panel} right-0 border-l border-copper/40 ${
-          opening ? "translate-x-full" : "translate-x-0"
-        }`}
-      >
-        {/* full-width layer aligned to the panel's right edge, so it shows the right half of the logo */}
-        <div className="absolute inset-y-0 right-0 flex w-screen items-center justify-center">
-          <Logo />
-        </div>
-      </div>
+      />
     </div>
   );
 }

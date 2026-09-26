@@ -27,7 +27,7 @@ import { Flag } from "@/components/ui/flag";
  * subtle elevation change. Cart count is a prop so it can be wired to
  * real cart state later; 0 renders no badge rather than a fake number.
  */
-export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
+export function SiteHeader() {
   const [isCompact, setIsCompact] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isMarketOpen, setIsMarketOpen] = useState(false);
@@ -249,22 +249,32 @@ export function SiteHeader({ cartCount = 0 }: { cartCount?: number }) {
                 strokeWidth={1.6}
               />
             </IconButton>
-            <Link
-              href="/cart"
-              aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"}
+            <button
+              type="button"
+              onClick={() => {
+                setIsMarketOpen(false);
+                setIsSearchOpen(false);
+                openCart();
+              }}
+              aria-label={count > 0 ? `Open bag, ${count} items` : "Open bag"}
               className="relative inline-flex h-11 w-11 items-center justify-center text-espresso/85 transition-colors hover:text-espresso"
+              style={{ cursor: "pointer" }}
             >
               <ShoppingBag
-                className="h-[19px] w-[19px]"
+                key={count}
+                className="h-[19px] w-[19px] animate-[finasto-bag-bump_350ms_ease-out]"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />
-              {cartCount > 0 && (
-                <span className="absolute right-1 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-copper px-1 font-sans text-[10px] font-semibold text-white">
-                  {cartCount > 99 ? "99+" : cartCount}
+              {count > 0 && (
+                <span
+                  key={`badge-${count}`}
+                  className="absolute right-1 top-1 flex h-[18px] min-w-[18px] animate-[finasto-bag-bump_350ms_ease-out] items-center justify-center rounded-full bg-copper px-1 font-sans text-[10px] font-semibold text-white"
+                >
+                  {count > 99 ? "99+" : count}
                 </span>
               )}
-            </Link>
+            </button>
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(true)}

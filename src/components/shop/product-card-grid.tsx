@@ -12,6 +12,7 @@ const stateLabel: Record<Product["state"], string> = {
   available: "Available",
   "low-stock": "Low Stock",
   "out-of-stock": "Out of Stock",
+  offer: "Offer",
 };
 
 const stateClass: Record<Product["state"], string> = {
@@ -19,6 +20,7 @@ const stateClass: Record<Product["state"], string> = {
   available: "bg-green text-white",
   "low-stock": "bg-copper-light text-espresso",
   "out-of-stock": "bg-disabled text-white",
+  offer: "bg-copper-light text-espresso",
 };
 
 const tint = {

@@ -93,6 +93,9 @@ export function CartDrawer() {
                 )}
               </h2>
               <button
+                style={{
+                  cursor: "pointer",
+                }}
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeCart}
@@ -177,6 +180,9 @@ export function CartDrawer() {
                           <div className="mt-auto flex items-center justify-between pt-3">
                             <div className="flex items-center rounded-full border border-border bg-white">
                               <button
+                                style={{
+                                  cursor: "pointer",
+                                }}
                                 type="button"
                                 onClick={() =>
                                   setQuantity(product.id, quantity - 1)
@@ -196,6 +202,9 @@ export function CartDrawer() {
                                 {quantity}
                               </span>
                               <button
+                                style={{
+                                  cursor: "pointer",
+                                }}
                                 type="button"
                                 onClick={() =>
                                   setQuantity(product.id, quantity + 1)
@@ -212,6 +221,9 @@ export function CartDrawer() {
                             </div>
 
                             <button
+                              style={{
+                                cursor: "pointer",
+                              }}
                               type="button"
                               onClick={() => removeItem(product.id)}
                               className="font-sans text-[12px] text-warm-gray underline-offset-4 transition-colors hover:text-copper hover:underline"

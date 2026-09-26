@@ -10,6 +10,7 @@ const stateOptions: { value: ProductState; label: string }[] = [
   { value: "available", label: "Available" },
   { value: "low-stock", label: "Low Stock" },
   { value: "out-of-stock", label: "Out of Stock" },
+  { value: "offer", label: "Offer" },
 ];
 
 export type ShopFiltersState = {
@@ -129,7 +130,7 @@ export function ShopFilters({
               type="range"
               min={priceMin}
               max={priceMax}
-              step={1000}
+              step={step}
               value={value.maxPrice ?? priceMax}
               onChange={(e) =>
                 onChange({ ...value, maxPrice: Number(e.target.value) })

@@ -49,9 +49,9 @@ export function ShopIntro() {
                 key={title}
                 className="flex flex-col items-center text-center"
               >
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border bg-white">
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border bg-espresso">
                   <Icon
-                    className="h-6 w-6 text-copper"
+                    className="h-6 w-6  text-cream"
                     strokeWidth={1.5}
                     aria-hidden="true"
                   />

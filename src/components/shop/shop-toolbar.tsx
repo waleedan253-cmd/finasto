@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 
 export type SortOption = "featured" | "price-asc" | "price-desc" | "name-asc";
 
@@ -51,17 +51,31 @@ export function ShopToolbar({
         </p>
         <label className="flex items-center gap-2 font-sans text-[13px] text-espresso/80">
           Sort by
-          <select
-            value={sort}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className="h-10 rounded-full border border-border bg-white px-3 font-sans text-[13px] text-espresso focus:border-copper focus:outline-none"
-          >
-            {Object.entries(sortLabels).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              style={{ cursor: "pointer" }}
+              value={sort}
+              onChange={(e) => onSortChange(e.target.value as SortOption)}
+              className="h-10 appearance-none rounded-full border border-border bg-white pl-3 pr-9 font-sans text-[13px] text-espresso focus:border-copper focus:outline-none"
+            >
+              {Object.entries(sortLabels).map(([value, label]) => (
+                <option
+                  key={value}
+                  value={value}
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  {label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-espresso/60"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+          </div>
         </label>
       </div>
     </div>

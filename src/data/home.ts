@@ -70,7 +70,7 @@ export const whySlides: WhySlide[] = [
       "Mineral-rich volcanic soil",
       "Harvested in small, seasonal lots",
     ],
-    image: "/why/why-origin.png",
+    image: "/why/why-origins.png",
     imageAlt:
       "Bali volcano overlooking terraced rice fields with a mound of dark volcanic soil and frangipani flowers",
   },
@@ -100,7 +100,7 @@ export const whySlides: WhySlide[] = [
       "No artificial flavors, colorants or fillers",
       "Full ingredient list on every pack",
     ],
-    image: "/why/why-purity.png",
+    image: "/why/why-puritys.png",
     imageAlt:
       "A clear water droplet beside a mountain spring and fresh tea leaf, symbolizing natural purity",
   },
@@ -115,7 +115,7 @@ export const whySlides: WhySlide[] = [
       "Packaged to preserve freshness in transit",
       "Designed for a daily moment of calm",
     ],
-    image: "/why/why-trust.png",
+    image: "/why/why-trus.png",
     imageAlt:
       "A woman closing her eyes while breathing in the steam from a warm cup of tea",
   },

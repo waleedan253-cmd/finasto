@@ -2,7 +2,12 @@
 // `products` + `product_variants` + `product_country_prices` tables, so
 // swapping this for a server-side query later doesn't change consumers.
 
-export type ProductState = "new" | "available" | "low-stock" | "out-of-stock";
+export type ProductState =
+  | "new"
+  | "available"
+  | "low-stock"
+  | "out-of-stock"
+  | "offer";
 
 export type Product = {
   id: string;
@@ -41,7 +46,7 @@ export const products: Product[] = [
     price: 129000,
     currency: "IDR",
     prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
-    image: "/product/velora.png",
+    image: "/product/veloras.png",
     state: "new",
     accentTint: "green",
 
@@ -63,7 +68,7 @@ export const products: Product[] = [
     price: 129000,
     currency: "IDR",
     prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
-    image: "/product/bluemoon.png",
+    image: "/product/bluemoons.png",
     state: "new",
     accentTint: "blue",
     features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],

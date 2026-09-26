@@ -100,3 +100,38 @@ body {
     transform: scale(1.06) translateX(2%);
   }
 }
+@keyframes finasto-logo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[finasto-logo-in_400ms_ease-out_forwards\] {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes finasto-bag-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[finasto-bag-bump_350ms_ease-out\] {
+    animation: none;
+  }
+}

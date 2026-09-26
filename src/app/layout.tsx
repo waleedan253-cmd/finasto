@@ -6,6 +6,7 @@ import IntroGate from "@/components/layout/intro-gate";
 import { MarketProvider } from "@/components/providers/market-provider";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <CartDrawer />
           </CartProvider>
         </MarketProvider>
+        <ScrollToTop />
       </body>
     </html>
   );

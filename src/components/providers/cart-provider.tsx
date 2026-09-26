@@ -65,7 +65,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { productId, quantity: 1 }];
     });
-    setIsOpen(true);
   }
 
   function setQuantity(productId: string, quantity: number) {
