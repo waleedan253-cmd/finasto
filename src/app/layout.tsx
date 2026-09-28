@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { AntdTheme } from "@/app/providers"; // adjust to where you created it
 import IntroGate from "@/components/layout/intro-gate";
 import { MarketProvider } from "@/components/providers/market-provider";
 import { CartProvider } from "@/components/providers/cart-provider";
@@ -35,14 +37,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-espresso font-sans">
-        <IntroGate />
-        <MarketProvider>
-          <CartProvider>
-            {children}
-            <CartDrawer />
-          </CartProvider>
-        </MarketProvider>
-        <ScrollToTop />
+        <AntdRegistry>
+          <AntdTheme>
+            <IntroGate />
+            <MarketProvider>
+              <CartProvider>
+                {children}
+                <CartDrawer />
+              </CartProvider>
+            </MarketProvider>
+            <ScrollToTop />
+          </AntdTheme>
+        </AntdRegistry>
       </body>
     </html>
   );

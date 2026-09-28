@@ -1,12 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { X, Loader2 } from "lucide-react";
+import { signInAction } from "@/lib/auth/actions";
 
 const signInSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -36,9 +38,13 @@ export function AuthModal({
   } = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
   });
+  const [serverError, setServerError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!open) reset();
+    if (!open) {
+      reset();
+      setServerError(null);
+    }
   }, [open, reset]);
 
   useEffect(() => {
@@ -50,10 +56,10 @@ export function AuthModal({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  async function onSubmit() {
-    // TODO(auth step): replace with Supabase Auth sign-in and role-based
-    // redirect (admin -> /admin, affiliate -> /affiliate/dashboard).
-    await new Promise((resolve) => setTimeout(resolve, 600));
+  async function onSubmit(values: SignInValues) {
+    setServerError(null);
+    const result = await signInAction(values);
+    if (result?.error) setServerError(result.error);
   }
 
   return (
@@ -119,6 +125,15 @@ export function AuthModal({
                 noValidate
                 className="mt-7 flex flex-col gap-4"
               >
+                {" "}
+                {serverError && (
+                  <p
+                    role="alert"
+                    className="rounded-lg border border-red/30 bg-red/5 px-4 py-3 font-sans text-[13px] text-red"
+                  >
+                    {serverError}
+                  </p>
+                )}
                 <Field
                   label="Email"
                   type="email"
@@ -133,16 +148,15 @@ export function AuthModal({
                   error={errors.password?.message}
                   {...register("password")}
                 />
-
                 <div className="flex justify-end">
-                  <button
-                    type="button"
+                  <Link
+                    href="/forgot-password"
+                    onClick={onClose}
                     className="font-sans text-[13px] text-warm-gray transition-colors hover:text-espresso"
                   >
                     Forgot password?
-                  </button>
+                  </Link>
                 </div>
-
                 <button
                   type="submit"
                   disabled={isSubmitting}

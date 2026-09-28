@@ -7,9 +7,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { activeMarket, availableMarkets } from "@/data/site";
-
-type Market = (typeof availableMarkets)[number];
+import { useRouter } from "next/navigation";
+import { activeMarket, availableMarkets, type Market } from "@/data/site";
+import { CURRENCY_COOKIE, writeCurrencyCookie } from "@/lib/currency";
 
 type MarketContextValue = {
   market: Market;
@@ -26,6 +26,7 @@ const MarketContext = createContext<MarketContextValue | null>(null);
 
 export function MarketProvider({ children }: { children: ReactNode }) {
   const [market, setMarketState] = useState<Market>(defaultMarket);
+  const router = useRouter();
 
   // Read the saved choice after mount, so server and client render the
   // same HTML first (avoids a hydration mismatch).
@@ -33,14 +34,24 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       const found = availableMarkets.find((m) => m.currencyCode === saved);
-      if (found) setMarketState(found);
+      if (found) {
+        setMarketState(found);
+        if (
+          !document.cookie.includes(`${CURRENCY_COOKIE}=${found.currencyCode}`)
+        ) {
+          writeCurrencyCookie(found.currencyCode);
+          router.refresh();
+        }
+      }
     } catch {
       // storage blocked (private mode): keep the default market
     }
-  }, []);
+  }, [router]);
 
   function setMarket(next: Market) {
     setMarketState(next);
+    writeCurrencyCookie(next.currencyCode);
+    router.refresh();
     try {
       localStorage.setItem(STORAGE_KEY, next.currencyCode);
     } catch {
