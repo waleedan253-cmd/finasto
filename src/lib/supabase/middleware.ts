@@ -21,13 +21,17 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const { data } = await supabase.auth.getUser();
+  // Verifies the JWT locally (no Supabase network call) when the project
+  // uses asymmetric JWT signing keys. Still refreshes an expired session.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims ?? null;
+
   const path = request.nextUrl.pathname;
   const protectedArea = ["/admin", "/affiliate", "/stockist"].some(
     (p) => path === p || path.startsWith(p + "/"),
   );
 
-  if (protectedArea && !data.user) {
+  if (protectedArea && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = `?next=${encodeURIComponent(path)}`;

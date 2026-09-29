@@ -1,30 +1,44 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { isRole, roleHome, type Role } from "./roles";
 
-export type AuthContext = { user: User; role: Role; name: string | null };
+export type AuthContext = {
+  user: { id: string; email: string | null };
+  role: Role;
+  name: string | null;
+};
 
 export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
+  const t0 = Date.now();
   const supabase = await createClient();
-  // getUser() verifies the token with Supabase. Never trust getSession() on the server.
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) return null;
 
-  const role = data.user.app_metadata?.role;
+  // Verifies the JWT signature locally. No Supabase Auth network call.
+  const { data, error } = await supabase.auth.getClaims();
+  console.log("[auth] getClaims", Date.now() - t0, "ms");
+
+  const claims = data?.claims;
+  if (error || !claims) return null;
+
+  const role = claims.app_metadata?.role;
   if (!isRole(role)) return null;
 
+  const t1 = Date.now();
   const { data: profile } = await supabase
     .from("profiles")
     .select("name, status")
-    .eq("id", data.user.id)
+    .eq("id", claims.sub)
     .single();
+  console.log("[auth] profiles", Date.now() - t1, "ms");
 
   if (!profile || profile.status !== "active") return null;
 
-  return { user: data.user, role, name: profile.name ?? null };
+  return {
+    user: { id: claims.sub, email: claims.email ?? null },
+    role,
+    name: profile.name ?? null,
+  };
 });
 
 export async function requireRole(required: Role): Promise<AuthContext> {
