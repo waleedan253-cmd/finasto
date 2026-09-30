@@ -39,6 +39,7 @@ export type ProductListItem = {
   status: ProductStatus;
   featured: boolean;
   thumbnailUrl: string | null;
+  skus: string[]; // one per pack, sorted
   // Lowest and highest price across this product's variants, in USD
   // (the base currency). Equal when there is only one variant/price.
   priceMin: number;
@@ -61,6 +62,8 @@ export type ProductVariant = {
   sku: string;
   price: number; // USD
   salePrice: number | null; // USD
+  saleStartsAt: string | null;
+  saleEndsAt: string | null;
   stock: number;
   weight: number | null;
   status: ProductStatus;
@@ -133,7 +136,7 @@ export async function listProducts(params: {
       `
       id, name,  category, status, featured, updated_at,
       product_images ( url, is_primary ),
-      product_variants ( price, sale_price, stock, status )
+      product_variants ( sku, price, sale_price, stock, status )
     `,
       { count: "exact" },
     )
@@ -178,6 +181,10 @@ export async function listProducts(params: {
       status: row.status,
       featured: !!row.featured,
       thumbnailUrl: primaryImage,
+      skus: variants
+        .map((v) => String(v.sku ?? ""))
+        .filter(Boolean)
+        .sort(),
       priceMin: effectivePrices.length ? Math.min(...effectivePrices) : 0,
       priceMax: effectivePrices.length ? Math.max(...effectivePrices) : 0,
       totalStock,
@@ -207,7 +214,7 @@ export async function getProductById(
       short_description, tagline, features, origin, tasting_note, accent_color,
       meta_title, meta_description, created_at, updated_at,
       product_images ( id, url, alt, storage_path, is_primary ),
-      product_variants ( id, name, sku, price, sale_price, stock, weight, status ),
+      product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
       product_country_prices (
         id, active, price, sale_price,
         countries ( id, name, currency_code )
@@ -250,6 +257,8 @@ export async function getProductById(
       sku: v.sku,
       price: num(v.price),
       salePrice: v.sale_price != null ? num(v.sale_price) : null,
+      saleStartsAt: v.sale_starts_at ?? null,
+      saleEndsAt: v.sale_ends_at ?? null,
       stock: num(v.stock),
       weight: v.weight != null ? num(v.weight) : null,
       status: v.status,
@@ -275,23 +284,7 @@ export async function getProductById(
 
 // Used by the create form to catch a duplicate slug before submit, and
 // by the server action as a defensive re-check.
-export async function isSlugTaken(
-  slug: string,
-  excludeId?: string,
-): Promise<boolean> {
-  await requireRole("admin");
-  const supabase = await createClient();
-
-  let query = supabase.from("products").select("id").eq("slug", slug).limit(1);
-  if (excludeId) query = query.neq("id", excludeId);
-
-  const { data, error } = await query;
-  if (error) {
-    if (isMissingTable(error)) return false;
-    throw new Error(`Failed to check slug: ${error.message}`);
-  }
-  return (data?.length ?? 0) > 0;
-}
+// s
 export type Country = { id: string; name: string; currencyCode: string };
 
 export async function getCountries(): Promise<Country[]> {
@@ -312,6 +305,44 @@ export async function getCountries(): Promise<Country[]> {
     name: c.name,
     currencyCode: c.currency_code,
   }));
+}
+
+export type FieldSuggestions = {
+  tagline: string[];
+  features: string[];
+  origin: string[];
+  tastingNote: string[];
+  category: string[];
+  size: string[];
+};
+
+export async function getFieldSuggestions(): Promise<FieldSuggestions> {
+  await requireRole("admin");
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("products")
+    .select(
+      "tagline, features, origin, tasting_note, category, product_variants ( name )",
+    );
+
+  const uniq = (arr: (string | null | undefined)[]) =>
+    Array.from(
+      new Set(arr.map((s) => s?.trim()).filter((s): s is string => !!s)),
+    ).sort((a, b) => a.localeCompare(b));
+
+  const rows = data ?? [];
+  return {
+    tagline: uniq(rows.flatMap((r) => r.tagline ?? [])),
+    features: uniq(rows.flatMap((r) => r.features ?? [])),
+    origin: uniq(rows.map((r) => r.origin)),
+    tastingNote: uniq(rows.map((r) => r.tasting_note)),
+    category: uniq(rows.map((r) => r.category)),
+    size: uniq(
+      rows.flatMap((r: any) =>
+        (r.product_variants ?? []).map((v: any) => v.name),
+      ),
+    ),
+  };
 }
 /* ------------------------------------------------------------------ */
 /* Public storefront                                                    */

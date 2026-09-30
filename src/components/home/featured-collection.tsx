@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { collectionMode, products } from "@/data/products";
+import { collectionMode } from "@/data/products";
+import { getStorefrontProducts } from "@/lib/storefront-queries";
 import { ProductCard } from "@/components/home/product-card";
 
 const headingByMode = {
@@ -22,8 +23,17 @@ const headingByMode = {
  * it to "bestsellers" once real sales data exists, only label/heading
  * change — the grid and cards are unaffected.
  */
-export function FeaturedCollection() {
+export async function FeaturedCollection() {
   const copy = headingByMode[collectionMode];
+  const allProducts = await getStorefrontProducts();
+  // const products =
+  //   collectionMode === "featured"
+  //     ? allProducts.filter((p) => p.featured)
+  //     : allProducts;
+  // Featured = products with an active offer; if none, show everything.
+  const offers = allProducts.filter((p) => p.compareAtPrice !== undefined);
+  const products =
+    collectionMode === "featured" && offers.length > 0 ? offers : allProducts;
 
   return (
     <section className="relative overflow-hidden bg-cream-soft py-20 lg:py-28">

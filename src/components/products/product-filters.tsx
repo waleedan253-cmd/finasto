@@ -81,7 +81,7 @@ export function ProductFilters({
           size="large"
           allowClear
           value={query}
-          loading={isPending}
+          // loading={isPending}
           placeholder="Search by name..."
           aria-label="Search products"
           onChange={(e) => setQuery(e.target.value)}

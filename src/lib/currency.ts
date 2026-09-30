@@ -5,7 +5,9 @@ export const BASE_CURRENCY = "USD";
 export const CURRENCY_COOKIE = "finasto_currency";
 export const CURRENCY_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 /** A rate older than this is treated as unavailable. */
-export const RATE_MAX_AGE_MS = 48 * 60 * 60 * 1000;
+// TEMPORARY (development): manual rates. Set back to 48 hours (or 7 days)
+// once the daily rate job is running.
+export const RATE_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000;
 
 export const currencyCodeSchema = z
   .string()

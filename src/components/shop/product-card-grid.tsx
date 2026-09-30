@@ -2,9 +2,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn, formatPrice } from "@/lib/utils";
-import { getPrice, type Product } from "@/data/products";
+import { getComparePrice, getPrice, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
+import { formatStoreDate } from "@/lib/store-time";
 import { Heart, Star } from "lucide-react";
 import { useState } from "react";
 const stateLabel: Record<Product["state"], string> = {
@@ -23,11 +24,6 @@ const stateClass: Record<Product["state"], string> = {
   offer: "bg-copper-light text-espresso",
 };
 
-const tint = {
-  green: "bg-gradient-to-b from-[#E7ECDF] to-white",
-  blue: "bg-gradient-to-b from-[#DEE7EF] to-white",
-} as const;
-
 /**
  * Vertical image-top card used by the shop grid. Unlike the homepage's
  * horizontal `ProductCard` (built for exactly two editorial items), this
@@ -39,14 +35,17 @@ export function ProductCardGrid({ product }: { product: Product }) {
   const { market } = useMarket();
   const { addItem } = useCart();
 
+  const price = getPrice(product, market.currencyCode);
+  const compare = getComparePrice(product, market.currencyCode);
+  const onOffer = compare !== undefined && compare > price;
+  const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
+
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border bg-white transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)]">
       <Link
         href={`/shop/${product.slug}`}
-        className={cn(
-          "relative block aspect-square w-full overflow-hidden",
-          tint[product.accentTint],
-        )}
+        className="relative block aspect-square w-full overflow-hidden"
+        style={{ backgroundColor: `${product.accentColor}1A` }}
       >
         <span
           className={cn(
@@ -130,12 +129,34 @@ export function ProductCardGrid({ product }: { product: Product }) {
             {product.tastingNote}
           </p>
         )}
-        <p className="mt-1.5 font-sans text-[13px] font-medium text-espresso">
-          {formatPrice(
-            getPrice(product, market.currencyCode),
-            market.currencyCode,
+        {product.shortDescription && (
+          <p className="mt-2 line-clamp-2 font-sans text-[12px] leading-relaxed text-warm-gray">
+            {product.shortDescription}
+          </p>
+        )}
+        <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2">
+          <span className="font-sans text-[13px] font-medium text-espresso">
+            {formatPrice(price, market.currencyCode)}
+          </span>
+          {onOffer && (
+            <>
+              <span className="font-sans text-[12px] text-warm-gray line-through">
+                {formatPrice(compare, market.currencyCode)}
+              </span>
+              <span className="font-sans text-[11px] font-medium text-copper">
+                -{percentOff}%
+              </span>
+            </>
           )}
-        </p>
+        </div>
+        {onOffer && product.offerEndsAt && (
+          <p
+            suppressHydrationWarning
+            className="mt-0.5 font-sans text-[11px] text-warm-gray"
+          >
+            Ends {formatStoreDate(product.offerEndsAt)}
+          </p>
+        )}
 
         <button
           style={{

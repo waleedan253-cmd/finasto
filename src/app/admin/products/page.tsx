@@ -33,10 +33,24 @@ export default async function AdminProductsPage({
   const status = parseStatus(params.status);
   const page = Math.max(1, Number(params.page) || 1);
 
+  const tTotal = Date.now();
+
   const [{ items, total, pageSize }, { rates, currency }] = await Promise.all([
-    listProducts({ search, status, page }),
-    getCurrencyContext(),
+    (async () => {
+      const s = Date.now();
+      const r = await listProducts({ search, status, page });
+      console.log("[page] listProducts", Date.now() - s, "ms");
+      return r;
+    })(),
+    (async () => {
+      const s = Date.now();
+      const r = await getCurrencyContext();
+      console.log("[page] currency", Date.now() - s, "ms");
+      return r;
+    })(),
   ]);
+
+  console.log("[page] TOTAL data", Date.now() - tTotal, "ms");
 
   return (
     <div className="flex flex-col gap-6">

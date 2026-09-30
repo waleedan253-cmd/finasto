@@ -46,7 +46,9 @@ body {
   color: var(--color-espresso);
   font-family: var(--font-sans);
 }
-
+html {
+  scrollbar-gutter: stable;
+}
 /* Respect reduced motion globally */
 @media (prefers-reduced-motion: reduce) {
   *,

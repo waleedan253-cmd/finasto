@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AutoComplete,
   Button,
   Input,
   InputNumber,
@@ -23,7 +24,9 @@ export type VariantDraft = {
   name: string;
   sku: string;
   price: string; // kept as string while editing; parsed to number on submit
-  salePrice: string; // "" = no sale price
+  salePrice: string; // "" = no sale price (edited in the offer drawer)
+  saleStartsAt: string; // ISO date string, "" = none
+  saleEndsAt: string; // ISO date string, "" = none
   stock: string;
   weight: string; // "" = no weight set
   status: "active" | "disabled" | "draft";
@@ -35,6 +38,8 @@ export function emptyVariant(): VariantDraft {
     sku: "",
     price: "",
     salePrice: "",
+    saleStartsAt: "",
+    saleEndsAt: "",
     stock: "0",
     weight: "",
     status: "active",
@@ -49,10 +54,12 @@ export function VariantRepeater({
   value,
   onChange,
   errors,
+  sizeSuggestions = [],
 }: {
   value: VariantDraft[];
   onChange: (next: VariantDraft[]) => void;
   errors?: Record<number, FieldErrors>;
+  sizeSuggestions?: string[];
 }) {
   function update(index: number, patch: Partial<VariantDraft>) {
     onChange(value.map((v, i) => (i === index ? { ...v, ...patch } : v)));
@@ -90,74 +97,68 @@ export function VariantRepeater({
 
   const columns: ColumnsType<Row> = [
     {
-      title: "Name",
+      title: "Packs",
       dataIndex: "name",
       width: 130,
       render: (_, r) => (
         <Cell error={errors?.[r._index]?.name}>
-          <Input
+          <AutoComplete
+            className="w-full"
             value={r.name}
-            placeholder="e.g. 100g"
+            options={sizeSuggestions.map((v) => ({ value: v }))}
+            placeholder="e.g. 250"
             status={errors?.[r._index]?.name ? "error" : undefined}
-            onChange={(e) => update(r._index, { name: e.target.value })}
+            onChange={(v) => update(r._index, { name: v })}
+            filterOption={(input, opt) =>
+              (opt?.value ?? "").toLowerCase().includes(input.toLowerCase())
+            }
           />
         </Cell>
       ),
     },
-    {
-      title: "SKU",
-      dataIndex: "sku",
-      width: 150,
-      render: (_, r) => (
-        <Cell error={errors?.[r._index]?.sku}>
-          <Input
-            value={r.sku}
-            placeholder="FIN-VEL-100"
-            status={errors?.[r._index]?.sku ? "error" : undefined}
-            onChange={(e) => update(r._index, { sku: e.target.value })}
-          />
-        </Cell>
-      ),
-    },
+    // {
+    //   title: "SKU",
+    //   dataIndex: "sku",
+    //   width: 150,
+    //   render: (_, r) =>
+    //     r.sku ? (
+    //       <span className="font-mono text-[12px]">{r.sku}</span>
+    //     ) : (
+    //       <span className="text-[12px] text-neutral-400">Auto</span>
+    //     ),
+    // },
     {
       title: "Price (USD)",
       dataIndex: "price",
       width: 120,
       render: (_, r) => (
         <Cell error={errors?.[r._index]?.price}>
-          <InputNumber
-            stringMode
-            min="0"
-            step="0.01"
-            controls={false}
+          <Input
+            type="number"
+            min={0}
+            step="any"
             className="w-full"
-            value={r.price === "" ? null : r.price}
+            value={r.price}
             placeholder="0.00"
             status={errors?.[r._index]?.price ? "error" : undefined}
-            onChange={(v) => update(r._index, { price: v ?? "" })}
+            onChange={(e) => update(r._index, { price: e.target.value })}
+            onWheel={(e) => e.currentTarget.blur()}
           />
         </Cell>
       ),
     },
     {
-      title: "Sale price",
+      title: "Offer",
       dataIndex: "salePrice",
-      width: 120,
-      render: (_, r) => (
-        <Cell error={errors?.[r._index]?.salePrice}>
-          <InputNumber
-            stringMode
-            min="0"
-            step="0.01"
-            controls={false}
-            className="w-full"
-            value={r.salePrice === "" ? null : r.salePrice}
-            placeholder="Optional"
-            status={errors?.[r._index]?.salePrice ? "error" : undefined}
-            onChange={(v) => update(r._index, { salePrice: v ?? "" })}
-          />
-        </Cell>
-      ),
+      width: 110,
+      render: (_, r) =>
+        r.salePrice !== "" ? (
+          <span className="text-[13px] font-medium text-[#389e0d]">
+            ${r.salePrice}
+          </span>
+        ) : (
+          <span className="text-[12px] text-neutral-400">No offer</span>
+        ),
     },
     {
       title: "Stock",
@@ -165,16 +166,17 @@ export function VariantRepeater({
       width: 90,
       render: (_, r) => (
         <Cell error={errors?.[r._index]?.stock}>
-          <InputNumber
-            stringMode
+          <Input
+            type="number"
             min="0"
             step="1"
-            precision={0}
-            controls={false}
+            // precision={0}
+            // controls={false}
             className="w-full"
-            value={r.stock === "" ? null : r.stock}
+            value={r.stock}
             status={errors?.[r._index]?.stock ? "error" : undefined}
-            onChange={(v) => update(r._index, { stock: v ?? "" })}
+            onChange={(e) => update(r._index, { stock: e.target.value })}
+            onWheel={(e) => e.currentTarget.blur()}
           />
         </Cell>
       ),

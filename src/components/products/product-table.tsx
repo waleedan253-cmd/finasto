@@ -65,7 +65,6 @@ function Thumbnail({ item, size }: { item: ProductListItem; size: number }) {
 // Enable/disable without deleting. Draft products only change status
 // through the edit form, so no toggle is shown for them.
 function StatusToggle({ item }: { item: ProductListItem }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   if (item.status === "draft") return null;
@@ -75,8 +74,7 @@ function StatusToggle({ item }: { item: ProductListItem }) {
   function toggle() {
     const next: ProductStatus = isActive ? "disabled" : "active";
     startTransition(async () => {
-      const result = await setProductStatus(item.id, next);
-      if (result.success) router.refresh();
+      await setProductStatus(item.id, next);
     });
   }
 
@@ -97,10 +95,12 @@ export function ProductTable({
   products,
   rates,
   currency,
+  startIndex = 0,
 }: {
   products: ProductListItem[];
   rates: RateMap;
   currency: string;
+  startIndex?: number; // (page - 1) * pageSize, so numbering continues across pages
 }) {
   const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<ProductListItem | null>(
@@ -109,15 +109,27 @@ export function ProductTable({
 
   const columns: ColumnsType<ProductListItem> = [
     {
+      title: "#",
+      key: "sr",
+      width: 60,
+      render: (_, __, index) => (
+        <span className="tabular-nums text-neutral-500">
+          {startIndex + index + 1}
+        </span>
+      ),
+    },
+    {
       title: "Product",
       key: "product",
-      width: 280,
+      width: 240,
+
       render: (_, item) => (
         <div className="flex items-center gap-3">
           <Thumbnail item={item} size={44} />
           <Link
             href={`/admin/products/${item.id}`}
             className="min-w-0 truncate font-medium"
+            style={{ color: "#2E7D32" }}
           >
             {item.name}
           </Link>
@@ -128,13 +140,13 @@ export function ProductTable({
       title: "Category",
       dataIndex: "category",
       key: "category",
-      width: 150,
+      width: 140,
       render: (category: string | null) => category ?? "—",
     },
     {
       title: "Status",
       key: "status",
-      width: 170,
+      width: 140,
       render: (_, item) => (
         <div className="flex flex-wrap items-center gap-1.5">
           <ProductStatusBadge status={item.status} />
@@ -145,8 +157,8 @@ export function ProductTable({
     {
       title: "Price",
       key: "price",
-      align: "right",
-      width: 150,
+      // align: "right",
+      width: 140,
       render: (_, item) => (
         <span className="tabular-nums">
           {priceLabel(item, rates, currency)}
@@ -157,15 +169,15 @@ export function ProductTable({
       title: "Stock",
       dataIndex: "totalStock",
       key: "stock",
-      align: "right",
-      width: 90,
+      // align: "right",
+      width: 140,
       render: (stock: number) => <span className="tabular-nums">{stock}</span>,
     },
     {
       title: "Updated",
       dataIndex: "updatedAt",
       key: "updated",
-      width: 130,
+      width: 140,
       render: (updatedAt: string) => (
         <Typography.Text type="secondary">
           {dateFmt.format(new Date(updatedAt))}
@@ -176,11 +188,11 @@ export function ProductTable({
       title: "Actions",
       key: "actions",
       align: "right",
-      width: 140,
+      width: 120,
       fixed: "right",
       render: (_, item) => (
         <Space size={0}>
-          <Tooltip title="Edit">
+          <Tooltip title="Edit" className="hover:!bg-transparent">
             <Button
               type="text"
               icon={<EditOutlined />}
@@ -202,7 +214,7 @@ export function ProductTable({
       ),
     },
   ];
-
+  const TABLE_WIDTH = 1120;
   return (
     <>
       <Table<ProductListItem>
@@ -210,7 +222,7 @@ export function ProductTable({
         columns={columns}
         dataSource={products}
         pagination={false}
-        scroll={{ x: 900 }}
+        scroll={{ x: TABLE_WIDTH }}
         locale={{
           emptyText: (
             <Empty

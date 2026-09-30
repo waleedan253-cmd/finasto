@@ -7,15 +7,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { MAX_QUANTITY, useCart } from "@/components/providers/cart-provider";
 import { useMarket } from "@/components/providers/market-provider";
-import { getPrice, products } from "@/data/products";
+import { getPrice, type Product } from "@/data/products";
 import { cn, formatPrice } from "@/lib/utils";
 
-const tint = {
-  green: "bg-gradient-to-b from-[#E7ECDF] to-white",
-  blue: "bg-gradient-to-b from-[#DEE7EF] to-white",
-} as const;
-
-export function CartDrawer() {
+export function CartDrawer({ products = [] }: { products?: Product[] }) {
   const { lines, count, isOpen, closeCart, setQuantity, removeItem } =
     useCart();
   const { market } = useMarket();
@@ -139,10 +134,10 @@ export function CartDrawer() {
                         <Link
                           href={`/shop/${product.slug}`}
                           onClick={closeCart}
-                          className={cn(
-                            "relative h-24 w-24 shrink-0 overflow-hidden rounded-[12px] border border-border",
-                            tint[product.accentTint],
-                          )}
+                          style={{
+                            background: `linear-gradient(to bottom, ${product.accentColor}26, #ffffff)`,
+                          }}
+                          className="relative h-24 w-24 shrink-0 overflow-hidden rounded-[12px] border border-border"
                         >
                           <Image
                             src={product.image}

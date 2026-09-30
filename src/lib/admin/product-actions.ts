@@ -32,15 +32,42 @@ const statusSchema = z.enum(["active", "disabled", "draft"]);
 
 // price/salePrice/stock are USD amounts and whole units — never trusted
 // as already-formatted currency strings from the client.
-const variantSchema = z.object({
+const variantBase = z.object({
   id: z.string().uuid().optional(), // absent = new variant
   name: z.string().trim().min(1).max(60),
-  sku: z.string().trim().min(1).max(40),
+  sku: z.string().trim().max(40).optional(),
   price: z.number().finite().nonnegative(),
   salePrice: z.number().finite().nonnegative().nullable(),
+  saleStartsAt: z.string().datetime({ offset: true }).nullable().optional(),
+  saleEndsAt: z.string().datetime({ offset: true }).nullable().optional(),
   stock: z.number().int().nonnegative(),
   weight: z.number().finite().nonnegative().nullable(),
   status: statusSchema,
+});
+
+// An offer price needs a valid window and must be below the regular price.
+const variantSchema = variantBase.superRefine((v, ctx) => {
+  if (v.salePrice == null) return;
+  if (v.salePrice >= v.price) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["salePrice"],
+      message: "Offer price must be below the regular price",
+    });
+  }
+  if (!v.saleStartsAt || !v.saleEndsAt) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["saleEndsAt"],
+      message: "Set the offer start and end dates",
+    });
+  } else if (Date.parse(v.saleEndsAt) <= Date.parse(v.saleStartsAt)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["saleEndsAt"],
+      message: "Offer must end after it starts",
+    });
+  }
 });
 
 const countryPriceSchema = z.object({
@@ -75,7 +102,7 @@ const productInputSchema = z.object({
   metaDescription: z.string().trim().max(160).nullable(),
   variants: z.array(variantSchema).min(1, "Add at least one variant"),
   countryPrices: z.array(countryPriceSchema),
-  images: z.array(imageSchema).max(8),
+  images: z.array(imageSchema).max(1),
   // ids the admin removed in the form's variant/country-price repeaters
   deletedVariantIds: z.array(z.string().uuid()),
   deletedCountryPriceIds: z.array(z.string().uuid()),
@@ -88,7 +115,18 @@ export type ActionResult =
   | { success: false; error: string; fieldErrors?: Record<string, string[]> };
 
 // Postgres foreign-key-violation code.
+// Postgres foreign-key-violation code.
 const FK_VIOLATION = "23503";
+
+// SKU format: PREFIX-PRODUCT-SIZE, e.g. FIN-VEL-250G
+const SKU_PREFIX = "FIN";
+
+function skuPart(s: string, max: number): string {
+  return s
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, max);
+}
 
 /* ------------------------------------------------------------------ */
 /* Create                                                               */
@@ -141,7 +179,11 @@ export async function createProduct(
     };
   }
 
-  const variantResult = await upsertVariants(product.id, data.variants);
+  const variantResult = await upsertVariants(
+    product.id,
+    data.name,
+    data.variants,
+  );
   if (!variantResult.success) return variantResult;
 
   const countryPriceResult = await upsertCountryPrices(
@@ -154,6 +196,8 @@ export async function createProduct(
   if (!imageResult.success) return imageResult;
 
   revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/");
   return { success: true, productId: product.id };
 }
 
@@ -220,7 +264,7 @@ export async function updateProduct(
       .in("id", data.deletedCountryPriceIds);
   }
 
-  const variantResult = await upsertVariants(id, data.variants);
+  const variantResult = await upsertVariants(id, data.name, data.variants);
   if (!variantResult.success) return variantResult;
 
   const countryPriceResult = await upsertCountryPrices(id, data.countryPrices);
@@ -230,6 +274,8 @@ export async function updateProduct(
   if (!imageResult.success) return imageResult;
 
   revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/");
   revalidatePath(`/admin/products/${id}`);
   return { success: true, productId: id };
 }
@@ -267,6 +313,8 @@ export async function setProductStatus(
 
   const t3 = Date.now();
   revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/");
   console.log("[action] revalidatePath", Date.now() - t3, "ms");
 
   console.log("[action] TOTAL", Date.now() - tTotal, "ms");
@@ -294,6 +342,8 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
   }
 
   revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath("/");
   return { success: true, productId: id };
 }
 
@@ -307,18 +357,45 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
 // instead of looping one-row-per-request. This is what makes Save fast.
 async function upsertVariants(
   productId: string,
+  productName: string,
   variants: ProductInput["variants"],
 ): Promise<ActionResult> {
   if (variants.length === 0) return { success: true, productId };
 
   const supabase = await createClient();
+
+  // All SKUs already in use, so a generated one never collides.
+  const { data: existing } = await supabase
+    .from("product_variants")
+    .select("sku");
+  const taken = new Set<string>(
+    (existing ?? []).map((r) => String(r.sku).toUpperCase()),
+  );
+
+  function makeSku(size: string): string {
+    const base = [
+      SKU_PREFIX,
+      skuPart(productName, 3) || "PRD",
+      skuPart(size, 8) || "STD",
+    ].join("-");
+    let candidate = base;
+    let n = 2;
+    while (taken.has(candidate)) candidate = `${base}-${n++}`;
+    taken.add(candidate);
+    return candidate;
+  }
+
   const rows = variants.map((v) => ({
     id: v.id ?? crypto.randomUUID(),
     product_id: productId,
     name: v.name,
-    sku: v.sku,
+    // Existing SKUs never change on edit; only empty ones are generated.
+    sku: v.sku && v.sku.trim() !== "" ? v.sku : makeSku(v.name),
     price: v.price,
     sale_price: v.salePrice,
+    // No offer price = no dates, so the database constraint always holds.
+    sale_starts_at: v.salePrice == null ? null : (v.saleStartsAt ?? null),
+    sale_ends_at: v.salePrice == null ? null : (v.saleEndsAt ?? null),
     stock: v.stock,
     weight: v.weight,
     status: v.status,

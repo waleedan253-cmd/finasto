@@ -14,14 +14,19 @@ export type Product = {
   slug: string;
   name: string;
   category: string;
+  featured: boolean;
   tagline: string[];
   shortDescription: string;
   price: number;
   currency: string;
   prices: Record<string, number>;
+  // Set only while an offer is active: the regular price to strike through.
+  compareAtPrice?: number;
+  comparePrices?: Record<string, number>;
+  offerEndsAt?: string; // ISO date
   image: string;
   state: ProductState;
-  accentTint: "green" | "blue";
+  accentColor: string;
   features: string[];
   weight?: string;
   origin: string;
@@ -34,58 +39,58 @@ export type Product = {
 // no component change required, only this string.
 export const collectionMode: "featured" | "bestsellers" = "featured";
 
-export const products: Product[] = [
-  {
-    id: "velora",
-    slug: "velora",
-    name: "Velora",
-    category: "Wellness Tea",
-    tagline: ["Balance", "Calm", "Restore"],
-    shortDescription:
-      "A soothing blend of natural herbs to help you find balance and inner harmony.",
-    price: 129000,
-    currency: "IDR",
-    prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
-    image: "/product/veloras.png",
-    state: "new",
-    accentTint: "green",
+// export const products: Product[] = [
+//   {
+//     id: "velora",
+//     slug: "velora",
+//     name: "Velora",
+//     category: "Wellness Tea",
+//     tagline: ["Balance", "Calm", "Restore"],
+//     shortDescription:
+//       "A soothing blend of natural herbs to help you find balance and inner harmony.",
+//     price: 129000,
+//     currency: "IDR",
+//     prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
+//     image: "/product/veloras.png",
+//     state: "new",
+//     accentTint: "green",
 
-    features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],
-    origin: "Kintamani, Bali",
-    weight: "250g",
-    tastingNote: "Chocolate, citrus and a soft floral finish",
-    rating: 4.8,
-    reviewCount: 24,
-  },
-  {
-    id: "blue-moon",
-    slug: "blue-moon",
-    name: "Blue Moon",
-    category: "Wellness Tea",
-    tagline: ["Sleep", "Relax", "Rejuvenate"],
-    shortDescription:
-      "A calming blend of natural herbs to support better sleep and deep relaxation.",
-    price: 129000,
-    currency: "IDR",
-    prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
-    image: "/product/bluemoons.png",
-    state: "new",
-    accentTint: "blue",
-    features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],
-    origin: "Kintamani, Bali",
-    weight: "250g",
-    tastingNote: "Chocolate, citrus and a soft floral finish",
-    rating: 4.7,
-    reviewCount: 18,
-  },
-];
+//     features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],
+//     origin: "Kintamani, Bali",
+//     weight: "250g",
+//     tastingNote: "Chocolate, citrus and a soft floral finish",
+//     rating: 4.8,
+//     reviewCount: 24,
+//   },
+//   {
+//     id: "blue-moon",
+//     slug: "blue-moon",
+//     name: "Blue Moon",
+//     category: "Wellness Tea",
+//     tagline: ["Sleep", "Relax", "Rejuvenate"],
+//     shortDescription:
+//       "A calming blend of natural herbs to support better sleep and deep relaxation.",
+//     price: 129000,
+//     currency: "IDR",
+//     prices: { IDR: 129000, MYR: 39.9, GBP: 8.5, USD: 10.9, PKR: 3200 },
+//     image: "/product/bluemoons.png",
+//     state: "new",
+//     accentTint: "blue",
+//     features: ["100% Natural", "20 Tea Bags", "Herbal Blend"],
+//     origin: "Kintamani, Bali",
+//     weight: "250g",
+//     tastingNote: "Chocolate, citrus and a soft floral finish",
+//     rating: 4.7,
+//     reviewCount: 18,
+//   },
+// ];
 
 // Derived, not hardcoded — so a new category or price point added to
 // `products` automatically appears in the shop filters with no other
 // file needing a change.
-export const productCategories: string[] = Array.from(
-  new Set(products.map((p) => p.category)),
-);
+export function getCategories(products: Product[]): string[] {
+  return Array.from(new Set(products.map((p) => p.category)));
+}
 
 // Returns the product's price in the given currency, or the base price
 // if that market has no price yet.
@@ -93,8 +98,19 @@ export function getPrice(product: Product, currencyCode: string): number {
   return product.prices[currencyCode] ?? product.price;
 }
 
+// Regular (struck-through) price in the given currency. Undefined when the
+// product has no active offer. Falls back to the USD amount like getPrice.
+export function getComparePrice(
+  product: Product,
+  currencyCode: string,
+): number | undefined {
+  if (product.compareAtPrice === undefined) return undefined;
+  return product.comparePrices?.[currencyCode] ?? product.compareAtPrice;
+}
+
 // Lowest and highest price in the given currency (used by the price slider).
-export function getPriceRange(currencyCode: string) {
+export function getPriceRange(products: Product[], currencyCode: string) {
+  if (products.length === 0) return { min: 0, max: 0 };
   const values = products.map((p) => getPrice(p, currencyCode));
   return { min: Math.min(...values), max: Math.max(...values) };
 }

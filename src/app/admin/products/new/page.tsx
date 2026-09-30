@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getCountries } from "@/lib/admin/product-queries";
 import { ProductForm } from "../../../../components/products/product-form";
+import { getFieldSuggestions } from "@/lib/admin/product-queries";
 
 export const metadata: Metadata = {
   title: "Add Product — Finasto Admin",
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NewProductPage() {
+  const suggestions = await getFieldSuggestions();
   const countries = await getCountries();
 
   return (
@@ -21,7 +23,12 @@ export default async function NewProductPage() {
         </p>
       </div>
 
-      <ProductForm mode="create" product={null} countries={countries} />
+      <ProductForm
+        mode="create"
+        product={null}
+        countries={countries}
+        suggestions={suggestions}
+      />
     </div>
   );
 }

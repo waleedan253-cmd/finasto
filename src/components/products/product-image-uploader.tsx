@@ -6,7 +6,7 @@ import {
   Button,
   Input,
   Popover,
-  Spin,
+  Progress,
   Tag,
   Tooltip,
   Upload,
@@ -38,7 +38,7 @@ import { cn } from "@/lib/utils";
 // never sees half-uploaded images.
 
 const BUCKET = "product-images";
-const MAX_IMAGES = 8;
+const MAX_IMAGES = 1;
 const MAX_INPUT_BYTES = 10 * 1024 * 1024; // 10MB original (compressed before upload)
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const UPLOAD_CONCURRENCY = 3;
@@ -55,9 +55,35 @@ type PendingUpload = {
   id: string;
   previewUrl: string; // local blob URL for instant preview
   name: string;
+  progress: number; // 0-100
 };
 
 const limit = pLimit(UPLOAD_CONCURRENCY);
+
+function uploadWithProgress(
+  url: string,
+  file: Blob,
+  onProgress: (pct: number) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("x-upsert", "false");
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable)
+        onProgress(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onload = () =>
+      xhr.status >= 200 && xhr.status < 300
+        ? resolve()
+        : reject(new Error(xhr.responseText || `HTTP ${xhr.status}`));
+    xhr.onerror = () => reject(new Error("Network error"));
+    const form = new FormData();
+    form.append("cacheControl", "31536000");
+    form.append("", file);
+    xhr.send(form);
+  });
+}
 
 export function ProductImageUploader({
   folderId,
@@ -78,6 +104,12 @@ export function ProductImageUploader({
   valueRef.current = value;
 
   const isUploading = pending.length > 0;
+
+  function setProgress(id: string, progress: number) {
+    setPending((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, progress } : p)),
+    );
+  }
   const remainingSlots = MAX_IMAGES - value.length - pending.length;
 
   // Revoke any leftover blob URLs on unmount.
@@ -111,37 +143,42 @@ export function ProductImageUploader({
       id: crypto.randomUUID(),
       previewUrl: URL.createObjectURL(file),
       name: file.name,
+      progress: 0,
     }));
     setPending((prev) => [...prev, ...items]);
 
     const supabase = createClient();
 
     const results = await Promise.all(
-      list.map((file) =>
+      list.map((file, i) =>
         limit(async (): Promise<ProductImageDraft | null> => {
+          const item = items[i];
           try {
+            // Phase 1: compression = 0-30%
             const compressed = await imageCompression(file, {
-              maxSizeMB: 0.5,
-              maxWidthOrHeight: 1600,
+              maxSizeMB: 0.3,
+              maxWidthOrHeight: 1200,
               fileType: "image/webp",
               useWebWorker: true,
+              onProgress: (p) => setProgress(item.id, Math.round(p * 0.3)),
             });
 
             const path = `${folderId}/${crypto.randomUUID()}.webp`;
-            const { error: uploadError } = await supabase.storage
+            const { data: signed, error: signError } = await supabase.storage
               .from(BUCKET)
-              .upload(path, compressed, {
-                cacheControl: "31536000", // safe: every file has a unique UUID path
-                contentType: "image/webp",
-                upsert: false,
-              });
+              .createSignedUploadUrl(path);
 
-            if (uploadError) {
+            if (signError || !signed) {
               setError(
-                `Could not upload "${file.name}": ${uploadError.message}`,
+                `Could not upload "${file.name}": ${signError?.message}`,
               );
               return null;
             }
+
+            // Phase 2: upload = 30-100%
+            await uploadWithProgress(signed.signedUrl, compressed, (pct) =>
+              setProgress(item.id, 30 + Math.round(pct * 0.7)),
+            );
 
             const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
             return {
@@ -151,8 +188,12 @@ export function ProductImageUploader({
               alt: "",
               isPrimary: false,
             };
-          } catch {
-            setError(`Could not process "${file.name}".`);
+          } catch (err) {
+            setError(
+              `Could not upload "${file.name}": ${
+                err instanceof Error ? err.message : "unknown error"
+              }`,
+            );
             return null;
           }
         }),
@@ -394,8 +435,17 @@ export function ProductImageUploader({
                   alt=""
                   className="h-full w-full object-contain p-2 opacity-40"
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Spin />
+                <div className="absolute inset-x-3 bottom-3">
+                  <Progress
+                    percent={item.progress}
+                    size="small"
+                    showInfo={false}
+                    strokeColor="#B87333"
+                    trailColor="#F1EBE1"
+                  />
+                  <p className="mt-1 text-center text-[12px] text-[#3B2A24]">
+                    Uploading {item.progress}%
+                  </p>
                 </div>
               </li>
             ))}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCountries, getProductById } from "@/lib/admin/product-queries";
 import { ProductForm } from "../../../../components/products/product-form";
+import { getFieldSuggestions } from "@/lib/admin/product-queries";
 
 export async function generateMetadata({
   params,
@@ -30,7 +31,7 @@ export default async function EditProductPage({
   ]);
 
   if (!product) notFound();
-
+  const suggestions = await getFieldSuggestions();
   return (
     <div className="mx-auto flex max-w-[900px] flex-col gap-6">
       <div>
@@ -47,7 +48,12 @@ export default async function EditProductPage({
         </p>
       </div>
 
-      <ProductForm mode="edit" product={product} countries={countries} />
+      <ProductForm
+        mode="edit"
+        product={product}
+        countries={countries}
+        suggestions={suggestions}
+      />
     </div>
   );
 }

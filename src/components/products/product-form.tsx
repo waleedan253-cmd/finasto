@@ -14,14 +14,18 @@ import {
   Row,
   Select,
   Space,
-  Switch,
+  AutoComplete,
 } from "antd";
 import {
   createProduct,
   updateProduct,
   type ProductInput,
 } from "@/lib/admin/product-actions";
-import type { Country, ProductDetail } from "@/lib/admin/product-queries";
+import type {
+  Country,
+  ProductDetail,
+  FieldSuggestions,
+} from "@/lib/admin/product-queries";
 import { ProductStatusBadge } from "./product-status-badge";
 import {
   ProductImageUploader,
@@ -36,6 +40,9 @@ import {
   CountryPriceRepeater,
   type CountryPriceDraft,
 } from "./country-price-repeater";
+import { OfferDrawer } from "./offer-drawer";
+import { formatStoreDate } from "@/lib/store-time";
+import { Tag } from "lucide-react";
 
 // Shared create/edit form (admin/products/new and admin/products/[id]).
 //
@@ -83,6 +90,8 @@ function toVariantDraft(v: ProductDetail["variants"][number]): VariantDraft {
     sku: v.sku,
     price: String(v.price),
     salePrice: v.salePrice != null ? String(v.salePrice) : "",
+    saleStartsAt: v.saleStartsAt ?? "",
+    saleEndsAt: v.saleEndsAt ?? "",
     stock: String(v.stock),
     weight: v.weight != null ? String(v.weight) : "",
     status: v.status,
@@ -121,17 +130,11 @@ const emptyToZero = (s: string): number => (s.trim() === "" ? 0 : Number(s));
 
 function validateVariants(variants: VariantDraft[]): VariantErrors {
   const errors: VariantErrors = {};
-  const seenSkus = new Map<string, number>();
 
   variants.forEach((v, i) => {
     const e: Partial<Record<keyof VariantDraft, string>> = {};
 
-    if (!v.name.trim()) e.name = "Required";
-
-    const sku = v.sku.trim().toLowerCase();
-    if (!sku) e.sku = "Required";
-    else if (seenSkus.has(sku)) e.sku = "Duplicate SKU";
-    else seenSkus.set(sku, i);
+    if (!v.name.trim()) e.name = "Enter that Product packs";
 
     const price = v.price.trim() === "" ? NaN : Number(v.price);
     if (Number.isNaN(price)) e.price = "Required";
@@ -198,9 +201,11 @@ function buildInput(state: {
     variants: state.variants.map((v) => ({
       id: v.id,
       name: v.name,
-      sku: v.sku,
+      sku: v.sku.trim() === "" ? undefined : v.sku,
       price: emptyToZero(v.price),
       salePrice: emptyToNull(v.salePrice),
+      saleStartsAt: v.saleStartsAt || null,
+      saleEndsAt: v.saleEndsAt || null,
       stock: emptyToZero(v.stock),
       weight: emptyToNull(v.weight),
       status: v.status,
@@ -252,10 +257,12 @@ export function ProductForm({
   mode,
   product,
   countries,
+  suggestions,
 }: {
   mode: "create" | "edit";
   product: ProductDetail | null;
   countries: Country[];
+  suggestions: FieldSuggestions;
 }) {
   const router = useRouter();
   const [form] = Form.useForm<FormValues>();
@@ -278,6 +285,27 @@ export function ProductForm({
 
   // Live status for the badge in the sidebar.
   const status = Form.useWatch("status", form) ?? product?.status ?? "draft";
+
+  // Offer drawer + a summary derived from the variant drafts.
+  const [offerOpen, setOfferOpen] = useState(false);
+  const watchedName = Form.useWatch("name", form) ?? "";
+  const watchedCategory = Form.useWatch("category", form) ?? null;
+
+  const offerVariants = variants.filter((v) => v.salePrice !== "");
+  const offerStart = offerVariants.find((v) => v.saleStartsAt)?.saleStartsAt;
+  const offerEnd = offerVariants.find((v) => v.saleEndsAt)?.saleEndsAt;
+  const nowMs = Date.now();
+  const offerStatus: "none" | "scheduled" | "active" | "ended" =
+    offerVariants.length === 0
+      ? "none"
+      : offerEnd && Date.parse(offerEnd) <= nowMs
+        ? "ended"
+        : offerStart && Date.parse(offerStart) > nowMs
+          ? "scheduled"
+          : "active";
+  const fmtDate = (iso?: string) => (iso ? formatStoreDate(iso, true) : "");
+  const primaryImageUrl =
+    images.find((i) => i.isPrimary)?.url ?? images[0]?.url ?? null;
 
   // Stable identity for the Storage upload path: the real id when
   // editing, a client-generated id when creating.
@@ -424,15 +452,21 @@ export function ProductForm({
                 name="shortDescription"
                 rules={[{ max: 160, message: "Max 160 characters" }]}
               >
-                <Input.TextArea rows={2} showCount maxLength={160} />
+                <Input.TextArea
+                  rows={2}
+                  showCount
+                  maxLength={160}
+                  style={{ borderRadius: 8 }}
+                />
               </Form.Item>
 
               <Form.Item label="Tagline (up to 3 words)" name="tagline">
                 <Select
                   mode="tags"
                   maxCount={3}
-                  open={false}
-                  placeholder="Balance, Calm, Restore"
+                  options={suggestions.tagline.map((v) => ({ value: v }))}
+                  tokenSeparators={[","]}
+                  placeholder="Pick existing or type a new one"
                 />
               </Form.Item>
 
@@ -440,20 +474,39 @@ export function ProductForm({
                 <Select
                   mode="tags"
                   maxCount={6}
-                  open={false}
-                  placeholder="100% Natural, 20 Tea Bags"
+                  options={suggestions.features.map((v) => ({ value: v }))}
+                  tokenSeparators={[","]}
+                  placeholder="Pick existing or type a new one"
                 />
               </Form.Item>
 
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item label="Origin" name="origin">
-                    <Input placeholder="Kintamani, Bali" />
+                    <AutoComplete
+                      options={suggestions.origin.map((v) => ({ value: v }))}
+                      placeholder="Kintamani, Bali"
+                      filterOption={(input, opt) =>
+                        (opt?.value ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
                   <Form.Item label="Tasting note" name="tastingNote">
-                    <Input placeholder="Chocolate, citrus, soft floral" />
+                    <AutoComplete
+                      options={suggestions.tastingNote.map((v) => ({
+                        value: v,
+                      }))}
+                      placeholder="Chocolate, citrus, soft floral"
+                      filterOption={(input, opt) =>
+                        (opt?.value ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -471,8 +524,9 @@ export function ProductForm({
                 <Select
                   mode="tags"
                   maxCount={3}
-                  open={false}
-                  placeholder="Balance, Calm, Restore"
+                  options={suggestions.tagline.map((v) => ({ value: v }))}
+                  tokenSeparators={[","]}
+                  placeholder="Pick existing or type a new one"
                 />
               </Form.Item>
 
@@ -480,20 +534,39 @@ export function ProductForm({
                 <Select
                   mode="tags"
                   maxCount={6}
-                  open={false}
-                  placeholder="100% Natural, 20 Tea Bags"
+                  options={suggestions.features.map((v) => ({ value: v }))}
+                  tokenSeparators={[","]}
+                  placeholder="Pick existing or type a new one"
                 />
               </Form.Item>
 
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item label="Origin" name="origin">
-                    <Input placeholder="Kintamani, Bali" />
+                    <AutoComplete
+                      options={suggestions.origin.map((v) => ({ value: v }))}
+                      placeholder="Kintamani, Bali"
+                      filterOption={(input, opt) =>
+                        (opt?.value ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
                   <Form.Item label="Tasting note" name="tastingNote">
-                    <Input placeholder="Chocolate, citrus, soft floral" />
+                    <AutoComplete
+                      options={suggestions.tastingNote.map((v) => ({
+                        value: v,
+                      }))}
+                      placeholder="Chocolate, citrus, soft floral"
+                      filterOption={(input, opt) =>
+                        (opt?.value ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                    />
                   </Form.Item>
                 </Col>
               </Row> */}
@@ -520,7 +593,7 @@ export function ProductForm({
               title="Images"
               extra={
                 <span className="text-[13px] text-neutral-500">
-                  {images.length}/8
+                  {images.length}/1
                 </span>
               }
             >
@@ -536,7 +609,7 @@ export function ProductForm({
                 title="Variants"
                 extra={
                   <span className="text-[13px] text-neutral-500">
-                    Size or pack options, each with its own price and stock
+                    Packs or Weight each with its own price and stock
                   </span>
                 }
               >
@@ -544,6 +617,7 @@ export function ProductForm({
                   value={variants}
                   onChange={handleVariantsChange}
                   errors={variantErrors}
+                  sizeSuggestions={suggestions.size}
                 />
               </Card>
             </div>
@@ -618,11 +692,13 @@ export function ProductForm({
                 <Form.Item label="Status" name="status">
                   <Select
                     options={[
-                      { value: "draft", label: "Draft (hidden from the shop)" },
                       {
                         value: "active",
                         label: "Active (visible in the shop)",
                       },
+
+                      { value: "draft", label: "Draft (hidden from the shop)" },
+
                       {
                         value: "disabled",
                         label: "Disabled (hidden, not deleted)",
@@ -631,15 +707,37 @@ export function ProductForm({
                   />
                 </Form.Item>
 
-                <Form.Item
-                  name="featured"
-                  valuePropName="checked"
-                  className="!mb-4"
-                >
-                  <Switch /> <span className="ml-2">Feature on homepage</span>
-                </Form.Item>
+                <div className="mb-4 rounded-lg border border-neutral-200 p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Offer</span>
+                    {offerStatus === "none" && <Tag>No offer</Tag>}
+                    {offerStatus === "scheduled" && (
+                      <Tag color="blue">Scheduled</Tag>
+                    )}
+                    {offerStatus === "active" && (
+                      <Tag color="green">Active</Tag>
+                    )}
+                    {offerStatus === "ended" && <Tag color="orange">Ended</Tag>}
+                  </div>
 
-                <Space.Compact block>
+                  {offerStatus !== "none" && (
+                    <p className="mt-1 text-[13px] text-neutral-500">
+                      {offerVariants.length}{" "}
+                      {offerVariants.length === 1 ? "pack" : "packs"} ·{" "}
+                      {fmtDate(offerStart)} to {fmtDate(offerEnd)}
+                    </p>
+                  )}
+
+                  <Button
+                    block
+                    className="mt-3"
+                    onClick={() => setOfferOpen(true)}
+                  >
+                    {offerStatus === "none" ? "Set offer" : "Edit offer"}
+                  </Button>
+                </div>
+
+                <div className="flex gap-3">
                   <Button
                     onClick={() => router.push("/admin/products")}
                     disabled={isPending}
@@ -652,12 +750,12 @@ export function ProductForm({
                     type="primary"
                     htmlType="submit"
                     loading={isPending}
-                    style={{ width: "65%" }}
+                    style={{ flex: 1 }}
                     size="large"
                   >
                     {mode === "create" ? "Create product" : "Save changes"}
                   </Button>
-                </Space.Compact>
+                </div>
               </Card>
 
               <Card title="Organization">
@@ -666,7 +764,15 @@ export function ProductForm({
                   name="category"
                   rules={[{ max: 60, message: "Max 60 characters" }]}
                 >
-                  <Input placeholder="e.g. Wellness Tea" />
+                  <AutoComplete
+                    options={suggestions.category.map((v) => ({ value: v }))}
+                    placeholder="e.g. Wellness Tea"
+                    filterOption={(input, opt) =>
+                      (opt?.value ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -682,6 +788,16 @@ export function ProductForm({
           </div>
         </Col>
       </Row>
+
+      <OfferDrawer
+        open={offerOpen}
+        onClose={() => setOfferOpen(false)}
+        productName={watchedName}
+        category={watchedCategory}
+        imageUrl={primaryImageUrl}
+        variants={variants}
+        onApply={handleVariantsChange}
+      />
     </Form>
   );
 }

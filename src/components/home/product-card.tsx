@@ -3,10 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Leaf, Coffee, Sprout } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
-import { getPrice, type Product } from "@/data/products";
+import { getComparePrice, getPrice, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { useRouter } from "next/navigation";
+import { formatStoreDate } from "@/lib/store-time";
 
 const stateLabel: Record<Product["state"], string> = {
   new: "New",
@@ -16,39 +17,31 @@ const stateLabel: Record<Product["state"], string> = {
   offer: "Offer",
 };
 
-// Card + pill tint per accent — swap "panel" for the soft card background,
-
-const tint = {
-  green: {
-    card: "bg-[#EFF3E8]",
-    pill: "bg-[#DCE6CB] text-espresso",
-  },
-  blue: {
-    card: "bg-[#E7EEF5]",
-    pill: "bg-[#CFE0F0] text-espresso",
-  },
-} as const;
-
 const featureIcons = [Leaf, Coffee, Sprout];
 
 export function ProductCard({ product }: { product: Product }) {
   const router = useRouter();
   const isOutOfStock = product.state === "out-of-stock";
-  const colors = tint[product.accentTint];
+  const cardBg = `${product.accentColor}1A`; // ~10% tint of the admin color
+  const pillBg = `${product.accentColor}40`; // ~25% tint
   const { market } = useMarket();
   const { addItem } = useCart();
+
+  const price = getPrice(product, market.currencyCode);
+  const compare = getComparePrice(product, market.currencyCode);
+  const onOffer = compare !== undefined && compare > price;
 
   return (
     <article
       className={cn(
         "relative overflow-hidden rounded-[28px] border border-border p-6 shadow-[0_1px_2px_rgba(50,30,24,0.04)] transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)]",
         "flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8",
-        colors.card,
       )}
+      style={{ backgroundColor: cardBg }}
     >
-      {product.state === "new" && (
+      {(product.state === "new" || product.state === "offer") && (
         <span className="absolute left-6 top-6 z-10 rounded-full bg-white/90 px-3 py-1 font-sans text-[11px] font-medium uppercase tracking-wide text-espresso shadow-sm">
-          {stateLabel.new}
+          {stateLabel[product.state]}
         </span>
       )}
 
@@ -79,10 +72,8 @@ export function ProductCard({ product }: { product: Product }) {
           {product.tagline.map((tag) => (
             <span
               key={tag}
-              className={cn(
-                "rounded-full px-3 py-1 font-sans text-[12px] font-medium",
-                colors.pill,
-              )}
+              className="rounded-full px-3 py-1 font-sans text-[12px] font-medium text-espresso"
+              style={{ backgroundColor: pillBg }}
             >
               {tag}
             </span>
@@ -141,12 +132,24 @@ export function ProductCard({ product }: { product: Product }) {
             {!isOutOfStock && <span aria-hidden="true">→</span>}
           </button>
 
-          <p className="font-sans text-[17px] font-medium text-espresso">
-            {formatPrice(
-              getPrice(product, market.currencyCode),
-              market.currencyCode,
+          <div className="text-right">
+            <p className="font-sans text-[17px] font-medium text-espresso">
+              {onOffer && (
+                <span className="mr-2 text-[13px] text-warm-gray line-through">
+                  {formatPrice(compare, market.currencyCode)}
+                </span>
+              )}
+              {formatPrice(price, market.currencyCode)}
+            </p>
+            {onOffer && product.offerEndsAt && (
+              <p
+                suppressHydrationWarning
+                className="font-sans text-[11px] text-warm-gray"
+              >
+                Offer ends {formatStoreDate(product.offerEndsAt)}
+              </p>
             )}
-          </p>
+          </div>
         </div>
       </div>
     </article>

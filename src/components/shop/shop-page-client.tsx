@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
-  products,
-  productCategories,
+  type Product,
+  getCategories,
   getPrice,
   getPriceRange,
 } from "@/data/products";
@@ -25,14 +25,18 @@ const initialFilters: ShopFiltersState = {
   states: [],
 };
 
-export function ShopPageClient() {
+export function ShopPageClient({ products }: { products: Product[] }) {
   const [filters, setFilters] = useState<ShopFiltersState>(initialFilters);
   const [sort, setSort] = useState<SortOption>("featured");
   const [page, setPage] = useState(1);
 
   const { market } = useMarket();
   const currency = market.currencyCode;
-  const priceRange = useMemo(() => getPriceRange(currency), [currency]);
+  const priceRange = useMemo(
+    () => getPriceRange(products, currency),
+    [products, currency],
+  );
+  const categories = useMemo(() => getCategories(products), [products]);
 
   // A price limit set in one currency makes no sense in another.
   useEffect(() => {
@@ -77,7 +81,7 @@ export function ShopPageClient() {
     });
 
     return result;
-  }, [filters, search, sort, currency]);
+  }, [products, filters, search, sort, currency]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -100,7 +104,7 @@ export function ShopPageClient() {
     <div className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 lg:py-12">
       <div className="flex flex-col gap-10 lg:flex-row">
         <ShopFilters
-          allCategories={productCategories}
+          allCategories={categories}
           priceMin={priceRange.min}
           priceMax={priceRange.max}
           currency={currency}

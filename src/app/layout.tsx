@@ -9,6 +9,7 @@ import { MarketProvider } from "@/components/providers/market-provider";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
+import { getStorefrontProducts } from "@/lib/storefront-queries";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -30,7 +31,8 @@ export const metadata: Metadata = {
     "Finasto is a premium Bali-born botanical tea brand. Discover Velora and Blue Moon, thoughtfully presented for modern everyday rituals.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const products = await getStorefrontProducts();
   return (
     <html
       lang="en"
@@ -43,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <MarketProvider>
               <CartProvider>
                 {children}
-                <CartDrawer />
+                <CartDrawer products={products} />
               </CartProvider>
             </MarketProvider>
             <ScrollToTop />
