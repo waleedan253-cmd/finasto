@@ -17,9 +17,9 @@ export type AdminNavItem = { label: string; href: string; icon: LucideIcon };
 export const adminNav: AdminNavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Products", href: "/admin/products", icon: Package },
-  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Affiliates", href: "/admin/affiliates", icon: Users },
   { label: "Stockists", href: "/admin/stockists", icon: Store },
+  { label: "Affiliates", href: "/admin/affiliates", icon: Users },
+  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Commissions & Payouts", href: "/admin/payouts", icon: Wallet },
   { label: "Requests", href: "/admin/requests", icon: Inbox },
   { label: "Inventory", href: "/admin/inventory", icon: Boxes },

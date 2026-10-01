@@ -26,7 +26,8 @@ export function AntdTheme({ children }: { children: React.ReactNode }) {
           },
           Tooltip: {
             colorBgSpotlight: "#FBF7F0",
-            colorTextLightSolid: "#3b2a20",
+            colorTextLightSolid: "#3B2A24",
+            borderRadius: 8,
           },
         },
       }}

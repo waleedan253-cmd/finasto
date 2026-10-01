@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getCountries } from "@/lib/admin/product-queries";
-import { ProductForm } from "../../../../components/products/product-form";
+import { ProductForm } from "../../../../components/admin/products/product-form";
 import { getFieldSuggestions } from "@/lib/admin/product-queries";
 
 export const metadata: Metadata = {

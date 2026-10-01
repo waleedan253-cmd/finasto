@@ -49,6 +49,7 @@ body {
 html {
   scrollbar-gutter: stable;
 }
+
 /* Respect reduced motion globally */
 @media (prefers-reduced-motion: reduce) {
   *,

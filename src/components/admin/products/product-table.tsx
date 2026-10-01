@@ -4,12 +4,14 @@ import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Empty, Space, Table, Tooltip, Typography } from "antd";
+import { Button, Dropdown, Empty, Table, Typography } from "antd";
+import type { MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   CheckCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  MoreOutlined,
   StopOutlined,
 } from "@ant-design/icons";
 import { Leaf } from "lucide-react";
@@ -62,32 +64,58 @@ function Thumbnail({ item, size }: { item: ProductListItem; size: number }) {
   );
 }
 
-// Enable/disable without deleting. Draft products only change status
-// through the edit form, so no toggle is shown for them.
-function StatusToggle({ item }: { item: ProductListItem }) {
+// One three-dot menu per row: Edit, Disable/Activate, Delete.
+// Draft products get no toggle (status changes through the edit form).
+function RowActions({
+  item,
+  onDelete,
+}: {
+  item: ProductListItem;
+  onDelete: (item: ProductListItem) => void;
+}) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  if (item.status === "draft") return null;
-
   const isActive = item.status === "active";
 
-  function toggle() {
-    const next: ProductStatus = isActive ? "disabled" : "active";
-    startTransition(async () => {
-      await setProductStatus(item.id, next);
-    });
+  const items: MenuProps["items"] = [
+    { key: "edit", label: "Edit", icon: <EditOutlined /> },
+    ...(item.status !== "draft"
+      ? [
+          {
+            key: "toggle",
+            label: isActive ? "Disable" : "Activate",
+            icon: isActive ? <StopOutlined /> : <CheckCircleOutlined />,
+          },
+        ]
+      : []),
+    { type: "divider" as const },
+    { key: "delete", label: "Delete", icon: <DeleteOutlined />, danger: true },
+  ];
+
+  function handleClick({ key }: { key: string }) {
+    if (key === "edit") router.push(`/admin/products/${item.id}`);
+    if (key === "delete") onDelete(item);
+    if (key === "toggle") {
+      const next: ProductStatus = isActive ? "disabled" : "active";
+      startTransition(async () => {
+        await setProductStatus(item.id, next);
+      });
+    }
   }
 
   return (
-    <Tooltip title={isActive ? "Disable" : "Activate"}>
+    <Dropdown
+      trigger={["click"]}
+      placement="bottomRight"
+      menu={{ items, onClick: handleClick }}
+    >
       <Button
         type="text"
         loading={isPending}
-        icon={isActive ? <StopOutlined /> : <CheckCircleOutlined />}
-        aria-label={`${isActive ? "Disable" : "Activate"} ${item.name}`}
-        onClick={toggle}
+        icon={<MoreOutlined />}
+        aria-label={`Actions for ${item.name}`}
       />
-    </Tooltip>
+    </Dropdown>
   );
 }
 
@@ -102,7 +130,6 @@ export function ProductTable({
   currency: string;
   startIndex?: number; // (page - 1) * pageSize, so numbering continues across pages
 }) {
-  const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<ProductListItem | null>(
     null,
   );
@@ -185,36 +212,17 @@ export function ProductTable({
       ),
     },
     {
-      title: "Actions",
+      // title: "Actions",
       key: "actions",
-      align: "right",
-      width: 120,
+      align: "center",
+      width: 80,
       fixed: "right",
       render: (_, item) => (
-        <Space size={0}>
-          <Tooltip title="Edit" className="hover:!bg-transparent">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              aria-label={`Edit ${item.name}`}
-              onClick={() => router.push(`/admin/products/${item.id}`)}
-            />
-          </Tooltip>
-          <StatusToggle item={item} />
-          <Tooltip title="Delete">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              aria-label={`Delete ${item.name}`}
-              onClick={() => setDeleteTarget(item)}
-            />
-          </Tooltip>
-        </Space>
+        <RowActions item={item} onDelete={setDeleteTarget} />
       ),
     },
   ];
-  const TABLE_WIDTH = 1120;
+  const TABLE_WIDTH = 1080;
   return (
     <>
       <Table<ProductListItem>

@@ -20,7 +20,7 @@ import {
 } from "@ant-design/icons";
 import imageCompression from "browser-image-compression";
 import pLimit from "p-limit";
-import { createClient } from "../../lib/supabase/client"; // adjust to your browser client helper
+import { createClient } from "../../../lib/supabase/client"; // adjust to your browser client helper
 import { cn } from "@/lib/utils";
 
 // Client-side image uploader for the product form. Files go straight to

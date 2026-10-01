@@ -11,7 +11,7 @@
 // returns a safe empty result instead of crashing the page.
 
 import { requireRole } from "@/lib/auth/server";
-import { createClient } from "@/lib/supabase/server"; // adjust to your server client helper
+import { createClient } from "@/lib/supabase/server";
 
 const MISSING_CODES = new Set(["PGRST205", "42P01"]);
 
@@ -60,8 +60,8 @@ export type ProductVariant = {
   id: string;
   name: string;
   sku: string;
-  price: number; // USD
-  salePrice: number | null; // USD
+  price: number;
+  salePrice: number | null;
   saleStartsAt: string | null;
   saleEndsAt: string | null;
   stock: number;
@@ -176,7 +176,6 @@ export async function listProducts(params: {
     return {
       id: row.id,
       name: row.name,
-      // slug: row.slug,
       category: row.category,
       status: row.status,
       featured: !!row.featured,
@@ -233,7 +232,6 @@ export async function getProductById(
   return {
     id: data.id,
     name: data.name,
-    // slug: data.slug,
     description: data.description ?? "",
     shortDescription: data.short_description ?? "",
     tagline: data.tagline ?? [],

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { listProducts } from "@/lib/admin/product-queries";
 import { getCurrencyContext } from "@/lib/rates";
-import { ProductFilters } from "../../../components/products/product-filters";
-import { ProductTable } from "../../../components/products/product-table";
+import { ProductFilters } from "../../../components/admin/products/product-filters";
+import { ProductTable } from "../../../components/admin/products/product-table";
 import type { ProductStatus } from "@/lib/admin/product-queries";
 
 export const metadata: Metadata = {
