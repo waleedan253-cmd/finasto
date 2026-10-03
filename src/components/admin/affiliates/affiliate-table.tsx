@@ -82,22 +82,36 @@ export function AffiliateTable({
             {item.email}
           </p>
           {!item.profileComplete && <ProfileIncompleteHint />}
+          {!item.bankComplete && <BankMissingHint />}
         </div>
       ),
     },
     {
       title: "Stockist",
       dataIndex: "stockistName",
+
       render: (_, item) => <StockistCell item={item} />,
+    },
+    {
+      title: "Commission",
+      dataIndex: "commissionPercent",
+      // align: "right",
+      render: (_, item) => (
+        <span className="font-sans text-[13px] tabular-nums text-espresso">
+          {item.commissionPercent}%
+        </span>
+      ),
     },
     {
       title: "Status",
       dataIndex: "status",
+      width: 120,
       render: (_, item) => <AffiliateStatusBadge status={item.status} />,
     },
     {
       title: "Updated",
       dataIndex: "updatedAt",
+      width: 120,
       render: (_, item) => (
         <div>
           <p className="font-sans text-[13px] text-espresso/80">
@@ -112,7 +126,7 @@ export function AffiliateTable({
       ),
     },
     {
-      title: "",
+      title: "Actions",
       key: "actions",
       align: "right",
       render: (_, item) => (
@@ -164,6 +178,17 @@ function ProfileIncompleteHint() {
     <Tooltip title="The affiliate hasn't completed their profile (phone, country) yet">
       <span className="mt-0.5 inline-block font-sans text-[11px] text-warm-gray">
         Profile incomplete
+      </span>
+    </Tooltip>
+  );
+}
+
+// Shown until the affiliate saves their bank details from their dashboard.
+function BankMissingHint() {
+  return (
+    <Tooltip title="The affiliate hasn't added their bank details yet">
+      <span className="mt-0.5 block font-sans text-[11px] text-warm-gray">
+        Bank details missing
       </span>
     </Tooltip>
   );
@@ -306,6 +331,7 @@ function AffiliateCard({
             {item.email}
           </p>
           {!item.profileComplete && <ProfileIncompleteHint />}
+          {!item.bankComplete && <BankMissingHint />}
         </div>
         <RowActions item={item} onDelete={onDelete} />
       </div>
@@ -318,6 +344,10 @@ function AffiliateCard({
         <dt className="text-warm-gray">Stockist</dt>
         <dd className="text-right text-espresso">
           <StockistCell item={item} />
+        </dd>
+        <dt className="text-warm-gray">Commission</dt>
+        <dd className="text-right tabular-nums text-espresso">
+          {item.commissionPercent}%
         </dd>
         <dt className="text-warm-gray">Updated</dt>
         <dd className="text-right text-espresso/80">

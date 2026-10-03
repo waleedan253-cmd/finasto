@@ -8,8 +8,8 @@ import {
   Inbox,
   Boxes,
   BarChart3,
-  Settings,
   type LucideIcon,
+  Megaphone,
 } from "lucide-react";
 
 export type AdminNavItem = { label: string; href: string; icon: LucideIcon };
@@ -24,7 +24,7 @@ export const adminNav: AdminNavItem[] = [
   { label: "Requests", href: "/admin/requests", icon: Inbox },
   { label: "Inventory", href: "/admin/inventory", icon: Boxes },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
-  { label: "Settings", href: "/admin/settings", icon: Settings },
+  { label: "Announcement", href: "/admin/announcement", icon: Megaphone },
 ];
 
 export function isNavActive(pathname: string, href: string) {

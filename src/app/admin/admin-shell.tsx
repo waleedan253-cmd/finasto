@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { AdminSidebar } from "./admin-sidebar";
 import { CurrencyMenu } from "./currency-menu";
 import { adminNav, isNavActive } from "./admin-nav";
+import { NotificationBell } from "@/components/admin/layout/notification-bell";
 
 export function AdminShell({
   name,
@@ -77,6 +78,7 @@ export function AdminShell({
 
           <div className="flex shrink-0 items-center gap-3">
             <CurrencyMenu />
+            <NotificationBell />
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-espresso font-sans text-[12px] font-medium text-cream">
                 {initials}

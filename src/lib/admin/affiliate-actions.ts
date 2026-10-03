@@ -34,6 +34,7 @@ const affiliateInputSchema = z.object({
   stockistId: z.string().uuid().nullable(), // optional: null = unassigned
   notes: z.string().trim().max(2000).nullable(),
   status: z.enum(["active", "inactive"]), // "deleted" is a separate action
+  commissionPercent: z.number().finite().min(0).max(100),
 });
 
 export type AffiliateInput = z.infer<typeof affiliateInputSchema>;
@@ -120,6 +121,7 @@ export async function createAffiliate(
       stockist_id: data.stockistId,
       notes: data.notes,
       status: data.status,
+      commission_percent: data.commissionPercent,
     })
     .select("id")
     .single();
@@ -191,7 +193,8 @@ export async function inviteAffiliateUser(
   const { data: invited, error: inviteError } =
     await admin.auth.admin.inviteUserByEmail(affiliate.email, {
       data: { name: affiliate.name }, // display only, never trusted for access
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+      //   redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/accept`,
     });
 
   if (inviteError || !invited.user) {
@@ -304,6 +307,7 @@ export async function updateAffiliate(
       stockist_id: data.stockistId,
       notes: data.notes,
       status: data.status,
+      commission_percent: data.commissionPercent,
     })
     .eq("id", id);
 

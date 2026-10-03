@@ -9,6 +9,7 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
   Space,
@@ -45,6 +46,7 @@ type FormValues = {
   stockistId?: string; // undefined = unassigned (converted to null on save)
   status: AffiliateStatus;
   notes: string;
+  commissionPercent: number;
 };
 
 const FORM_FIELDS: (keyof FormValues)[] = [
@@ -53,6 +55,7 @@ const FORM_FIELDS: (keyof FormValues)[] = [
   "stockistId",
   "status",
   "notes",
+  "commissionPercent",
 ];
 
 const trimOrNull = (s?: string) => (s && s.trim() !== "" ? s.trim() : null);
@@ -93,6 +96,7 @@ export function AffiliateForm({
     stockistId: affiliate?.stockistId ?? undefined,
     status: affiliate?.status ?? "active",
     notes: affiliate?.notes ?? "",
+    commissionPercent: affiliate?.commissionPercent ?? 10,
   };
 
   function handleFinish(values: FormValues) {
@@ -104,6 +108,7 @@ export function AffiliateForm({
       stockistId: values.stockistId ?? null, // cleared Select => unassigned
       notes: trimOrNull(values.notes),
       status: values.status,
+      commissionPercent: values.commissionPercent ?? 0,
     };
 
     startTransition(async () => {
@@ -207,6 +212,24 @@ export function AffiliateForm({
               </Form.Item>
 
               <Form.Item
+                label="Commission %"
+                name="commissionPercent"
+                rules={[
+                  { required: true, message: "Enter a commission percentage" },
+                ]}
+                extra="The share of each sale this affiliate earns."
+              >
+                <InputNumber
+                  min={0}
+                  max={100}
+                  step={0.5}
+                  precision={2}
+                  suffix="%"
+                  className="!w-full"
+                />
+              </Form.Item>
+
+              <Form.Item
                 label="Stockist"
                 name="stockistId"
                 extra="Optional. Leave empty to keep this affiliate unassigned."
@@ -242,6 +265,54 @@ export function AffiliateForm({
                     value={affiliate.region}
                   />
                 </dl>
+              </Card>
+            )}
+
+            {mode === "edit" && affiliate && (
+              <Card
+                title="Bank details"
+                extra={
+                  <span className="text-[13px] text-neutral-500">
+                    Filled in by the affiliate, read-only here
+                  </span>
+                }
+              >
+                {affiliate.bankDetails ? (
+                  <dl className="grid grid-cols-1 gap-3 text-[14px] sm:grid-cols-2">
+                    <ProfileField
+                      label="Account holder"
+                      value={affiliate.bankDetails.accountHolderName}
+                    />
+                    <ProfileField
+                      label="Bank name"
+                      value={affiliate.bankDetails.bankName}
+                    />
+                    <ProfileField
+                      label="Bank country"
+                      value={affiliate.bankDetails.bankCountry}
+                    />
+                    <ProfileField
+                      label="Account / IBAN"
+                      value={affiliate.bankDetails.accountMasked}
+                    />
+                    <ProfileField
+                      label="SWIFT / BIC"
+                      value={affiliate.bankDetails.swiftBic}
+                    />
+                    <ProfileField
+                      label="Routing code"
+                      value={affiliate.bankDetails.routingCode}
+                    />
+                    <ProfileField
+                      label="Payout currency"
+                      value={affiliate.bankDetails.payoutCurrency}
+                    />
+                  </dl>
+                ) : (
+                  <p className="text-[14px] text-neutral-400">
+                    Not provided yet
+                  </p>
+                )}
               </Card>
             )}
 

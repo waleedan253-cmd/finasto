@@ -35,6 +35,17 @@ export type AffiliateStatus = "active" | "inactive";
 // "all" = every non-deleted affiliate, "unassigned" = no stockist,
 // otherwise a stockist id.
 export type AffiliateStockistFilter = "all" | "unassigned" | (string & {});
+// Bank details as the admin sees them: the account number is masked, so
+// the full number never reaches the browser.
+export type AffiliateBankDetails = {
+  accountHolderName: string;
+  bankName: string;
+  bankCountry: string;
+  accountMasked: string; // e.g. "•••• 4821"
+  swiftBic: string | null;
+  routingCode: string | null;
+  payoutCurrency: string;
+};
 
 export type AffiliateListItem = {
   id: string;
@@ -45,6 +56,8 @@ export type AffiliateListItem = {
   stockistName: string | null; // null = Unassigned
   hasAccount: boolean; // true once profile_id is set (invite succeeded)
   profileComplete: boolean; // phone + country filled in by the affiliate
+  commissionPercent: number;
+  bankComplete: boolean; // affiliate has saved bank details
   updatedAt: string;
 };
 
@@ -68,6 +81,9 @@ export type AffiliateDetail = {
   notes: string | null;
   hasAccount: boolean;
   profileComplete: boolean;
+  commissionPercent: number;
+  bankDetails: AffiliateBankDetails | null;
+  bankComplete: boolean;
   // Safe zeros until the Orders section exists.
   totalSales: number; // USD
   totalCommission: number; // USD
@@ -94,6 +110,16 @@ function embeddedStockistName(value: unknown): string | null {
 
 // Commas, parentheses and wildcards would break PostgREST's .or() syntax.
 const cleanSearch = (s: string) => s.replace(/[,()%*\\]/g, " ").trim();
+// An embedded relation can come back as an object or a one-element array.
+function embeddedOne<T>(value: unknown): T | null {
+  const first = Array.isArray(value) ? value[0] : value;
+  return (first as T | null | undefined) ?? null;
+}
+
+const maskAccount = (value: string) => {
+  const v = value.replace(/\s+/g, "");
+  return v.length <= 4 ? "••••" : `•••• ${v.slice(-4)}`;
+};
 
 /* ------------------------------------------------------------------ */
 /* List                                                                 */
@@ -120,7 +146,7 @@ export async function listAffiliates(params: {
   let query = supabase
     .from("affiliates")
     .select(
-      "id, name, email, phone, country, status, stockist_id, profile_id, updated_at, stockists ( name )",
+      "id, name, email, phone, country, status, stockist_id, profile_id, commission_percent, updated_at, stockists ( name ), affiliate_bank_details ( affiliate_id )",
       { count: "exact" },
     )
     .neq("status", "deleted") // soft-deleted rows never appear in the list
@@ -158,6 +184,8 @@ export async function listAffiliates(params: {
     stockistName: embeddedStockistName(row.stockists),
     hasAccount: row.profile_id != null,
     profileComplete: isProfileComplete(row),
+    commissionPercent: num(row.commission_percent),
+    bankComplete: embeddedOne(row.affiliate_bank_details) !== null,
     updatedAt: row.updated_at,
   }));
 
@@ -177,7 +205,7 @@ export async function getAffiliateById(
   const { data, error } = await supabase
     .from("affiliates")
     .select(
-      "id, name, email, phone, country, region, status, stockist_id, profile_id, notes, created_at, updated_at, stockists ( name )",
+      "id, name, email, phone, country, region, status, stockist_id, profile_id, commission_percent, notes, created_at, updated_at, stockists ( name ), affiliate_bank_details ( account_holder_name, bank_name, bank_country, account_number_or_iban, swift_bic, routing_code, payout_currency )",
     )
     .eq("id", id)
     .neq("status", "deleted")
@@ -188,6 +216,15 @@ export async function getAffiliateById(
     throw new Error(`Failed to load affiliate: ${error.message}`);
   }
   if (!data) return null;
+  const bank = embeddedOne<{
+    account_holder_name: string;
+    bank_name: string;
+    bank_country: string;
+    account_number_or_iban: string;
+    swift_bic: string | null;
+    routing_code: string | null;
+    payout_currency: string;
+  }>(data.affiliate_bank_details);
 
   return {
     id: data.id,
@@ -202,6 +239,19 @@ export async function getAffiliateById(
     notes: data.notes,
     hasAccount: data.profile_id != null,
     profileComplete: isProfileComplete(data),
+    commissionPercent: num(data.commission_percent),
+    bankDetails: bank
+      ? {
+          accountHolderName: bank.account_holder_name,
+          bankName: bank.bank_name,
+          bankCountry: bank.bank_country,
+          accountMasked: maskAccount(bank.account_number_or_iban),
+          swiftBic: bank.swift_bic,
+          routingCode: bank.routing_code,
+          payoutCurrency: bank.payout_currency,
+        }
+      : null,
+    bankComplete: bank !== null,
     totalSales: num(0), // populated once Orders exists
     totalCommission: num(0), // populated once Orders exists
     createdAt: data.created_at,
