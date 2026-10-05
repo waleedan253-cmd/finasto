@@ -9,7 +9,7 @@ export const roleHome: Record<Role, string> = {
 // Flip to true as each portal gets built
 export const portalEnabled: Record<Role, boolean> = {
   admin: true,
-  affiliate: false,
+  affiliate: true,
   stockist: false,
 };
 

@@ -19,6 +19,7 @@ type CartContextValue = {
   addItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
+  clearCart: () => void;
 };
 
 const STORAGE_KEY = "finasto-cart";
@@ -81,7 +82,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   function removeItem(productId: string) {
     setLines((prev) => prev.filter((l) => l.productId !== productId));
   }
-
+  function clearCart() {
+    setLines([]);
+  }
   const count = lines.reduce((sum, l) => sum + l.quantity, 0);
 
   return (
@@ -95,6 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addItem,
         setQuantity,
         removeItem,
+        clearCart,
       }}
     >
       {children}

@@ -20,11 +20,12 @@ export const adminNav: AdminNavItem[] = [
   { label: "Stockists", href: "/admin/stockists", icon: Store },
   { label: "Affiliates", href: "/admin/affiliates", icon: Users },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Inventory", href: "/admin/inventory", icon: Boxes },
   { label: "Commissions & Payouts", href: "/admin/payouts", icon: Wallet },
   { label: "Requests", href: "/admin/requests", icon: Inbox },
-  { label: "Inventory", href: "/admin/inventory", icon: Boxes },
-  { label: "Reports", href: "/admin/reports", icon: BarChart3 },
   { label: "Announcement", href: "/admin/announcement", icon: Megaphone },
+
+  { label: "Reports", href: "/admin/reports", icon: BarChart3 },
 ];
 
 export function isNavActive(pathname: string, href: string) {

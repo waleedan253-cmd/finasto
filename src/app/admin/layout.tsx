@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/server";
-import { AdminShell } from "../admin/admin-shell";
+import { AdminShell } from "./admin-shell";
 
 export const metadata: Metadata = {
   title: "Admin — Finasto",
