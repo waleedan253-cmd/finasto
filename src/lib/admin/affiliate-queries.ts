@@ -35,13 +35,13 @@ export type AffiliateStatus = "active" | "inactive";
 // "all" = every non-deleted affiliate, "unassigned" = no stockist,
 // otherwise a stockist id.
 export type AffiliateStockistFilter = "all" | "unassigned" | (string & {});
-// Bank details as the admin sees them: the account number is masked, so
-// the full number never reaches the browser.
+// Bank details as the admin sees them. The full account number is
+// included because the admin pays out manually.
 export type AffiliateBankDetails = {
   accountHolderName: string;
   bankName: string;
   bankCountry: string;
-  accountMasked: string; // e.g. "•••• 4821"
+  accountNumber: string;
   swiftBic: string | null;
   routingCode: string | null;
   payoutCurrency: string;
@@ -115,11 +115,6 @@ function embeddedOne<T>(value: unknown): T | null {
   const first = Array.isArray(value) ? value[0] : value;
   return (first as T | null | undefined) ?? null;
 }
-
-const maskAccount = (value: string) => {
-  const v = value.replace(/\s+/g, "");
-  return v.length <= 4 ? "••••" : `•••• ${v.slice(-4)}`;
-};
 
 /* ------------------------------------------------------------------ */
 /* List                                                                 */
@@ -245,7 +240,7 @@ export async function getAffiliateById(
           accountHolderName: bank.account_holder_name,
           bankName: bank.bank_name,
           bankCountry: bank.bank_country,
-          accountMasked: maskAccount(bank.account_number_or_iban),
+          accountNumber: bank.account_number_or_iban,
           swiftBic: bank.swift_bic,
           routingCode: bank.routing_code,
           payoutCurrency: bank.payout_currency,

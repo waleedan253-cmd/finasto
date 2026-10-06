@@ -10,6 +10,7 @@
 // payment_status always starts 'pending' and can only become 'paid'
 // via confirm_order_payment() (admin-only) — never set here.
 
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrencyContext } from "@/lib/rates";
@@ -173,27 +174,29 @@ export async function createOrder(
   // 5) Write the order. No stock decrement here — that happens once
   //    payment is confirmed, so an abandoned pending order never locks
   //    inventory away from other customers.
-  const { data: order, error: orderError } = await supabase
-    .from("orders")
-    .insert({
-      order_number: trackingCode,
-      customer_name: data.customerName,
-      customer_email: data.customerEmail,
-      status: "pending",
-      payment_status: "pending",
-      source_type: sourceType,
-      affiliate_id: referral?.affiliateProfileId ?? null,
-      stockist_id: referral?.stockistProfileId ?? null,
-      affiliate_commission_percent: referral?.commissionPercent ?? null,
-      stockist_profit_percent: referral?.stockistProfitPercent ?? null,
-      order_currency: converted.currency,
-      total_amount: converted.amount,
-      exchange_rate_at_order: exchangeRate,
-    })
-    .select("id")
-    .single();
+  // The id is created here instead of read back from the insert. A guest
+  // has no permission to read orders, so ".select()" after the insert is
+  // what caused "new row violates row-level security policy".
+  const orderId = randomUUID();
 
-  if (orderError || !order) {
+  const { error: orderError } = await supabase.from("orders").insert({
+    id: orderId,
+    order_number: trackingCode,
+    customer_name: data.customerName,
+    customer_email: data.customerEmail,
+    status: "pending",
+    payment_status: "pending",
+    source_type: sourceType,
+    affiliate_id: referral?.affiliateProfileId ?? null,
+    stockist_id: referral?.stockistProfileId ?? null,
+    affiliate_commission_percent: referral?.commissionPercent ?? null,
+    stockist_profit_percent: referral?.stockistProfitPercent ?? null,
+    order_currency: converted.currency,
+    total_amount: converted.amount,
+    exchange_rate_at_order: exchangeRate,
+  });
+
+  if (orderError) {
     return {
       success: false,
       error: `Could not create your order: ${orderError?.message}`,
@@ -202,7 +205,7 @@ export async function createOrder(
 
   const { error: itemsError } = await supabase.from("order_items").insert(
     resolvedLines.map((l) => ({
-      order_id: order.id,
+      order_id: orderId,
       product_id: l.productId,
       product_name: l.productName,
       variant_id: l.variantId,
@@ -220,5 +223,5 @@ export async function createOrder(
     };
   }
 
-  return { success: true, orderId: order.id, trackingCode };
+  return { success: true, orderId, trackingCode };
 }

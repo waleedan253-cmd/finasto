@@ -293,7 +293,7 @@ export function AffiliateForm({
                     />
                     <ProfileField
                       label="Account / IBAN"
-                      value={affiliate.bankDetails.accountMasked}
+                      value={affiliate.bankDetails.accountNumber}
                     />
                     <ProfileField
                       label="SWIFT / BIC"
