@@ -357,3 +357,297 @@ commit;
 select column_name, generation_expression
 from information_schema.columns
 where table_name = 'orders' and column_name = 'total_base';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ════════════════════════════════════════════════════════════════
+-- ORDER LIFECYCLE (payout-ready)
+-- Run AFTER the orders reference schema. Safe to re-run.
+--
+-- Lifecycle after this migration:
+--   payment_status : pending -> paid  (confirm_order_payment, admin now,
+--                                      payment gateway webhook later)
+--                    paid -> refunded (refund_order, admin)
+--   status         : pending -> shipped -> delivered   (or cancelled)
+--   Shipping starts the REFUND WINDOW (24 hours by default). An order
+--   becomes payable for an affiliate once: paid, shipped, the window has
+--   passed, and it was not refunded or cancelled.
+-- ════════════════════════════════════════════════════════════════
+
+begin;
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 1: lifecycle columns on orders
+-- ════════════════════════════════════════════════════════════════
+alter table public.orders
+  add column if not exists paid_at              timestamptz,
+  add column if not exists payment_method       text,
+  add column if not exists shipped_at           timestamptz,
+  add column if not exists refund_window_ends_at timestamptz,
+  add column if not exists refunded_at          timestamptz,
+  add column if not exists refund_reason        text;
+
+alter table public.orders drop constraint if exists orders_payment_method_check;
+alter table public.orders add constraint orders_payment_method_check
+  check (payment_method is null or payment_method in ('manual', 'gateway'));
+
+-- Payout queries look at paid + shipped orders per affiliate.
+create index if not exists orders_payable_idx
+  on public.orders (affiliate_id, refund_window_ends_at)
+  where payment_status = 'paid' and shipped_at is not null;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 2: refund window setting (one row, admin-editable)
+-- The window length lives here, not in code, so it can be changed
+-- later (for example to 72 hours for international parcels) without a
+-- deploy. Each order keeps the end time it was given when it shipped.
+-- ════════════════════════════════════════════════════════════════
+create table if not exists public.order_settings (
+  id                  boolean primary key default true check (id),
+  refund_window_hours integer not null default 24
+                        check (refund_window_hours between 0 and 8760),
+  updated_at          timestamptz not null default now()
+);
+
+insert into public.order_settings (id) values (true)
+on conflict (id) do nothing;
+
+drop trigger if exists order_settings_touch_updated_at on public.order_settings;
+create trigger order_settings_touch_updated_at
+  before update on public.order_settings
+  for each row execute function public.touch_updated_at();
+
+alter table public.order_settings enable row level security;
+
+drop policy if exists "admin manages order settings" on public.order_settings;
+create policy "admin manages order settings"
+  on public.order_settings for all
+  using (public.is_admin())
+  with check (public.is_admin());
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 3: allow refunds after fulfillment
+-- The old guard rejected ANY order whose payment_status was not 'paid'
+-- once it had moved past 'pending', which would have blocked refunding
+-- a shipped order. 'refunded' is now allowed too.
+-- ════════════════════════════════════════════════════════════════
+create or replace function public.enforce_order_payment_before_fulfillment()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.status <> 'pending'
+     and new.status <> 'cancelled'
+     and new.payment_status not in ('paid', 'refunded')
+  then
+    raise exception 'Order cannot move to "%" until payment is confirmed', new.status;
+  end if;
+  return new;
+end;
+$$;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 4: automatic timestamps
+-- A trigger (not app code) stamps the lifecycle, so it is correct
+-- however the admin changes the order, and the future payment webhook
+-- gets it for free.
+--   paid_at              when payment_status becomes 'paid'
+--   shipped_at           when status first becomes shipped/delivered
+--   refund_window_ends_at  shipped_at + refund_window_hours
+--   refunded_at          when payment_status becomes 'refunded'
+-- Once shipped, an order cannot go back to pending/paid, so the
+-- refund window cannot be restarted or dodged.
+-- ════════════════════════════════════════════════════════════════
+create or replace function public.stamp_order_lifecycle()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_hours integer;
+begin
+  if new.payment_status = 'paid' and old.payment_status is distinct from 'paid' then
+    new.paid_at := coalesce(new.paid_at, now());
+  end if;
+
+  if old.shipped_at is not null and new.status in ('pending', 'paid') then
+    raise exception 'A shipped order cannot go back to "%"', new.status;
+  end if;
+
+  if new.status in ('shipped', 'delivered') and new.shipped_at is null then
+    select refund_window_hours into v_hours
+    from public.order_settings
+    where id;
+
+    new.shipped_at := now();
+    new.refund_window_ends_at :=
+      new.shipped_at + make_interval(hours => coalesce(v_hours, 24));
+  end if;
+
+  if new.payment_status = 'refunded' and old.payment_status is distinct from 'refunded' then
+    new.refunded_at := coalesce(new.refunded_at, now());
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists orders_stamp_lifecycle on public.orders;
+create trigger orders_stamp_lifecycle
+  before update on public.orders
+  for each row execute function public.stamp_order_lifecycle();
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 5: backfill orders that were paid or shipped before this
+-- migration. The updated_at trigger is switched off for this one
+-- statement so the real "last changed" time is not overwritten.
+-- ════════════════════════════════════════════════════════════════
+alter table public.orders disable trigger orders_touch_updated_at;
+alter table public.orders disable trigger orders_stamp_lifecycle;
+
+update public.orders
+set paid_at        = coalesce(paid_at, updated_at),
+    payment_method = coalesce(payment_method, 'manual')
+where payment_status in ('paid', 'refunded') and paid_at is null;
+
+update public.orders
+set shipped_at = updated_at,
+    refund_window_ends_at = updated_at + interval '24 hours'
+where status in ('shipped', 'delivered') and shipped_at is null;
+
+alter table public.orders enable trigger orders_stamp_lifecycle;
+alter table public.orders enable trigger orders_touch_updated_at;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 6: confirm_order_payment (replaces the old one-argument
+-- version; calls like rpc("confirm_order_payment", { p_order_id })
+-- keep working because the new arguments have defaults).
+--
+-- Callable by an admin now, and by the service-role key later, which
+-- is what the payment gateway webhook will use. The webhook passes
+-- p_method => 'gateway'. Nothing else about orders has to change.
+-- ════════════════════════════════════════════════════════════════
+drop function if exists public.confirm_order_payment(uuid);
+
+create or replace function public.confirm_order_payment(
+  p_order_id uuid,
+  p_method   text default 'manual'
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin()
+     and coalesce(auth.role(), '') <> 'service_role'
+  then
+    raise exception 'Not authorized';
+  end if;
+
+  if p_method not in ('manual', 'gateway') then
+    raise exception 'Invalid payment method';
+  end if;
+
+  update public.orders
+  set payment_status = 'paid',
+      payment_method = p_method
+  where id = p_order_id and payment_status = 'pending';
+
+  if not found then
+    raise exception 'Order not found or payment already processed';
+  end if;
+end;
+$$;
+
+revoke all on function public.confirm_order_payment(uuid, text) from public, anon;
+grant execute on function public.confirm_order_payment(uuid, text)
+  to authenticated, service_role;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- SECTION 7: refund_order (admin only)
+-- Marks a PAID order as refunded. A refunded order is never payable
+-- to an affiliate. (If the order was already included in a paid
+-- payout, that is handled by the payout flow as a negative
+-- adjustment, never by editing history.)
+-- ════════════════════════════════════════════════════════════════
+create or replace function public.refund_order(
+  p_order_id uuid,
+  p_reason   text default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'Not authorized';
+  end if;
+
+  update public.orders
+  set payment_status = 'refunded',
+      refund_reason  = nullif(btrim(p_reason), '')
+  where id = p_order_id and payment_status = 'paid';
+
+  if not found then
+    raise exception 'Order not found or not in a refundable state';
+  end if;
+end;
+$$;
+
+revoke all on function public.refund_order(uuid, text) from public, anon;
+grant execute on function public.refund_order(uuid, text) to authenticated;
+
+commit;
+
+
+-- ════════════════════════════════════════════════════════════════
+-- VERIFICATION (run one at a time, optional)
+-- ════════════════════════════════════════════════════════════════
+-- select * from public.order_settings;
+--
+-- select order_number, status, payment_status, paid_at, shipped_at,
+--        refund_window_ends_at, refunded_at
+-- from public.orders order by created_at desc limit 10;
+
+
+
+
+
+create or replace function public.get_min_payout_usd()
+returns numeric
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select min_payout_usd from public.order_settings where id;
+$$;
+
+revoke all on function public.get_min_payout_usd() from public, anon;
+grant execute on function public.get_min_payout_usd() to authenticated;

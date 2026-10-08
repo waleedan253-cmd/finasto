@@ -1,38 +1,55 @@
-import { LayoutDashboard } from "lucide-react";
-import { requireRole } from "@/lib/auth/server";
+// src/app/affiliate/page.tsx
+//
+// The affiliate dashboard. Replaces the "coming soon" placeholder.
+// Server component: loads everything in one call, then hands each piece
+// to its component. Only the chart runs in the browser.
 
-// Placeholder so the affiliate shell has something to render. The real
-// Overview (visitors, orders, refunds) replaces this once the referral
-// link tracking and Orders sections exist.
+import { getMyDashboard } from "@/lib/affiliate/dashboard-queries";
+import StatCards from "@/components/affiliate/dashboard/stat-cards";
+import PayoutCallout from "@/components/affiliate/dashboard/payout-callout";
+import OrdersChart from "@/components/affiliate/dashboard/orders-chart";
+import RecentOrders from "@/components/affiliate/dashboard/recent-orders";
+
+// Always show fresh numbers; never serve a cached copy of someone's earnings.
+export const dynamic = "force-dynamic";
 
 export default async function AffiliateDashboardPage() {
-  const { name } = await requireRole("affiliate");
+  let dashboard: Awaited<ReturnType<typeof getMyDashboard>>;
+
+  try {
+    dashboard = await getMyDashboard();
+  } catch (error) {
+    // Log the real reason on the server; show the affiliate something useful.
+    console.error("Affiliate dashboard failed to load:", error);
+
+    return (
+      <main className="space-y-4">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+          Dashboard
+        </h1>
+        <div
+          role="alert"
+          className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300"
+        >
+          We couldn't load your dashboard. Refresh the page to try again. If it
+          keeps happening, contact support.
+        </div>
+      </main>
+    );
+  }
+
+  const { stats, earnings, recentOrders } = dashboard;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-display text-[28px] leading-tight text-espresso">
-          Welcome{name ? `, ${name}` : ""}
-        </h1>
-        <p className="mt-1 font-sans text-[14px] text-warm-gray">
-          Your affiliate dashboard is being set up.
-        </p>
-      </div>
+    <main className="space-y-6">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+        Dashboard
+      </h1>
 
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-strong bg-white py-16 text-center">
-        <LayoutDashboard
-          className="h-6 w-6 text-warm-gray"
-          strokeWidth={1.4}
-          aria-hidden="true"
-        />
-        <p className="mt-3 font-sans text-[14px] text-espresso">
-          Overview coming soon
-        </p>
-        <p className="mt-1 max-w-xs font-sans text-[13px] text-warm-gray">
-          Visitors, orders and refunds from your referral links will appear
-          here.
-        </p>
-      </div>
-    </div>
+      <PayoutCallout availableUsd={earnings.available_usd} />
+      <StatCards stats={stats} earnings={earnings} />
+      <OrdersChart daily={stats.daily} />
+      <RecentOrders orders={recentOrders} />
+    </main>
   );
 }

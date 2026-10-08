@@ -25,7 +25,12 @@ export type NotificationType =
   | "low_stock"
   | "new_order"
   | "withdrawal_request"
-  | "stockist_request";
+  | "stockist_request"
+  | "payout_requested"
+  | "payout_approved"
+  | "payout_rejected"
+  | "payout_paid"
+  | "affiliate_new_order";
 
 export type Notification = {
   id: string;
@@ -80,6 +85,7 @@ export async function listNotifications(): Promise<Notification[]> {
   const { data, error } = await supabase
     .from("notifications")
     .select("id, type, title, message, link, is_read, created_at")
+    .is("recipient_id", null)
     .order("created_at", { ascending: false })
     .limit(BELL_LIMIT);
 
@@ -106,7 +112,8 @@ export async function getUnreadNotificationCount(): Promise<number> {
   const { count, error } = await supabase
     .from("notifications")
     .select("id", { count: "exact", head: true })
-    .eq("is_read", false);
+    .eq("is_read", false)
+    .is("recipient_id", null);
 
   if (error) {
     if (isMissingTable(error)) return 0;
@@ -131,7 +138,8 @@ export async function markAllNotificationsRead(): Promise<void> {
   await supabase
     .from("notifications")
     .update({ is_read: true })
-    .eq("is_read", false);
+    .eq("is_read", false)
+    .is("recipient_id", null);
 }
 /* ------------------------------------------------------------------ */
 /* Clear                                                                */
@@ -150,6 +158,6 @@ export async function clearAllNotifications(): Promise<void> {
   const { error } = await supabase
     .from("notifications")
     .delete()
-    .not("id", "is", null);
+    .is("recipient_id", null);
   if (error) throw new Error(`Failed to clear notifications: ${error.message}`);
 }

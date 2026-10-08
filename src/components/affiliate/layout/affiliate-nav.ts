@@ -1,6 +1,7 @@
 import {
   LayoutDashboard,
   Link2,
+  ShoppingBag,
   Wallet,
   Receipt,
   Settings,
@@ -20,6 +21,7 @@ export type AffiliateNavItem = {
 export const affiliateNav: AffiliateNavItem[] = [
   { label: "Dashboard", href: "/affiliate", icon: LayoutDashboard },
   { label: "Referral Links", href: "/affiliate/links", icon: Link2 },
+  { label: "Orders", href: "/affiliate/orders", icon: ShoppingBag },
   { label: "Payout Requests", href: "/affiliate/payouts", icon: Wallet },
   { label: "Accounts", href: "/affiliate/accounts", icon: Receipt },
   { label: "Settings", href: "/affiliate/settings", icon: Settings },

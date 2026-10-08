@@ -9,6 +9,7 @@ import { affiliateNav, isNavActive } from "./affiliate-nav";
 // Reused from the admin side, not copied. If your CurrencyMenu lives in a
 // different folder, only this import path needs to change.
 import { CurrencyMenu } from "../../../app/admin/currency-menu";
+import { AffiliateNotificationBell } from "./notification-bell";
 
 // Same layout as admin-shell.tsx: fixed 260px sidebar on desktop, a
 // slide-in drawer with overlay on mobile, and a sticky top bar showing
@@ -84,6 +85,7 @@ export function AffiliateShell({
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
+            <AffiliateNotificationBell />
             <CurrencyMenu />
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-espresso font-sans text-[12px] font-medium text-cream">
