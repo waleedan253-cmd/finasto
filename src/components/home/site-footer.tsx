@@ -23,11 +23,11 @@ export function SiteFooter() {
               aria-label="Finasto home"
             >
               <Image
-                src="/brand/finasto-logo.png"
+                src="/brand/glossy finasto.png"
                 alt="Finasto"
                 width={140}
                 height={105}
-                className="h-16 w-auto rounded-md bg-cream-soft p-1"
+                className="h-16 w-auto rounded-md  p-1"
               />
             </Link>
           </div>

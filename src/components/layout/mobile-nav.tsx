@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ChevronDown, User, X } from "lucide-react";
 import { activeMarket, primaryNav } from "@/data/site";
 import Image from "next/image";
+import { ThemeToggle } from "../ThemeToggle";
 
 export function MobileNav({
   open,
@@ -121,7 +122,9 @@ export function MobileNav({
                               strokeWidth={1.6}
                             />
                           </button>
-
+                          <div className="hidden sm:block">
+                            <ThemeToggle />
+                          </div>
                           <AnimatePresence initial={false}>
                             {isExpanded && (
                               <motion.ul

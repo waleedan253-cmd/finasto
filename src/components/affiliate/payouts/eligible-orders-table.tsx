@@ -27,7 +27,7 @@ import type {
   EligibleOrder,
 } from "@/lib/affiliate/payout-queries";
 import RequestPayoutDialog from "./request-payout-dialog";
-import { useMarket } from "@/components/providers/market-provider";
+
 import { withApprox, type RateMap } from "@/lib/currency";
 
 const MAX_ORDERS = 200; // same limit as request_payout() in payouts.sql
@@ -50,6 +50,7 @@ type Props = {
   bank: BankSummary | null;
   minPayoutUsd: number;
   rates: RateMap;
+  currency: string;
 };
 
 export default function EligibleOrdersTable({
@@ -58,13 +59,10 @@ export default function EligibleOrdersTable({
   bank,
   minPayoutUsd,
   rates,
+  currency,
 }: Props) {
-  // The currency chosen in the header menu. Amounts stay USD; the chosen
-  // currency is shown beside them as "approx." (same rule as withApprox).
-  const { market } = useMarket();
-  const amount = (n: number) =>
-    withApprox(n, "USD", market.currencyCode, rates);
-
+  // Amounts stay USD; the affiliate's locked currency is shown as "approx."
+  const amount = (n: number) => withApprox(n, "USD", currency, rates);
   const usd = (n: number) => amount(n).original;
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -133,43 +131,103 @@ export default function EligibleOrdersTable({
   return (
     <>
       {/* Earnings cards: 2 per row on phones, 4 on desktop. */}
-      <Row gutter={[12, 12]}>
-        <Col xs={12} lg={6}>
+      {/* Premium Finasto earnings cards */}
+      <Row gutter={[16, 16]}>
+        {/* Available */}
+        <Col xs={24} sm={12} xl={6}>
           <Card
-            size="small"
+            bordered
             style={{
-              backgroundColor: "var(--color-green)",
-              borderColor: "var(--color-green)",
+              background: "linear-gradient(135deg, #F8FBF1 0%, #DCECCF 100%)",
+              borderColor: "#B8D5A7",
+              borderRadius: 16,
+              boxShadow: "0 4px 14px rgba(40, 80, 35, 0.05)",
+              overflow: "hidden",
             }}
+            styles={{ body: { padding: 20 } }}
           >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "#D5E8C6",
+                  color: "#21652D",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
+                }}
+              >
+                <span aria-hidden="true">▣</span>
+              </div>
+
+              <span
+                style={{ color: "#287A45", fontSize: 24 }}
+                aria-hidden="true"
+              >
+                ⌁
+              </span>
+            </div>
             <Statistic
               title={
-                <span style={{ color: "var(--color-white)" }}>Available</span>
+                <span style={{ color: "#52644B", fontWeight: 500 }}>
+                  Available
+                </span>
               }
               value={usd(summary.availableUsd)}
               valueStyle={{
-                fontSize: 18,
-                color: "var(--color-white)",
+                color: "#185526",
+                fontSize: 30,
+                fontWeight: 650,
+                letterSpacing: "-0.8px",
               }}
             />
-
             {amount(summary.availableUsd)?.approx && (
-              <Typography.Text
-                style={{
-                  fontSize: 12,
-                  color: "rgba(255, 255, 255, 0.75)",
-                }}
-              >
+              <Typography.Text style={{ fontSize: 12, color: "#61715A" }}>
                 {amount(summary.availableUsd).approx}
               </Typography.Text>
             )}
-
+            <div style={{ marginTop: 16 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.65)",
+                  border: "1px solid #C6DDB8",
+                  color: "#286437",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#55A85B",
+                  }}
+                />
+                Ready for payout
+              </span>
+            </div>
             {summary.refundAdjustmentsUsd < 0 && (
               <Typography.Text
                 style={{
                   display: "block",
+                  marginTop: 12,
                   fontSize: 12,
-                  color: "rgba(255, 255, 255, 0.75)",
+                  color: "#61715A",
                 }}
               >
                 Includes {usd(summary.refundAdjustmentsUsd)} refund adjustment
@@ -178,97 +236,271 @@ export default function EligibleOrdersTable({
           </Card>
         </Col>
 
-        <Col xs={12} lg={6}>
+        {/* Pending */}
+        <Col xs={24} sm={12} xl={6}>
           <Card
-            size="small"
+            bordered
             style={{
-              backgroundColor: "var(--color-espresso-deep)",
-              borderColor: "var(--color-espresso-deep)",
+              background: "linear-gradient(135deg, #FFFBF5 0%, #FCE5C6 100%)",
+              borderColor: "#E9C99F",
+              borderRadius: 16,
+              boxShadow: "0 4px 14px rgba(120, 75, 30, 0.05)",
+              overflow: "hidden",
             }}
+            styles={{ body: { padding: 20 } }}
           >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "#FBE0BD",
+                  color: "#98501E",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
+                }}
+              >
+                <span aria-hidden="true">◷</span>
+              </div>
+              <span
+                style={{ color: "#C47A32", fontSize: 24 }}
+                aria-hidden="true"
+              >
+                ⌁
+              </span>
+            </div>
             <Statistic
               title={
-                <span style={{ color: "var(--color-white)" }}>Pending</span>
+                <span style={{ color: "#826344", fontWeight: 500 }}>
+                  Pending
+                </span>
               }
               value={usd(summary.pendingUsd)}
               valueStyle={{
-                fontSize: 18,
-                color: "var(--color-white)",
+                color: "#804016",
+                fontSize: 30,
+                fontWeight: 650,
+                letterSpacing: "-0.8px",
               }}
             />
-
             {amount(summary.pendingUsd)?.approx && (
-              <Typography.Text
-                style={{
-                  fontSize: 12,
-                  color: "rgba(255, 255, 255, 0.7)",
-                }}
-              >
+              <Typography.Text style={{ fontSize: 12, color: "#8D755D" }}>
                 {amount(summary.pendingUsd).approx}
               </Typography.Text>
             )}
+            <div style={{ marginTop: 16 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.65)",
+                  border: "1px solid #F0D3AF",
+                  color: "#96521E",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#DC8735",
+                  }}
+                />
+                Processing
+              </span>
+            </div>
           </Card>
         </Col>
 
-        <Col xs={12} lg={6}>
+        {/* In review */}
+        <Col xs={24} sm={12} xl={6}>
           <Card
-            size="small"
+            bordered
             style={{
-              backgroundColor: "var(--color-green-deep)",
-              borderColor: "var(--color-green-deep)",
+              background: "linear-gradient(135deg, #F5FAF6 0%, #D5E9DD 100%)",
+              borderColor: "#ADD2C1",
+              borderRadius: 16,
+              boxShadow: "0 4px 14px rgba(20, 90, 55, 0.05)",
+              overflow: "hidden",
             }}
+            styles={{ body: { padding: 20 } }}
           >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "#CBE5D7",
+                  color: "#145B38",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
+                }}
+              >
+                <span aria-hidden="true">◎</span>
+              </div>
+              <span
+                style={{ color: "#287A45", fontSize: 24 }}
+                aria-hidden="true"
+              >
+                ⌁
+              </span>
+            </div>
             <Statistic
               title={
-                <span style={{ color: "var(--color-white)" }}>In review</span>
+                <span style={{ color: "#527565", fontWeight: 500 }}>
+                  In review
+                </span>
               }
               value={usd(summary.inReviewUsd)}
               valueStyle={{
-                fontSize: 18,
-                color: "var(--color-white)",
+                color: "#14532D",
+                fontSize: 30,
+                fontWeight: 650,
+                letterSpacing: "-0.8px",
               }}
             />
-
             {amount(summary.inReviewUsd)?.approx && (
-              <Typography.Text
-                style={{
-                  fontSize: 12,
-                  color: "rgba(255, 255, 255, 0.7)",
-                }}
-              >
+              <Typography.Text style={{ fontSize: 12, color: "#607B6D" }}>
                 {amount(summary.inReviewUsd).approx}
               </Typography.Text>
             )}
+            <div style={{ marginTop: 16 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.65)",
+                  border: "1px solid #B8DACA",
+                  color: "#246B49",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#39A878",
+                  }}
+                />
+                Under review
+              </span>
+            </div>
           </Card>
         </Col>
 
-        <Col xs={12} lg={6}>
+        {/* Paid */}
+        <Col xs={24} sm={12} xl={6}>
           <Card
-            size="small"
+            bordered
             style={{
-              backgroundColor: "var(--color-espresso)",
-              borderColor: "var(--color-espresso)",
+              background: "linear-gradient(135deg, #FCF6F1 0%, #E6C9B5 100%)",
+              borderColor: "#D6B5A0",
+              borderRadius: 16,
+              boxShadow: "0 4px 14px rgba(90, 50, 30, 0.05)",
+              overflow: "hidden",
             }}
+            styles={{ body: { padding: 20 } }}
           >
-            <Statistic
-              title={<span style={{ color: "var(--color-white)" }}>Paid</span>}
-              value={usd(summary.paidUsd)}
-              valueStyle={{
-                fontSize: 18,
-                color: "var(--color-white)",
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
-            />
-
-            {amount(summary.paidUsd)?.approx && (
-              <Typography.Text
+            >
+              <div
                 style={{
-                  fontSize: 12,
-                  color: "rgba(255, 255, 255, 0.7)",
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  background: "#D8B49B",
+                  color: "#FFFFFF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
                 }}
               >
+                <span aria-hidden="true">✓</span>
+              </div>
+              <span
+                style={{ color: "#89502E", fontSize: 24 }}
+                aria-hidden="true"
+              >
+                ⌁
+              </span>
+            </div>
+            <Statistic
+              title={
+                <span style={{ color: "#82614D", fontWeight: 500 }}>Paid</span>
+              }
+              value={usd(summary.paidUsd)}
+              valueStyle={{
+                color: "#4A2819",
+                fontSize: 30,
+                fontWeight: 650,
+                letterSpacing: "-0.8px",
+              }}
+            />
+            {amount(summary.paidUsd)?.approx && (
+              <Typography.Text style={{ fontSize: 12, color: "#806B5C" }}>
                 {amount(summary.paidUsd).approx}
               </Typography.Text>
             )}
+            <div style={{ marginTop: 16 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.65)",
+                  border: "1px solid #DCC0AB",
+                  color: "#6E4027",
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#89502E",
+                  }}
+                />
+                Completed
+              </span>
+            </div>
           </Card>
         </Col>
       </Row>
@@ -409,6 +641,7 @@ export default function EligibleOrdersTable({
           totalUsd={total}
           bank={bank}
           rates={rates}
+          currency={currency}
         />
       )}
     </>

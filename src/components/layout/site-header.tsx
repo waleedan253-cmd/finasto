@@ -21,6 +21,7 @@ import { useCart } from "@/components/providers/cart-provider";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { Flag } from "@/components/ui/flag";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 /**
  * Primary storefront header. Compacts on scroll (84px -> 64px) with a
@@ -107,7 +108,18 @@ export function SiteHeader() {
               height={120}
               priority
               className={cn(
-                "w-auto transition-[height] duration-300 ease-out",
+                "w-auto transition-[height] duration-300 ease-out dark:hidden",
+                isCompact ? "h-11" : "h-14",
+              )}
+            />
+            <Image
+              src="/brand/glossy finasto.png"
+              alt="Finasto"
+              width={160}
+              height={120}
+              priority
+              className={cn(
+                "hidden w-auto transition-[height] duration-300 ease-out dark:block",
                 isCompact ? "h-11" : "h-14",
               )}
             />
@@ -154,6 +166,9 @@ export function SiteHeader() {
 
           {/* Utility cluster */}
           <div className="flex items-center gap-1 sm:gap-2">
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
             <div ref={marketRef} className="relative block">
               <button
                 type="button"

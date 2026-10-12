@@ -5,8 +5,7 @@
 import { redirect } from "next/navigation";
 import { getMyPaidPayouts } from "@/lib/affiliate/payout-queries";
 import PaidPayoutsList from "@/components/affiliate/accounts/paid-payouts-list";
-import { createClient } from "@/lib/supabase/server";
-import type { RateMap } from "@/lib/currency";
+import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 
 export const metadata = { title: "Accounts" };
 
@@ -18,18 +17,7 @@ export default async function AffiliateAccountsPage() {
   if (!payouts) redirect("/login");
 
   // Exchange rates for the "approx." amounts (display only).
-  const supabase = await createClient();
-  const { data: rateRows } = await supabase
-    .from("currency_rates")
-    .select("currency_code, rate_to_base, updated_at");
-  const rates: RateMap = {};
-  for (const r of rateRows ?? []) {
-    rates[String(r.currency_code).toUpperCase()] = {
-      rateToBase: Number(r.rate_to_base),
-      updatedAt: r.updated_at as string,
-    };
-  }
-
+  const { currency, rates } = await getAffiliateDisplay();
   return (
     <div
       style={{
@@ -46,7 +34,7 @@ export default async function AffiliateAccountsPage() {
         Accounts
       </h1>
 
-      <PaidPayoutsList payouts={payouts} rates={rates} />
+      <PaidPayoutsList payouts={payouts} rates={rates} currency={currency} />
     </div>
   );
 }

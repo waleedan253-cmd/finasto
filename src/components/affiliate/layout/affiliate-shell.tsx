@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AffiliateSidebar } from "./affiliate-sidebar";
 import { affiliateNav, isNavActive } from "./affiliate-nav";
-// Reused from the admin side, not copied. If your CurrencyMenu lives in a
-// different folder, only this import path needs to change.
-import { CurrencyMenu } from "../../../app/admin/currency-menu";
+
 import { AffiliateNotificationBell } from "./notification-bell";
 
 // Same layout as admin-shell.tsx: fixed 260px sidebar on desktop, a
@@ -18,14 +17,19 @@ import { AffiliateNotificationBell } from "./notification-bell";
 export function AffiliateShell({
   name,
   email,
+  profileLocked,
   children,
 }: {
   name: string | null;
   email: string;
+  profileLocked: boolean;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  // Until username, phone and country are saved, only Settings is usable.
+  const needsProfile =
+    !profileLocked && !pathname.startsWith("/affiliate/settings");
   const title =
     affiliateNav.find((i) => isNavActive(pathname, i.href))?.label ??
     "Affiliate";
@@ -86,7 +90,7 @@ export function AffiliateShell({
 
           <div className="flex shrink-0 items-center gap-3">
             <AffiliateNotificationBell />
-            <CurrencyMenu />
+
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-espresso font-sans text-[12px] font-medium text-cream">
                 {initials}
@@ -103,7 +107,27 @@ export function AffiliateShell({
           </div>
         </header>
 
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8">
+          {needsProfile ? (
+            <div className="mx-auto max-w-md rounded-2xl border border-border bg-white p-8 text-center">
+              <h1 className="font-display text-[22px] leading-tight text-espresso">
+                Complete your profile
+              </h1>
+              <p className="mt-3 font-sans text-[14px] leading-relaxed text-warm-gray">
+                Add your username, phone number and country first. Your country
+                decides the currency your prices are shown in.
+              </p>
+              <Link
+                href="/affiliate/settings"
+                className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-espresso px-6 font-sans text-[14px] font-medium text-cream transition-colors hover:bg-espresso-deep"
+              >
+                Go to Settings
+              </Link>
+            </div>
+          ) : (
+            children
+          )}
+        </main>
       </div>
     </div>
   );

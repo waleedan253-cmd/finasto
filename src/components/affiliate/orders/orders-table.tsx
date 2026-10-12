@@ -10,7 +10,7 @@ import {
   OrderStatusBadge,
   PaymentStatusBadge,
 } from "./order-status-badge";
-import { useMarket } from "@/components/providers/market-provider";
+
 import { withApprox, type RateMap } from "@/lib/currency";
 
 // The affiliate's order list: a table on desktop, cards on mobile, same
@@ -39,15 +39,13 @@ const itemsLabel = (count: number) =>
 
 // "approx. PKR 1,200" in the currency chosen in the header menu, or null
 // when it is the same currency or no usable rate exists.
-function useApprox(rates: RateMap) {
-  const { market } = useMarket();
+function makeApprox(rates: RateMap, currency: string) {
   return {
     total: (o: MyOrderRow) =>
-      withApprox(o.totalAmount, o.orderCurrency, market.currencyCode, rates)
-        .approx,
+      withApprox(o.totalAmount, o.orderCurrency, currency, rates).approx,
     commission: (o: MyOrderRow) =>
       hasCommissionAmount(o)
-        ? withApprox(o.commissionUsd, "USD", market.currencyCode, rates).approx
+        ? withApprox(o.commissionUsd, "USD", currency, rates).approx
         : null,
   };
 }
@@ -57,14 +55,16 @@ export function OrdersTable({
   page,
   pageSize,
   rates,
+  currency,
 }: {
   orders: MyOrderRow[];
   page: number;
   pageSize: number;
   rates: RateMap;
+  currency: string;
 }) {
   const startIndex = (page - 1) * pageSize;
-  const approx = useApprox(rates);
+  const approx = makeApprox(rates, currency);
 
   if (orders.length === 0) {
     return (
@@ -203,15 +203,28 @@ export function OrdersTable({
       {/* Mobile cards */}
       <ul className="flex flex-col gap-3 md:hidden">
         {orders.map((order) => (
-          <OrderCard key={order.orderNumber} order={order} rates={rates} />
+          <OrderCard
+            key={order.orderNumber}
+            order={order}
+            rates={rates}
+            currency={currency}
+          />
         ))}
       </ul>
     </>
   );
 }
 
-function OrderCard({ order, rates }: { order: MyOrderRow; rates: RateMap }) {
-  const approx = useApprox(rates);
+function OrderCard({
+  order,
+  rates,
+  currency,
+}: {
+  order: MyOrderRow;
+  rates: RateMap;
+  currency: string;
+}) {
+  const approx = makeApprox(rates, currency);
   return (
     <li className="rounded-2xl border border-border bg-white p-4">
       <div className="flex items-start justify-between gap-2">

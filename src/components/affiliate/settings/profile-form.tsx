@@ -2,19 +2,15 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Alert,
-  AutoComplete,
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  Row,
-  message,
-} from "antd";
+import { Alert, Button, Card, Col, Form, Input, Row, message } from "antd";
 import { Mail } from "lucide-react";
-import { updateMyProfile } from "@/lib/affiliate/settings-actions";
+import {
+  completeMyProfile,
+  updateMyProfile,
+} from "@/lib/affiliate/settings-actions";
+import { PhoneInput, phoneRule } from "@/components/ui/phone-input";
+import { CountrySelect, countryName } from "@/components/ui/country-select";
+import { countryToCurrency } from "@/lib/currency";
 import type { MySettings } from "@/lib/affiliate/settings-queries";
 
 // Profile card on the affiliate Settings page. The affiliate fills in the
@@ -26,31 +22,29 @@ type FormValues = {
   name: string;
   email: string;
   phone: string;
-  country: string;
+  countryCode: string;
   region: string;
 };
 
 const FORM_FIELDS: (keyof FormValues)[] = [
   "name",
   "phone",
-  "country",
+  "countryCode",
   "region",
 ];
-
-const filterOption = (
-  input: string,
-  option?: { value?: string | number | null },
-) =>
-  String(option?.value ?? "")
-    .toLowerCase()
-    .includes(input.toLowerCase());
 
 export function ProfileForm({
   settings,
 }: {
   settings: Pick<
     MySettings,
-    "name" | "email" | "phone" | "country" | "region" | "countries"
+    | "name"
+    | "email"
+    | "phone"
+    | "countryCode"
+    | "displayCurrency"
+    | "profileLocked"
+    | "region"
   >;
 }) {
   const router = useRouter();
@@ -58,26 +52,42 @@ export function ProfileForm({
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
 
+  const locked = settings.profileLocked;
+
   const initialValues: FormValues = {
-    name: settings.name,
+    name: settings.name ?? "",
     email: settings.email,
     phone: settings.phone ?? "",
-    country: settings.country ?? "",
+    countryCode: settings.countryCode ?? "",
     region: settings.region ?? "",
   };
 
-  const incomplete = !settings.phone?.trim() || !settings.country?.trim();
+  // Preview only. The database sets the real currency from the country.
+  const watchedCountry = Form.useWatch("countryCode", form);
+  const previewCurrency = countryToCurrency(watchedCountry);
 
   function handleFinish(values: FormValues) {
     setFormError(null);
 
     startTransition(async () => {
-      const result = await updateMyProfile({
-        name: values.name,
-        phone: values.phone ?? "",
-        country: values.country ?? "",
-        region: values.region ?? "",
-      });
+      // First save: username, phone and country go through one locked,
+      // one-time action. After that only name and region can change.
+      const first = locked
+        ? null
+        : await completeMyProfile({
+            name: values.name,
+            phone: values.phone,
+            countryCode: values.countryCode,
+            countryName: countryName(values.countryCode),
+          });
+      if (first?.success) router.refresh();
+
+      const result =
+        first && !first.success
+          ? first
+          : await updateMyProfile({
+              region: values.region ?? "",
+            });
 
       if (result.success) {
         message.success("Profile saved");
@@ -116,11 +126,12 @@ export function ProfileForm({
         scrollToFirstError={{ behavior: "smooth", block: "center" }}
         disabled={isPending}
       >
-        {incomplete && (
+        {!locked && (
           <Alert
-            type="info"
+            type="warning"
             showIcon
-            message="Please add your phone number and country to complete your profile."
+            message="Complete your profile"
+            description="Choose your username, phone number and country carefully. They can only be set once. Your country also decides the currency your prices are shown in."
             className="mb-4"
           />
         )}
@@ -139,16 +150,18 @@ export function ProfileForm({
         <Form.Item
           label="Name"
           name="name"
-          rules={[
-            {
-              required: true,
-              whitespace: true,
-              message: "Enter your name",
-            },
-            { max: 120, message: "Keep it under 120 characters" },
-          ]}
+          rules={[{ required: !locked, message: "Choose a name" }]}
+          extra={
+            locked
+              ? "Your name is locked."
+              : "Letters, numbers and underscore. Cannot be changed later."
+          }
         >
-          <Input size="large" placeholder="Your full name" />
+          <Input
+            disabled={locked}
+            maxLength={30}
+            placeholder="e.g. ali_sales"
+          />
         </Form.Item>
 
         <Form.Item
@@ -174,28 +187,30 @@ export function ProfileForm({
               label="Phone"
               name="phone"
               rules={[
-                {
-                  pattern: /^[0-9+()\-.\s]{5,30}$/,
-                  message: "Enter a valid phone number",
-                },
+                { required: !locked, message: "Enter your phone number" },
+                phoneRule,
               ]}
-              extra="Include your country code, e.g. +92 300 1234567"
+              extra={
+                locked
+                  ? "Your phone number is locked."
+                  : "Cannot be changed later."
+              }
             >
-              <Input placeholder="+92 300 1234567" />
+              <PhoneInput disabled={locked} />
             </Form.Item>
           </Col>
           <Col xs={24} md={12}>
             <Form.Item
               label="Country"
-              name="country"
-              rules={[{ max: 60, message: "Max 60 characters" }]}
+              name="countryCode"
+              rules={[{ required: !locked, message: "Select your country" }]}
+              extra={
+                locked
+                  ? `Prices are shown in ${settings.displayCurrency ?? "USD"}.`
+                  : `Prices will be shown in ${previewCurrency}. Cannot be changed later.`
+              }
             >
-              <AutoComplete
-                allowClear
-                options={settings.countries.map((v) => ({ value: v }))}
-                placeholder="Pick one or type your country"
-                filterOption={filterOption}
-              />
+              <CountrySelect disabled={locked} />
             </Form.Item>
           </Col>
         </Row>

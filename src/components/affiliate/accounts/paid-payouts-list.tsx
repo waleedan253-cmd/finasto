@@ -10,7 +10,6 @@ import type {
   PaidPayoutOrder,
 } from "@/lib/affiliate/payout-queries";
 
-import { useMarket } from "@/components/providers/market-provider";
 import { withApprox, type RateMap } from "@/lib/currency";
 
 // A bad currency code must never crash the page, so fall back to plain text.
@@ -74,13 +73,14 @@ const makeOrderColumns = (
 export default function PaidPayoutsList({
   payouts,
   rates,
+  currency,
 }: {
   payouts: PaidPayout[];
   rates: RateMap;
+  currency: string;
 }) {
-  const { market } = useMarket();
   const usd = (n: number) => {
-    const v = withApprox(n, "USD", market.currencyCode, rates);
+    const v = withApprox(n, "USD", currency, rates);
     return v.approx ? `${v.original} (${v.approx})` : v.original;
   };
   const orderColumns = makeOrderColumns(usd);
@@ -116,7 +116,7 @@ export default function PaidPayoutsList({
       // align: "right",S
       width: 130,
       render: (v: number) => {
-        const converted = withApprox(v, "USD", market.currencyCode, rates);
+        const converted = withApprox(v, "USD", currency, rates);
 
         return (
           <div>

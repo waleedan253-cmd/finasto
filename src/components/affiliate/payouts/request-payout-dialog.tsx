@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Alert, Descriptions, Modal, Typography, message } from "antd";
 import { requestPayout } from "@/lib/affiliate/payout-actions";
 import type { BankSummary } from "@/lib/affiliate/payout-queries";
-import { useMarket } from "@/components/providers/market-provider";
+
 import { withApprox, type RateMap } from "@/lib/currency";
 
 type Props = {
@@ -21,6 +21,7 @@ type Props = {
   totalUsd: number;
   bank: BankSummary;
   rates: RateMap;
+  currency: string;
 };
 
 export default function RequestPayoutDialog({
@@ -33,12 +34,12 @@ export default function RequestPayoutDialog({
   totalUsd,
   bank,
   rates,
+  currency,
 }: Props) {
   // The currency chosen in the header menu. The payout is always sent in
   // USD; the chosen currency is shown beside it as "approx." only.
-  const { market } = useMarket();
   const usd = (n: number) => {
-    const v = withApprox(n, "USD", market.currencyCode, rates);
+    const v = withApprox(n, "USD", currency, rates);
     return v.approx ? `${v.original} (${v.approx})` : v.original;
   };
   const [messageApi, contextHolder] = message.useMessage();

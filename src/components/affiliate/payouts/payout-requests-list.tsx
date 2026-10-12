@@ -8,7 +8,7 @@ import { Alert, Card, Descriptions, Table, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import type { MyPayoutRequest } from "@/lib/affiliate/payout-queries";
 import PayoutStatusBadge from "./payout-status-badge";
-import { useMarket } from "@/components/providers/market-provider";
+
 import { withApprox, type RateMap } from "@/lib/currency";
 
 // Amount in the affiliate's own payout currency. A bad currency code must
@@ -51,13 +51,14 @@ const dateTime = (iso: string | null) =>
 export default function PayoutRequestsList({
   requests,
   rates,
+  currency,
 }: {
   requests: MyPayoutRequest[];
   rates: RateMap;
+  currency: string;
 }) {
-  const { market } = useMarket();
   const usd = (n: number) => {
-    const v = withApprox(n, "USD", market.currencyCode, rates);
+    const v = withApprox(n, "USD", currency, rates);
     return v.approx ? `${v.original} (${v.approx})` : v.original;
   };
   const columns: TableColumnsType<MyPayoutRequest> = [
@@ -93,7 +94,7 @@ export default function PayoutRequestsList({
 
       width: 130,
       render: (v: number) => {
-        const converted = withApprox(v, "USD", market.currencyCode, rates);
+        const converted = withApprox(v, "USD", currency, rates);
 
         return (
           <div>

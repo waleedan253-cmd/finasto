@@ -52,6 +52,10 @@ export async function AnnouncementBar() {
 
   return (
     <div className="w-full overflow-hidden bg-espresso text-cream">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-[2px] animate-border-flow"
+      />
       <div className="flex w-max animate-marquee whitespace-nowrap py-2">
         {[0, 1].map((copy) => (
           <div

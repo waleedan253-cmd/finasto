@@ -24,7 +24,7 @@ export default async function AffiliateLayout({
   const supabase = await createClient();
   const { data: affiliate } = await supabase
     .from("affiliates")
-    .select("status")
+    .select("status, profile_locked_at")
     .eq("profile_id", user.id)
     .maybeSingle();
 
@@ -53,7 +53,11 @@ export default async function AffiliateLayout({
   }
 
   return (
-    <AffiliateShell name={name} email={user.email ?? ""}>
+    <AffiliateShell
+      name={name}
+      email={user.email ?? ""}
+      profileLocked={!!affiliate.profile_locked_at}
+    >
       {children}
     </AffiliateShell>
   );

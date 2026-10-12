@@ -6,8 +6,7 @@ import { redirect } from "next/navigation";
 import { getMyPayoutPageData } from "@/lib/affiliate/payout-queries";
 import EligibleOrdersTable from "@/components/affiliate/payouts/eligible-orders-table";
 import PayoutRequestsList from "@/components/affiliate/payouts/payout-requests-list";
-import { createClient } from "@/lib/supabase/server";
-import type { RateMap } from "@/lib/currency";
+import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 
 export const metadata = { title: "Payout Requests" };
 
@@ -18,17 +17,8 @@ export default async function AffiliatePayoutsPage() {
   if (!data) redirect("/login");
 
   const { summary, eligibleOrders, bank, minPayoutUsd, requests } = data;
-  const supabase = await createClient();
-  const { data: rateRows } = await supabase
-    .from("currency_rates")
-    .select("currency_code, rate_to_base, updated_at");
-  const rates: RateMap = {};
-  for (const r of rateRows ?? []) {
-    rates[String(r.currency_code).toUpperCase()] = {
-      rateToBase: Number(r.rate_to_base),
-      updatedAt: r.updated_at as string,
-    };
-  }
+  // The affiliate's locked display currency and the rates (display only).
+  const { currency, rates } = await getAffiliateDisplay();
 
   return (
     <div
@@ -52,9 +42,14 @@ export default async function AffiliatePayoutsPage() {
         bank={bank}
         minPayoutUsd={minPayoutUsd}
         rates={rates}
+        currency={currency}
       />
 
-      <PayoutRequestsList requests={requests} rates={rates} />
+      <PayoutRequestsList
+        requests={requests}
+        rates={rates}
+        currency={currency}
+      />
     </div>
   );
 }

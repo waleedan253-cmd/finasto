@@ -27,10 +27,13 @@ export type MyBankDetails = {
 
 export type MySettings = {
   affiliateId: string;
-  name: string;
+  name: string | null;
   email: string; // login identity, shown read-only
-  phone: string | null;
+  phone: string | null; // +E.164, locked after the first save
   country: string | null;
+  countryCode: string | null; // ISO code, e.g. "PK", locked
+  displayCurrency: string | null; // set from the country, locked
+  profileLocked: boolean; // false = username/phone/country still to be set
   region: string | null;
   commissionPercent: number; // set by the admin, read-only here
   bank: MyBankDetails | null; // null until the affiliate saves them
@@ -74,7 +77,7 @@ export async function getMySettings(): Promise<MySettings | null> {
     supabase
       .from("affiliates")
       .select(
-        "id, name, email, phone, country, region, commission_percent, affiliate_bank_details ( account_holder_name, bank_name, bank_country, account_number_or_iban, swift_bic, routing_code, payout_currency )",
+        "id, name, email, phone, country, country_code, display_currency, profile_locked_at, region, commission_percent, affiliate_bank_details ( account_holder_name, bank_name, bank_country, account_number_or_iban, swift_bic, routing_code, payout_currency )",
       )
       .eq("profile_id", user.id)
       .neq("status", "deleted")
@@ -96,10 +99,13 @@ export async function getMySettings(): Promise<MySettings | null> {
 
   return {
     affiliateId: data.id,
-    name: data.name,
+    name: data.name ?? null,
     email: data.email,
     phone: data.phone,
     country: data.country,
+    countryCode: data.country_code ?? null,
+    displayCurrency: data.display_currency ?? null,
+    profileLocked: !!data.profile_locked_at,
     region: data.region,
     commissionPercent: num(data.commission_percent),
     bank: bank

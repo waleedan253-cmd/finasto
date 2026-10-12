@@ -3,10 +3,9 @@ import { resolveReferralCode } from "@/lib/affiliate/referral-resolve";
 
 // Public route: /r/<code>
 //
-// 1. Look the link code up (link + affiliate + product must all be active).
-// 2. Valid   -> save the AFFILIATE's referral code in the finasto_ref
-//               cookie (the one checkout already reads), then redirect to
-//               the product page.
+// 1. Look the affiliate's code up (the affiliate must be active).
+// 2. Valid   -> save it in the finasto_ref cookie (the one checkout
+//               already reads), then redirect to the shop.
 // 3. Invalid -> redirect to the shop, no cookie, no error shown.
 //
 // Same rules as the existing ?ref= system in middleware.ts: first click
@@ -28,9 +27,7 @@ export async function GET(
     return NextResponse.redirect(new URL(SHOP_PATH, request.url));
   }
 
-  const response = NextResponse.redirect(
-    new URL(`/shop/${resolved.productId}`, request.url),
-  );
+  const response = NextResponse.redirect(new URL(SHOP_PATH, request.url));
 
   // First-click-wins: never replace an existing referral.
   if (!request.cookies.has(REFERRAL_COOKIE)) {

@@ -34,18 +34,32 @@ export type ActionResult =
 const emptyToNull = (v: unknown) =>
   typeof v === "string" && v.trim() === "" ? null : v;
 
+// After the one-time completion, only name and region stay editable.
 const profileSchema = z.object({
-  name: z.string().trim().min(1, "Enter your name").max(120),
-  phone: z.preprocess(
-    emptyToNull,
-    z
-      .string()
-      .trim()
-      .regex(/^[0-9+()\-.\s]{5,30}$/, "Enter a valid phone number")
-      .nullable(),
-  ),
-  country: z.preprocess(emptyToNull, z.string().trim().max(60).nullable()),
   region: z.preprocess(emptyToNull, z.string().trim().max(60).nullable()),
+});
+
+// The one-time, locked part. SQL validates the same rules again.
+const completeProfileSchema = z.object({
+  name: z
+    .string()
+    .transform((v) => v.replace(/\s+/g, " ").trim())
+    .pipe(
+      z
+        .string()
+        .min(2, "Enter your full name (2 to 60 characters)")
+        .max(60, "Enter your full name (2 to 60 characters)"),
+    ),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\+[1-9][0-9]{6,14}$/, "Enter a valid phone number"),
+  countryCode: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^[A-Z]{2}$/, "Select your country"),
+  countryName: z.string().trim().min(1, "Select your country").max(60),
 });
 
 export type ProfileInput = z.input<typeof profileSchema>;
@@ -98,9 +112,6 @@ export async function updateMyProfile(input: unknown): Promise<ActionResult> {
   const { error } = await supabase
     .from("affiliates")
     .update({
-      name: data.name,
-      phone: data.phone,
-      country: data.country,
       region: data.region,
     })
     .eq("id", affiliateId);
@@ -112,11 +123,6 @@ export async function updateMyProfile(input: unknown): Promise<ActionResult> {
     };
   }
 
-  // Keep the thin profiles mirror (used for the name in the top bar) in
-  // sync. Best effort: the affiliates row above is the source of truth,
-  // so a failure here never fails the save.
-  await supabase.from("profiles").update({ name: data.name }).eq("id", user.id);
-
   revalidatePath("/affiliate/settings");
   revalidatePath("/affiliate");
   return { success: true };
@@ -125,6 +131,49 @@ export async function updateMyProfile(input: unknown): Promise<ActionResult> {
 /* ------------------------------------------------------------------ */
 /* Save bank details                                                    */
 /* ------------------------------------------------------------------ */
+
+export async function completeMyProfile(input: unknown): Promise<ActionResult> {
+  const { user } = await requireRole("affiliate");
+
+  const parsed = completeProfileSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Please fix the highlighted fields.",
+      fieldErrors: flatten(parsed.error),
+    };
+  }
+  const d = parsed.data;
+
+  // The database function saves username, phone and country, sets the
+  // display currency from the country, and locks them. One call, once.
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("complete_affiliate_profile", {
+    p_name: d.name,
+    p_phone: d.phone,
+    p_country_code: d.countryCode,
+    p_country_name: d.countryName,
+  });
+
+  if (error) {
+    // P0001 = a message the SQL function raised on purpose (for example
+    // "That username is already taken"). Anything else is a real fault.
+    return {
+      success: false,
+      error:
+        error.code === "P0001"
+          ? error.message
+          : "Could not save your profile. Please try again.",
+    };
+  }
+
+  // Keep the profiles mirror (name in the top bar) in sync. Best effort.
+  await supabase.from("profiles").update({ name: d.name }).eq("id", user.id);
+
+  // The currency changes every affiliate page, so refresh the whole area.
+  revalidatePath("/affiliate", "layout");
+  return { success: true };
+}
 
 export async function saveMyBankDetails(input: unknown): Promise<ActionResult> {
   const { user } = await requireRole("affiliate");

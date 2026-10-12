@@ -1,36 +1,35 @@
 import type { Metadata } from "next";
-import {
-  listLinkableProducts,
-  listMyLinks,
-} from "@/lib/affiliate/links-queries";
-import { LinksTable } from "@/components/affiliate/links/links-table";
+import { getMyReferralLink } from "@/lib/affiliate/referral-link-queries";
+import { ReferralLinkCard } from "@/components/affiliate/links/referral-link-card";
 
-// Server component: reads the data, then hands it to the client table.
-// Both queries call requireRole("affiliate") themselves, so the page is
-// protected even if the route group's layout check were ever removed.
+// Server component: reads the affiliate's one link, then hands it to the
+// client card. getMyReferralLink() calls requireRole("affiliate") itself,
+// so the page is protected even if the layout check were ever removed.
 
 export const metadata: Metadata = {
-  title: "Referral links",
+  title: "Referral link",
 };
 
 export default async function AffiliateLinksPage() {
-  // Independent reads, so run them together.
-  const [links, products] = await Promise.all([
-    listMyLinks(),
-    listLinkableProducts(),
-  ]);
+  const link = await getMyReferralLink();
 
   return (
     <div>
       <h1 className="font-display text-[28px] leading-tight text-espresso">
-        Referral links
+        Referral link
       </h1>
       <p className="mt-2 mb-6 max-w-xl font-sans text-[14px] leading-relaxed text-warm-gray">
-        Share a link for any product. Orders placed through it are credited to
+        Copy your link and share it. Orders placed through it are credited to
         you.
       </p>
 
-      <LinksTable links={links} products={products} />
+      {link ? (
+        <ReferralLinkCard link={link} />
+      ) : (
+        <div className="rounded-2xl border border-border px-6 py-10 text-center font-sans text-[14px] text-warm-gray">
+          Your referral link isn&apos;t ready yet. Please contact support.
+        </div>
+      )}
     </div>
   );
 }

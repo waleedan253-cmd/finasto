@@ -15,6 +15,28 @@ export const currencyCodeSchema = z
   .toUpperCase()
   .regex(/^[A-Z]{3}$/);
 
+/* ------------------------------------------------------------------ */
+/* Affiliate display currency (country -> currency)                    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The four supported markets. Any other country sees USD.
+ * Keep in step with country_to_currency() in affiliate-profile-lock.sql.
+ */
+export const COUNTRY_CURRENCY: Record<string, string> = {
+  ID: "IDR",
+  MY: "MYR",
+  GB: "GBP",
+  PK: "PKR",
+};
+
+export function countryToCurrency(
+  countryCode: string | null | undefined,
+): string {
+  const c = (countryCode ?? "").trim().toUpperCase();
+  return COUNTRY_CURRENCY[c] ?? BASE_CURRENCY;
+}
+
 /** rateToBase = how many USD equal 1 unit of the currency (USD = 1). */
 export type RateInfo = { rateToBase: number; updatedAt: string };
 export type RateMap = Record<string, RateInfo>;

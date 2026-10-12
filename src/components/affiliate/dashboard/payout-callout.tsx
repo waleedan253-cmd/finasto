@@ -1,48 +1,96 @@
-// src/components/affiliate/dashboard/payout-callout.tsx
+"use client";
+
+// "You have $X ready" banner with a Request payout button.
 //
-// "You have $X ready" with a Request payout button.
-// Shows nothing when there is nothing to request, so it never displays a
-// zero or negative amount (for example after refund adjustments).
+// Same look as the rest of the dashboard: Ant Design Card, theme colors
+// and white text. It is a client component because the chosen currency
+// comes from useMarket().
 //
-// Server component: it only renders a link to the Payout Requests page.
+// Shows only when something is available to request. When the net
+// amount (after refund adjustments) is zero or negative it renders
+// nothing, so the affiliate is never shown a misleading figure. The
+// button only goes to the Payout Requests page; the request itself is
+// made there.
+//
+// Amounts stay USD. The currency chosen in the header menu is shown
+// beside them as "approx." (same rule as withApprox).
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button, Card, Typography } from "antd";
 
-// Change this if your Payout Requests page lives at a different path.
-const PAYOUT_REQUESTS_HREF = "/affiliate/payouts";
+import { withApprox, type RateMap } from "@/lib/currency";
 
-const usd = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+const WHITE = "var(--color-white)";
+const SOFT_WHITE = "rgba(255, 255, 255, 0.75)";
 
-type Props = {
+export function PayoutCallout({
+  availableUsd,
+  canRequestPayout,
+  rates,
+  currency,
+  // Change this if your Payout Requests page lives at a different path.
+  href = "/affiliate/payouts",
+}: {
   availableUsd: number;
-};
+  canRequestPayout: boolean;
+  rates: RateMap;
+  currency: string;
+  href?: string;
+}) {
+  const router = useRouter();
 
-export default function PayoutCallout({ availableUsd }: Props) {
-  if (!Number.isFinite(availableUsd) || availableUsd <= 0) return null;
+  if (!canRequestPayout || !(availableUsd > 0)) return null;
+
+  const amount = withApprox(availableUsd, "USD", currency, rates);
 
   return (
-    <section
-      aria-label="Payout available"
-      className="flex flex-col gap-3 rounded-lg border border-emerald-600 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-emerald-500 dark:bg-emerald-950/40"
+    <Card
+      size="small"
+      style={{
+        // backgroundColor: "var(--color-espresso)",
+        borderColor: "var(--color-copper)",
+      }}
     >
-      <div>
-        <p className="text-base font-semibold text-slate-900 dark:text-slate-50">
-          You have {usd.format(availableUsd)} ready
-        </p>
-        <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
-          Request a payout to move it to review.
-        </p>
-      </div>
-
-      <Link
-        href={PAYOUT_REQUESTS_HREF}
-        className="inline-flex shrink-0 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 12,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
       >
-        Request payout
-      </Link>
-    </section>
+        <div>
+          <Typography.Text
+            strong
+            style={{ fontSize: 16, color: "var(--color-copper)" }}
+          >
+            You have {amount.original} ready
+            {amount.approx ? ` (${amount.approx})` : ""}
+          </Typography.Text>
+          <Typography.Text
+            style={{ display: "block", fontSize: 12, color: "#321e18" }}
+          >
+            After the refund window, minus any refund adjustments.
+          </Typography.Text>
+        </div>
+
+        <Button
+          href={href}
+          onClick={(e) => {
+            e.preventDefault();
+            router.push(href);
+          }}
+          style={{
+            backgroundColor: "var(--color-espresso)",
+
+            color: WHITE,
+            fontWeight: 500,
+          }}
+        >
+          Request payout
+        </Button>
+      </div>
+    </Card>
   );
 }

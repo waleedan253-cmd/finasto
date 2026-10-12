@@ -1,193 +1,213 @@
 "use client";
 
-// src/components/affiliate/dashboard/orders-chart.tsx
+// Orders per day (bars) and commission in USD (line), for a period the
+// affiliate picks: last 7 / 30 / 90 days, last month, or last 12 months
+// (one bar per month).
 //
-// Last 30 days: bars for orders per day, a line for commission in USD.
-// Each day is a UTC day, and days with no orders arrive as zeros from
-// my_dashboard_stats(), so the chart has no gaps.
+// Same look as the rest of the dashboard: Ant Design Card, theme colors
+// (green bars, copper line, espresso text and grid). It is a client
+// component because recharts draws in the browser and the chosen
+// currency comes from useMarket().
 //
-// Client component because recharts needs the browser to measure its size.
+// The period lives in the URL (?range=30d). Changing the dropdown
+// updates the URL, and the server page loads the new numbers. Nothing is
+// calculated here except formatting and the totals for the screen-reader
+// label. Amounts stay USD; the chosen currency is shown beside the
+// commission in the tooltip as "approx." (same rule as withApprox).
+//
 // Needs: npm install recharts
 
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   Bar,
   CartesianGrid,
   ComposedChart,
+  Legend,
   Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import type { DailyPoint } from "@/lib/affiliate/dashboard-queries";
+import { Card, Empty, Select, Typography } from "antd";
+// Type-only import: erased at build, so no server code reaches the browser.
+import type { DashboardDay } from "@/lib/affiliate/dashboard-queries";
+import {
+  DASHBOARD_RANGES,
+  type DashboardRange,
+} from "@/lib/affiliate/dashboard-ranges";
 
-const ORDERS_COLOR = "#059669"; // emerald-600
-const COMMISSION_COLOR = "#4f46e5"; // indigo-600
+import { withApprox, type RateMap } from "@/lib/currency";
 
-const usd = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
-// "2026-10-08" -> "Oct 8". Parsed and formatted in UTC so the label never
-// shifts a day depending on the viewer's time zone.
-const shortDate = new Intl.DateTimeFormat("en-US", {
+// "2026-10-08" is a UTC day, so format it as one (no local-time shift).
+const dayFmt = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
   month: "short",
-  day: "numeric",
   timeZone: "UTC",
 });
 
-function formatDay(day: string): string {
+// Monthly bars are labelled with the month and year, e.g. "Oct 2026".
+const monthFmt = new Intl.DateTimeFormat("en-GB", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+function formatBucket(day: string, bucket: "day" | "month"): string {
   const d = new Date(`${day}T00:00:00Z`);
-  return Number.isNaN(d.getTime()) ? day : shortDate.format(d);
+  if (Number.isNaN(d.getTime())) return day;
+  return bucket === "month" ? monthFmt.format(d) : dayFmt.format(d);
 }
 
-type TooltipPayload = {
-  dataKey?: string | number;
-  value?: number | string;
-};
+// Theme colors (defined as CSS variables in your theme).
+const ORDERS_COLOR = "var(--color-green)";
+const COMMISSION_COLOR = "var(--color-copper)";
+const TEXT_COLOR = "var(--color-espresso)";
 
-function ChartTooltip({
-  active,
-  payload,
-  label,
+export function OrdersChart({
+  daily,
+  range,
+  bucket,
+  rates,
+  currency,
 }: {
-  active?: boolean;
-  payload?: TooltipPayload[];
-  label?: string;
+  daily: DashboardDay[];
+  range: DashboardRange;
+  bucket: "day" | "month";
+  rates: RateMap;
+  currency: string;
 }) {
-  if (!active || !payload?.length) return null;
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const orders = Number(
-    payload.find((p) => p.dataKey === "orders")?.value ?? 0,
-  );
-  const commission = Number(
-    payload.find((p) => p.dataKey === "commission_usd")?.value ?? 0,
-  );
+  // Amounts stay USD; the affiliate's locked currency is shown as "approx.".
+  const amount = (n: number) => withApprox(n, "USD", currency, rates);
 
-  return (
-    <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm dark:border-slate-700 dark:bg-slate-900">
-      <p className="font-medium text-slate-900 dark:text-slate-50">
-        {formatDay(String(label ?? ""))}
-      </p>
-      <p className="text-slate-600 dark:text-slate-300">Orders: {orders}</p>
-      <p className="text-slate-600 dark:text-slate-300">
-        Commission: {usd.format(commission)}
-      </p>
-    </div>
-  );
-}
+  const label =
+    DASHBOARD_RANGES.find((r) => r.value === range)?.label ?? "Chart";
 
-type Props = {
-  daily: DailyPoint[];
-};
-
-export default function OrdersChart({ daily }: Props) {
   const totalOrders = daily.reduce((sum, d) => sum + d.orders, 0);
-  const totalCommission = daily.reduce((sum, d) => sum + d.commission_usd, 0);
+  const totalCommission = daily.reduce((sum, d) => sum + d.commissionUsd, 0);
+  const isEmpty = totalOrders === 0 && totalCommission === 0;
+
+  // "$12.50" or "$12.50 (approx. ...)" when another currency is chosen.
+  const commissionText = (n: number) => {
+    const a = amount(n);
+    return a.approx ? `${a.original} (${a.approx})` : a.original;
+  };
+
+  const onRangeChange = (value: DashboardRange) => {
+    startTransition(() => {
+      router.replace(`?range=${value}`, { scroll: false });
+    });
+  };
 
   return (
-    <section
-      aria-labelledby="orders-chart-heading"
-      className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+    <Card
+      size="small"
+      title={label}
+      loading={isPending}
+      extra={
+        <Select<DashboardRange>
+          placeholder=""
+          value={range}
+          onChange={onRangeChange}
+          options={DASHBOARD_RANGES.map((r) => ({
+            value: r.value,
+            label: r.label,
+          }))}
+          style={{ minWidth: 150 }}
+          aria-label="Chart period"
+        />
+      }
     >
-      <h2
-        id="orders-chart-heading"
-        className="text-base font-semibold text-slate-900 dark:text-slate-50"
+      <Typography.Text
+        type="secondary"
+        style={{ display: "block", fontSize: 12, marginBottom: 8 }}
       >
-        Last {daily.length || 30} days
-      </h2>
-      <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
-        {totalOrders} {totalOrders === 1 ? "order" : "orders"} and{" "}
-        {usd.format(totalCommission)} in commission
-      </p>
+        {bucket === "month" ? "Orders per month" : "Orders per day"} and
+        commission on paid orders.{" "}
+        {bucket === "month" ? "Months are UTC." : "Days are UTC."}
+      </Typography.Text>
 
-      {totalOrders === 0 ? (
-        <p className="mt-6 pb-4 text-sm text-slate-600 dark:text-slate-400">
-          No orders in this period yet. Once someone orders through your link,
-          you'll see each day here.
-        </p>
+      {isEmpty ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="No orders in this period. Share your link and they will appear here."
+        />
       ) : (
-        <>
-          <div className="mt-4 h-72 w-full text-slate-500 dark:text-slate-400">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart
-                data={daily}
-                margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-              >
-                <CartesianGrid
-                  vertical={false}
-                  stroke="currentColor"
-                  strokeOpacity={0.15}
-                />
-                <XAxis
-                  dataKey="day"
-                  tickFormatter={formatDay}
-                  tick={{ fill: "currentColor", fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  minTickGap={24}
-                />
-                <YAxis
-                  yAxisId="orders"
-                  allowDecimals={false}
-                  tick={{ fill: "currentColor", fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  width={32}
-                />
-                <YAxis
-                  yAxisId="commission"
-                  orientation="right"
-                  tickFormatter={(v: number) => `$${v}`}
-                  tick={{ fill: "currentColor", fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                  width={48}
-                />
-                <Tooltip
-                  content={<ChartTooltip />}
-                  cursor={{ fill: "currentColor", fillOpacity: 0.08 }}
-                />
-                <Bar
-                  yAxisId="orders"
-                  dataKey="orders"
-                  fill={ORDERS_COLOR}
-                  radius={[2, 2, 0, 0]}
-                  maxBarSize={20}
-                />
-                <Line
-                  yAxisId="commission"
-                  dataKey="commission_usd"
-                  type="monotone"
-                  stroke={COMMISSION_COLOR}
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
-            <span className="inline-flex items-center gap-2">
-              <span
-                className="inline-block h-2.5 w-2.5 rounded-sm"
-                style={{ backgroundColor: ORDERS_COLOR }}
-                aria-hidden
+        <div
+          style={{ height: 288, width: "100%" }}
+          role="img"
+          aria-label={`Chart, ${label.toLowerCase()}: ${totalOrders} orders and ${amount(totalCommission).original} commission.`}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart
+              data={daily}
+              margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+            >
+              <CartesianGrid
+                vertical={false}
+                stroke={TEXT_COLOR}
+                strokeOpacity={0.15}
               />
-              Orders per day (left)
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span
-                className="inline-block h-0.5 w-4"
-                style={{ backgroundColor: COMMISSION_COLOR }}
-                aria-hidden
+              <XAxis
+                dataKey="day"
+                tickFormatter={(v) => formatBucket(String(v), bucket)}
+                tick={{ fill: TEXT_COLOR, fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                minTickGap={24}
               />
-              Commission in USD (right)
-            </span>
-          </div>
-        </>
+              <YAxis
+                yAxisId="orders"
+                allowDecimals={false}
+                tick={{ fill: ORDERS_COLOR, fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                width={32}
+              />
+              <YAxis
+                yAxisId="commission"
+                orientation="right"
+                tickFormatter={(v) => `$${v}`}
+                tick={{ fill: COMMISSION_COLOR, fontSize: 12 }}
+                tickLine={false}
+                axisLine={false}
+                width={48}
+              />
+              <Tooltip
+                labelFormatter={(l) => formatBucket(String(l), bucket)}
+                formatter={(value, name) => [
+                  name === "Commission"
+                    ? commissionText(Number(value))
+                    : String(value),
+                  String(name),
+                ]}
+              />
+              <Legend verticalAlign="bottom" height={28} />
+              <Bar
+                yAxisId="orders"
+                dataKey="orders"
+                name="Orders"
+                fill={ORDERS_COLOR}
+                radius={[2, 2, 0, 0]}
+                maxBarSize={bucket === "month" ? 32 : 20}
+              />
+              <Line
+                yAxisId="commission"
+                dataKey="commissionUsd"
+                name="Commission"
+                type="monotone"
+                stroke={COMMISSION_COLOR}
+                strokeWidth={2}
+                dot={false}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       )}
-    </section>
+    </Card>
   );
 }

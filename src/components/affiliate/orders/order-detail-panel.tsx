@@ -10,7 +10,7 @@ import {
   PaymentStatusBadge,
 } from "./order-status-badge";
 import { Breadcrumb } from "antd";
-import { useMarket } from "@/components/providers/market-provider";
+
 import { withApprox, type RateMap } from "@/lib/currency";
 
 // Detail view for ONE of the affiliate's orders: the items, the customer
@@ -91,19 +91,19 @@ function buildTimeline(order: MyOrderDetail): Step[] {
 export function OrderDetailPanel({
   order,
   rates,
+  currency,
 }: {
   order: MyOrderDetail;
   rates: RateMap;
+  currency: string;
 }) {
   // The currency chosen in the header menu. Amounts keep their own
   // currency; the chosen one is shown as a small "approx." line.
-  const { market } = useMarket();
-  const approxUsd = (n: number) =>
-    withApprox(n, "USD", market.currencyCode, rates).approx;
+  const approxUsd = (n: number) => withApprox(n, "USD", currency, rates).approx;
   const approxPaid = withApprox(
     order.totalAmount,
     order.orderCurrency,
-    market.currencyCode,
+    currency,
     rates,
   ).approx;
 

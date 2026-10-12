@@ -4,6 +4,7 @@ import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { AntdTheme } from "@/app/providers"; // adjust to where you created it
+import { ThemeProvider } from "@/components/ThemeProvider";
 import IntroGate from "@/components/layout/intro-gate";
 import { MarketProvider } from "@/components/providers/market-provider";
 import { CartProvider } from "@/components/providers/cart-provider";
@@ -36,21 +37,31 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("finasto-theme");var d=t==="dark"||((!t||t==="system")&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-cream text-espresso font-sans">
-        <AntdRegistry>
-          <AntdTheme>
-            <IntroGate />
-            <MarketProvider>
-              <CartProvider>
-                {children}
-                <CartDrawer products={products} />
-              </CartProvider>
-            </MarketProvider>
-            <ScrollToTop />
-          </AntdTheme>
-        </AntdRegistry>
+        <ThemeProvider>
+          <AntdRegistry>
+            <AntdTheme>
+              <IntroGate />
+              <MarketProvider>
+                <CartProvider>
+                  {children}
+                  <CartDrawer products={products} />
+                </CartProvider>
+              </MarketProvider>
+              <ScrollToTop />
+            </AntdTheme>
+          </AntdRegistry>
+        </ThemeProvider>
       </body>
     </html>
   );

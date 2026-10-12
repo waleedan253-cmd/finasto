@@ -2,8 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { listMyOrders } from "@/lib/affiliate/orders-queries";
-import { createClient } from "@/lib/supabase/server";
-import type { RateMap } from "@/lib/currency";
+import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 import { OrdersFilters } from "@/components/affiliate/orders/orders-filters";
 import { OrdersTable } from "@/components/affiliate/orders/orders-table";
 import {
@@ -57,18 +56,8 @@ export default async function AffiliateOrdersPage({
 
   const totalPages = Math.max(1, Math.ceil(result.total / PAGE_SIZE));
 
-  // Exchange rates for the "approx." amounts (display only).
-  const supabase = await createClient();
-  const { data: rateRows } = await supabase
-    .from("currency_rates")
-    .select("currency_code, rate_to_base, updated_at");
-  const rates: RateMap = {};
-  for (const r of rateRows ?? []) {
-    rates[String(r.currency_code).toUpperCase()] = {
-      rateToBase: Number(r.rate_to_base),
-      updatedAt: r.updated_at as string,
-    };
-  }
+  // The affiliate's locked display currency and the rates (display only).
+  const { currency, rates } = await getAffiliateDisplay();
 
   function pageHref(target: number) {
     const params = new URLSearchParams();
@@ -110,6 +99,7 @@ export default async function AffiliateOrdersPage({
         page={result.page}
         pageSize={result.pageSize}
         rates={rates}
+        currency={currency}
       />
 
       {totalPages > 1 && (

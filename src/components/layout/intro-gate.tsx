@@ -9,7 +9,7 @@ const HOLD_MS = 500; // how long the logo stays before the gate dismisses
 function Logo() {
   return (
     <Image
-      src="/brand/finasto-logo.png" // put your logo in /public
+      src="/brand/finasto-dark-transparent.png" // put your logo in /public
       alt="Finasto"
       width={240}
       height={240}
