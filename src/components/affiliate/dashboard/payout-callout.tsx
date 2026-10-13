@@ -15,13 +15,10 @@
 // Amounts stay USD. The currency chosen in the header menu is shown
 // beside them as "approx." (same rule as withApprox).
 
-import { useRouter } from "next/navigation";
-import { Button, Card, Typography } from "antd";
+import Link from "next/link";
+import { ArrowRight, Wallet } from "lucide-react";
 
 import { withApprox, type RateMap } from "@/lib/currency";
-
-const WHITE = "var(--color-white)";
-const SOFT_WHITE = "rgba(255, 255, 255, 0.75)";
 
 export function PayoutCallout({
   availableUsd,
@@ -37,60 +34,46 @@ export function PayoutCallout({
   currency: string;
   href?: string;
 }) {
-  const router = useRouter();
-
   if (!canRequestPayout || !(availableUsd > 0)) return null;
 
   const amount = withApprox(availableUsd, "USD", currency, rates);
 
   return (
-    <Card
-      size="small"
-      style={{
-        // backgroundColor: "var(--color-espresso)",
-        borderColor: "var(--color-copper)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <Typography.Text
-            strong
-            style={{ fontSize: 16, color: "var(--color-copper)" }}
-          >
+    <div className="relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-2xl border border-border-strong bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] dark:border-border dark:shadow-none sm:px-5">
+      <span
+        aria-hidden
+        className="absolute inset-y-0 left-0 w-[3px] bg-copper"
+      />
+
+      <div className="flex min-w-0 items-center gap-3.5">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-copper/10 text-copper">
+          <Wallet className="h-5 w-5" strokeWidth={1.7} />
+        </span>
+        <div className="min-w-0">
+          <p className="font-display text-[20px] leading-tight tabular-nums text-espresso">
             You have {amount.original} ready
-            {amount.approx ? ` (${amount.approx})` : ""}
-          </Typography.Text>
-          <Typography.Text
-            style={{ display: "block", fontSize: 12, color: "#321e18" }}
-          >
+            {amount.approx ? (
+              <span className="ml-2 font-sans text-[12px] text-warm-gray">
+                ({amount.approx})
+              </span>
+            ) : null}
+          </p>
+          <p className="mt-0.5 font-sans text-[12px] text-warm-gray">
             After the refund window, minus any refund adjustments.
-          </Typography.Text>
+          </p>
         </div>
-
-        <Button
-          href={href}
-          onClick={(e) => {
-            e.preventDefault();
-            router.push(href);
-          }}
-          style={{
-            backgroundColor: "var(--color-espresso)",
-
-            color: WHITE,
-            fontWeight: 500,
-          }}
-        >
-          Request payout
-        </Button>
       </div>
-    </Card>
+
+      <Link
+        href={href}
+        className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-espresso px-5 font-sans text-[14px] font-medium text-cream transition-colors hover:bg-espresso-deep"
+      >
+        Request payout
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+          strokeWidth={1.8}
+        />
+      </Link>
+    </div>
   );
 }

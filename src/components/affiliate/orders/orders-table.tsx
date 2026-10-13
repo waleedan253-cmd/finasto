@@ -91,7 +91,7 @@ export function OrdersTable({
       key: "sr",
       width: 60,
       render: (_, __, index) => (
-        <span className="tabular-nums text-neutral-500">
+        <span className="tabular-nums text-warm-gray">
           {startIndex + index + 1}
         </span>
       ),
@@ -103,8 +103,7 @@ export function OrdersTable({
         <div className="min-w-0">
           <Link
             href={detailHref(order)}
-            className="block truncate font-sans text-[14px] font-medium hover:text-copper"
-            style={{ color: "#2E7D32" }}
+            className="block truncate font-sans text-[14px] font-medium text-green hover:text-copper"
           >
             {order.orderNumber}
           </Link>
@@ -190,7 +189,7 @@ export function OrdersTable({
   return (
     <>
       {/* Desktop table */}
-      <div className="hidden md:block">
+      <div className="finasto-card hidden overflow-hidden md:block">
         <Table<MyOrderRow>
           columns={columns}
           dataSource={orders}
@@ -226,7 +225,7 @@ function OrderCard({
 }) {
   const approx = makeApprox(rates, currency);
   return (
-    <li className="rounded-2xl border border-border bg-white p-4">
+    <li className="finasto-card p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <Link

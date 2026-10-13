@@ -70,7 +70,7 @@ export default function PayoutRequestsList({
       fixed: "left",
       width: 190,
       render: (value: string) => (
-        <span style={{ color: "#1677ff" }}>{value}</span>
+        <span className="font-medium text-green">{value}</span>
       ),
     },
     {
@@ -100,7 +100,7 @@ export default function PayoutRequestsList({
           <div>
             <strong>{converted.original}</strong>
             {converted.approx && (
-              <div style={{ fontSize: 12, color: "#888" }}>
+              <div className="text-[12px] text-warm-gray">
                 {converted.approx}
               </div>
             )}
@@ -118,7 +118,12 @@ export default function PayoutRequestsList({
   ];
 
   return (
-    <Card title="Request history">
+    <Card
+      className="finasto-card"
+      bordered={false}
+      style={{ background: "var(--color-white)" }}
+      title="Request history"
+    >
       <Table<MyPayoutRequest>
         size="middle"
         rowKey="id"
@@ -161,7 +166,7 @@ export default function PayoutRequestsList({
                 colon={false}
               >
                 <Descriptions.Item
-                  label={<span style={{ color: "green" }}>Commission</span>}
+                  label={<span className="text-green">Commission</span>}
                 >
                   {usd(r.itemsTotalUsd)}
                 </Descriptions.Item>
@@ -176,15 +181,7 @@ export default function PayoutRequestsList({
                   </Descriptions.Item>
                 )}
                 <Descriptions.Item
-                  label={
-                    <span
-                      style={{
-                        color: "#1677ff",
-                      }}
-                    >
-                      Requested
-                    </span>
-                  }
+                  label={<span className="text-warm-gray">Requested</span>}
                 >
                   {dateTime(r.requestedAt)}
                 </Descriptions.Item>

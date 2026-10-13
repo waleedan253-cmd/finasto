@@ -21,21 +21,7 @@ export default async function AffiliatePayoutsPage() {
   const { currency, rates } = await getAffiliateDisplay();
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "16px clamp(12px, 3vw, 24px)",
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
-      }}
-    >
-      <h1 style={{ margin: 0, fontSize: "clamp(20px, 4vw, 26px)" }}>
-        Payout Requests
-      </h1>
-
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
       <EligibleOrdersTable
         summary={summary}
         orders={eligibleOrders}

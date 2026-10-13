@@ -126,6 +126,35 @@ export function formatMoney(amount: number, code: string): string {
 /* Conversion                                                          */
 /* ------------------------------------------------------------------ */
 
+/** From this size (in display units) amounts are shown compact: $200M. */
+export const COMPACT_THRESHOLD = 100;
+
+export function formatMoneyCompact(amount: number, code: string): string {
+  const c = code.toUpperCase();
+  const safe = Number.isFinite(amount) ? amount : 0;
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: c,
+      notation: "compact",
+      maximumFractionDigits: 2,
+    }).format(safe);
+  } catch {
+    return `${c} ${safe.toExponential(2)}`;
+  }
+}
+
+/** Normal format for everyday amounts, compact for very large ones. */
+export function formatMoneyFit(amount: number, code: string): string {
+  return Math.abs(amount) >= COMPACT_THRESHOLD
+    ? formatMoneyCompact(amount, code)
+    : formatMoney(amount, code);
+}
+
+/* ------------------------------------------------------------------ */
+/* Conversion                                                          */
+/* ------------------------------------------------------------------ */
+
 /**
  * Base (USD) amount -> display currency using the LIVE rate.
  * If the rate is missing or older than 48h, returns the base amount with
@@ -165,10 +194,17 @@ export function money(
   currencyCode: string,
   rates: RateMap,
   now?: number,
-): { text: string; fallback: boolean; amount: number; currency: string } {
+): {
+  text: string;
+  full: string;
+  fallback: boolean;
+  amount: number;
+  currency: string;
+} {
   const v = convert(amountBase, currencyCode, rates, now);
   return {
-    text: formatMoney(v.amount, v.currency),
+    text: formatMoneyFit(v.amount, v.currency),
+    full: formatMoney(v.amount, v.currency),
     fallback: v.fallback,
     amount: v.amount,
     currency: v.currency,
@@ -199,16 +235,28 @@ export function withApprox(
   displayCurrency: string,
   rates: RateMap,
   now?: number,
-): { original: string; approx: string | null } {
-  const original = formatMoney(amount, originalCurrency);
+): {
+  original: string;
+  originalFull: string;
+  approx: string | null;
+  approxFull: string | null;
+} {
+  const original = formatMoneyFit(amount, originalCurrency);
+  const originalFull = formatMoney(amount, originalCurrency);
+  const none = { original, originalFull, approx: null, approxFull: null };
   if (originalCurrency.toUpperCase() === displayCurrency.toUpperCase()) {
-    return { original, approx: null };
+    return none;
   }
   const base = toBase(amount, originalCurrency, rates, now);
-  if (base === null) return { original, approx: null };
+  if (base === null) return none;
   const v = convert(base, displayCurrency, rates, now);
-  if (v.fallback) return { original, approx: null };
-  return { original, approx: `approx. ${formatMoney(v.amount, v.currency)}` };
+  if (v.fallback) return none;
+  return {
+    original,
+    originalFull,
+    approx: `approx. ${formatMoneyFit(v.amount, v.currency)}`,
+    approxFull: `approx. ${formatMoney(v.amount, v.currency)}`,
+  };
 }
 
 /* ------------------------------------------------------------------ */

@@ -8,6 +8,7 @@ import { AdminSidebar } from "./admin-sidebar";
 import { CurrencyMenu } from "./currency-menu";
 import { adminNav, isNavActive } from "./admin-nav";
 import { NotificationBell } from "@/components/admin/layout/notification-bell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AdminShell({
   name,
@@ -77,6 +78,7 @@ export function AdminShell({
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
+            <ThemeToggle />
             <CurrencyMenu />
             <NotificationBell />
             <div className="flex items-center gap-2.5">

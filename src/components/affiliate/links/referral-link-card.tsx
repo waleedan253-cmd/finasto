@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Input, message } from "antd";
+import { message } from "antd";
 import { Check, Copy, Link2 } from "lucide-react";
 import type { MyReferralLink } from "@/lib/affiliate/referral-link-queries";
 
@@ -26,8 +26,12 @@ export function ReferralLinkCard({ link }: { link: MyReferralLink }) {
   }
 
   return (
-    <div className="rounded-2xl border border-border p-5 sm:p-6">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-copper/10 text-copper">
+    <div className="relative overflow-hidden rounded-2xl border border-border-strong bg-white p-5 shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] dark:border-border dark:shadow-none sm:p-7">
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[2px] bg-copper/70 dark:hidden"
+      />
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-copper/10 text-copper">
         <Link2 className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
       </span>
 
@@ -46,18 +50,22 @@ export function ReferralLinkCard({ link }: { link: MyReferralLink }) {
         </div>
       )}
 
-      <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-        <Input
+      <div className="mt-6 flex items-center gap-2 rounded-2xl border border-border-strong bg-cream p-1.5 transition-colors focus-within:border-copper dark:border-border dark:focus-within:border-copper">
+        <input
           readOnly
-          size="large"
           value={link.url}
           onFocus={(e) => e.target.select()}
           aria-label="Your referral link"
+          className="min-w-0 flex-1 bg-transparent px-3 font-sans text-[14px] text-espresso outline-none"
         />
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full bg-espresso px-5 font-sans text-[14px] font-medium text-cream transition-colors hover:bg-espresso-deep"
+          className={`inline-flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl px-5 font-sans text-[14px] font-medium transition-colors ${
+            copied
+              ? "bg-green text-white"
+              : "bg-espresso text-cream hover:bg-espresso-deep"
+          }`}
         >
           {copied ? (
             <Check className="h-4 w-4" aria-hidden="true" />
@@ -68,7 +76,7 @@ export function ReferralLinkCard({ link }: { link: MyReferralLink }) {
         </button>
       </div>
 
-      <p className="mt-4 font-sans text-[12px] leading-relaxed text-warm-gray">
+      <p className="mt-5 border-t border-border pt-4 font-sans text-[12px] leading-relaxed text-warm-gray">
         Your link never expires. The first link a visitor opens is the one
         credited, for up to one year.
       </p>

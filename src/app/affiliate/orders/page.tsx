@@ -77,10 +77,7 @@ export default async function AffiliateOrdersPage({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-[28px] leading-tight text-espresso">
-          Orders
-        </h1>
-        <p className="mt-1 font-sans text-[14px] text-warm-gray">
+        <p className="font-sans text-[14px] text-warm-gray">
           Orders placed through your referral links, with their status and the
           commission you earn on each.
         </p>
@@ -114,7 +111,7 @@ export default async function AffiliateOrdersPage({
             {result.page > 1 ? (
               <Link
                 href={pageHref(result.page - 1)}
-                className="inline-flex h-9 items-center gap-1 rounded-full border border-border-strong px-4 text-espresso hover:border-copper"
+                className="inline-flex h-9 items-center gap-1 rounded-full border border-border-strong bg-white px-4 text-espresso transition-colors hover:border-copper"
               >
                 <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                 Previous
@@ -123,7 +120,7 @@ export default async function AffiliateOrdersPage({
             {result.page < totalPages ? (
               <Link
                 href={pageHref(result.page + 1)}
-                className="inline-flex h-9 items-center gap-1 rounded-full border border-border-strong px-4 text-espresso hover:border-copper"
+                className="inline-flex h-9 items-center gap-1 rounded-full border border-border-strong bg-white px-4 text-espresso transition-colors hover:border-copper"
               >
                 Next
                 <ChevronRight className="h-4 w-4" aria-hidden="true" />

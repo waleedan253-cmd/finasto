@@ -128,9 +128,12 @@ export function BankDetailsForm({
 
   return (
     <Card
+      className="finasto-card"
+      bordered={false}
+      style={{ background: "var(--color-white)" }}
       title="Bank details"
       extra={
-        <span className="text-[13px] text-neutral-500">
+        <span className="text-[13px] text-warm-gray">
           Where Finasto pays your commissions
         </span>
       }
@@ -297,7 +300,7 @@ export function BankDetailsForm({
           </Col>
         </Row>
 
-        <p className="mb-4 text-[13px] leading-relaxed text-neutral-500">
+        <p className="mb-4 text-[13px] leading-relaxed text-warm-gray">
           Your bank details are visible only to you and the Finasto admin team.
         </p>
 

@@ -20,8 +20,8 @@ type Ctx = {
 };
 
 const ThemeContext = createContext<Ctx>({
-  theme: "system",
-  resolvedTheme: "light",
+  theme: "dark",
+  resolvedTheme: "dark",
   setTheme: () => {},
 });
 
@@ -30,9 +30,9 @@ const KEY = "finasto-theme";
 function readSaved(): ThemeChoice {
   try {
     const v = localStorage.getItem(KEY);
-    return v === "light" || v === "dark" || v === "system" ? v : "system";
+    return v === "light" || v === "dark" || v === "system" ? v : "dark";
   } catch {
-    return "system";
+    return "dark";
   }
 }
 
@@ -44,8 +44,8 @@ function systemTheme(): Resolved {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // "light" before mount, so server and client HTML match (no hydration error)
-  const [theme, setThemeState] = useState<ThemeChoice>("system");
-  const [resolvedTheme, setResolved] = useState<Resolved>("light");
+  const [theme, setThemeState] = useState<ThemeChoice>("dark");
+  const [resolvedTheme, setResolved] = useState<Resolved>("dark");
 
   const apply = useCallback((t: ThemeChoice) => {
     const r = t === "system" ? systemTheme() : t;

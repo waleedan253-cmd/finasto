@@ -110,11 +110,12 @@ export function ProfileForm({
 
   return (
     <Card
+      className="finasto-card"
+      bordered={false}
+      style={{ background: "var(--color-white)" }}
       title="Profile"
       extra={
-        <span className="text-[13px] text-neutral-500">
-          Your contact details
-        </span>
+        <span className="text-[13px] text-warm-gray">Your contact details</span>
       }
     >
       <Form<FormValues>
@@ -172,7 +173,7 @@ export function ProfileForm({
           <Input
             prefix={
               <Mail
-                className="h-4 w-4 text-neutral-400"
+                className="h-4 w-4 text-warm-gray"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />

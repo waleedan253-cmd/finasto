@@ -20,17 +20,7 @@ export default async function AffiliateSettingsPage() {
   if (!settings) notFound();
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <div>
-        <h1 className="font-display text-[28px] leading-tight text-espresso">
-          Settings
-        </h1>
-        <p className="mt-1 font-sans text-[14px] text-warm-gray">
-          Keep your details up to date so Finasto can pay your commissions
-          without delays.
-        </p>
-      </div>
-
+    <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
       <CommissionCard commissionPercent={settings.commissionPercent} />
 
       <ProfileForm settings={settings} />

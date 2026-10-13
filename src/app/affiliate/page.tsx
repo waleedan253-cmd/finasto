@@ -14,6 +14,7 @@ import { PayoutCallout } from "@/components/affiliate/dashboard/payout-callout";
 import { StatCards } from "@/components/affiliate/dashboard/stat-cards";
 import { OrdersChart } from "@/components/affiliate/dashboard/orders-chart";
 import { RecentOrders } from "@/components/affiliate/dashboard/recent-orders";
+import { EarningsDonut } from "@/components/affiliate/dashboard/earnings-donut";
 import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 import { parseRange } from "@/lib/affiliate/dashboard-ranges";
 
@@ -51,36 +52,49 @@ export default async function AffiliateDashboardPage({
   }
 
   return (
-    <div style={{ display: "grid", gap: 16 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>Dashboard</h1>
+    <div className="grid gap-4 lg:grid-cols-3 xl:h-[calc(100dvh_-_68px_-_4rem)] xl:min-h-[680px] xl:overflow-hidden">
+      {/* Left (2/3): payout banner, KPI cards, chart */}
+      <div className="flex min-h-0 flex-col gap-4 lg:col-span-2">
+        <PayoutCallout
+          availableUsd={data.earnings.availableUsd}
+          canRequestPayout={data.canRequestPayout}
+          rates={rates}
+          currency={currency}
+        />
 
-      <PayoutCallout
-        availableUsd={data.earnings.availableUsd}
-        canRequestPayout={data.canRequestPayout}
-        rates={rates}
-        currency={currency}
-      />
+        <StatCards
+          counts={data.counts}
+          earnings={data.earnings}
+          rates={rates}
+          currency={currency}
+        />
 
-      <StatCards
-        counts={data.counts}
-        earnings={data.earnings}
-        rates={rates}
-        currency={currency}
-      />
+        <div className="min-h-0 flex-1">
+          <OrdersChart
+            daily={data.daily}
+            range={data.range}
+            bucket={data.bucket}
+            rates={rates}
+            currency={currency}
+          />
+        </div>
+      </div>
 
-      <OrdersChart
-        daily={data.daily}
-        range={data.range}
-        bucket={data.bucket}
-        rates={rates}
-        currency={currency}
-      />
-
-      <RecentOrders
-        orders={data.recentOrders}
-        rates={rates}
-        currency={currency}
-      />
+      {/* Right (1/3): earnings donut, then recent orders */}
+      <div className="flex min-h-0 flex-col gap-4">
+        <EarningsDonut
+          earnings={data.earnings}
+          rates={rates}
+          currency={currency}
+        />
+        <div className="min-h-[280px] flex-1 xl:min-h-0">
+          <RecentOrders
+            orders={data.recentOrders}
+            rates={rates}
+            currency={currency}
+          />
+        </div>
+      </div>
     </div>
   );
 }

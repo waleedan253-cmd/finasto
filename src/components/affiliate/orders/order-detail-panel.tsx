@@ -146,7 +146,7 @@ export function OrderDetailPanel({
         {/* ─────────── Main column ─────────── */}
         <div className="flex flex-col gap-6 lg:col-span-2">
           {/* Items */}
-          <section className="rounded-2xl border border-border bg-white p-5 sm:p-6">
+          <section className="finasto-card p-5 sm:p-6">
             <h2 className="font-display text-[20px] leading-tight text-espresso">
               Items
             </h2>
@@ -214,7 +214,7 @@ export function OrderDetailPanel({
           </section>
 
           {/* Timeline */}
-          <section className="rounded-2xl border border-border bg-white p-5 sm:p-6">
+          <section className="finasto-card p-5 sm:p-6">
             <h2 className="font-display text-[20px] leading-tight text-espresso">
               Order timeline
             </h2>
@@ -266,7 +266,7 @@ export function OrderDetailPanel({
         {/* ─────────── Side column ─────────── */}
         <div className="flex flex-col gap-6">
           {/* Commission */}
-          <section className="rounded-2xl border border-border bg-white p-5 sm:p-6">
+          <section className="finasto-card p-5 sm:p-6">
             <h2 className="font-display text-[20px] leading-tight text-espresso">
               Your commission
             </h2>
@@ -309,7 +309,7 @@ export function OrderDetailPanel({
           </section>
 
           {/* Customer */}
-          <section className="rounded-2xl border border-border bg-white p-5 sm:p-6">
+          <section className="finasto-card p-5 sm:p-6">
             <h2 className="font-display text-[20px] leading-tight text-espresso">
               Customer
             </h2>

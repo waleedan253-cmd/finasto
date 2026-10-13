@@ -12,10 +12,10 @@ export function CommissionCard({
   const isSet = commissionPercent > 0;
 
   return (
-    <section className="rounded-2xl border border-border bg-espresso  p-5 sm:p-6">
+    <section className="finasto-card p-5 sm:p-6">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="font-display text-[20px] leading-tight text-cream">
+          <h2 className="font-display text-[20px] leading-tight text-espresso">
             Commission rate
           </h2>
           <p className="mt-1 max-w-md font-sans text-[13px] leading-relaxed text-warm-gray">
@@ -25,8 +25,8 @@ export function CommissionCard({
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-3 rounded-xl bg-cream px-4 py-3">
-          <span className="font-sans text-[22px] font-medium tabular-nums text-espresso ">
+        <div className="flex shrink-0 items-center gap-3 rounded-xl bg-copper/10 px-4 py-3">
+          <span className="font-display text-[26px] leading-none tabular-nums text-copper">
             {isSet ? `${commissionPercent}%` : "Not set"}
           </span>
         </div>

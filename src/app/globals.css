@@ -94,6 +94,81 @@ html {
 }
 
 /* Moving copper border for announcement bar */
+/* Shared premium card: border, soft shadow, copper top line (light mode) */
+.finasto-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-white);
+  box-shadow:
+    0 1px 2px rgba(50, 30, 24, 0.06),
+    0 6px 16px rgba(50, 30, 24, 0.05);
+}
+.finasto-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  border-radius: 1rem 1rem 0 0;
+  background: color-mix(in srgb, var(--color-copper) 70%, transparent);
+  pointer-events: none;
+}
+.dark .finasto-card {
+  border-color: var(--color-border);
+  box-shadow: none;
+}
+.dark .finasto-card::before {
+  display: none;
+}
+.finasto-card .ant-table {
+  background: transparent;
+}
+
+/* Soft copper glow, bottom-right corner, dark mode only */
+@keyframes finasto-glow-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-40px, -30px) scale(1.08);
+  }
+}
+
+.dark-glow {
+  display: none;
+}
+
+.dark .dark-glow {
+  display: block;
+  background: radial-gradient(
+    circle at center,
+    rgba(224, 165, 109, 0.06) 0%,
+    rgba(224, 165, 109, 0.03) 40%,
+    transparent 70%
+  );
+  animation: finasto-glow-drift 24s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark .dark-glow {
+    animation: none;
+  }
+}
+
+/* Safety net: no amount can overflow its box (all currencies) */
+.tabular-nums {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* Moving copper border for announcement bar */
 @keyframes finasto-border-flow {
   from {
     background-position: 0% 0;

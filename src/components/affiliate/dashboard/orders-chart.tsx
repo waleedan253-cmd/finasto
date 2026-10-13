@@ -17,20 +17,21 @@
 //
 // Needs: npm install recharts
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Area,
+  AreaChart,
   Bar,
+  BarChart,
   CartesianGrid,
-  ComposedChart,
-  Legend,
-  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import { Card, Empty, Select, Typography } from "antd";
+import { Empty, Segmented, Select, Skeleton } from "antd";
+import { cn } from "@/lib/utils";
 // Type-only import: erased at build, so no server code reaches the browser.
 import type { DashboardDay } from "@/lib/affiliate/dashboard-queries";
 import {
@@ -80,6 +81,20 @@ export function OrdersChart({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [metric, setMetric] = useState<"commission" | "orders">("commission");
+
+  // Tooltip uses theme tokens, so it flips with light and dark mode.
+  const tooltipProps = {
+    contentStyle: {
+      backgroundColor: "var(--color-white)",
+      border: "1px solid var(--color-border-strong)",
+      borderRadius: 12,
+      boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+      fontSize: 12,
+    },
+    labelStyle: { color: "var(--color-warm-gray)", marginBottom: 4 },
+    itemStyle: { color: "var(--color-espresso)" },
+  };
 
   // Amounts stay USD; the affiliate's locked currency is shown as "approx.".
   const amount = (n: number) => withApprox(n, "USD", currency, rates);
@@ -104,110 +119,186 @@ export function OrdersChart({
   };
 
   return (
-    <Card
-      size="small"
-      title={label}
-      loading={isPending}
-      extra={
-        <Select<DashboardRange>
-          placeholder=""
-          value={range}
-          onChange={onRangeChange}
-          options={DASHBOARD_RANGES.map((r) => ({
-            value: r.value,
-            label: r.label,
-          }))}
-          style={{ minWidth: 150 }}
-          aria-label="Chart period"
-        />
-      }
+    <div
+      aria-busy={isPending}
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden rounded-2xl border border-border-strong bg-white p-4 shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] transition-opacity dark:border-border dark:shadow-none sm:p-5",
+        isPending && "opacity-60",
+      )}
     >
-      <Typography.Text
-        type="secondary"
-        style={{ display: "block", fontSize: 12, marginBottom: 8 }}
-      >
-        {bucket === "month" ? "Orders per month" : "Orders per day"} and
-        commission on paid orders.{" "}
-        {bucket === "month" ? "Months are UTC." : "Days are UTC."}
-      </Typography.Text>
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[2px] bg-copper/70 dark:hidden"
+      />
 
-      {isEmpty ? (
-        <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="No orders in this period. Share your link and they will appear here."
-        />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-warm-gray">
+            {label}
+          </p>
+          <p className="mt-2 font-display text-[32px] leading-none tabular-nums text-espresso">
+            {metric === "commission"
+              ? amount(totalCommission).original
+              : totalOrders}
+          </p>
+          <p className="mt-1.5 font-sans text-[12px] text-warm-gray">
+            {metric === "commission"
+              ? `${totalOrders} orders`
+              : `${commissionText(totalCommission)} commission`}
+            {" · "}
+            {bucket === "month" ? "Months are UTC" : "Days are UTC"}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Segmented<"commission" | "orders">
+            value={metric}
+            onChange={setMetric}
+            options={[
+              { label: "Commission", value: "commission" },
+              { label: "Orders", value: "orders" },
+            ]}
+          />
+          <Select<DashboardRange>
+            placeholder=""
+            value={range}
+            onChange={onRangeChange}
+            options={DASHBOARD_RANGES.map((r) => ({
+              value: r.value,
+              label: r.label,
+            }))}
+            style={{ minWidth: 150 }}
+            aria-label="Chart period"
+          />
+        </div>
+      </div>
+
+      {isPending ? (
+        <div className="mt-4 flex-1">
+          <Skeleton active title={false} paragraph={{ rows: 4 }} />
+        </div>
+      ) : isEmpty ? (
+        <div className="flex flex-1 items-center justify-center">
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="No orders in this period. Share your link and they will appear here."
+          />
+        </div>
       ) : (
         <div
-          style={{ height: 288, width: "100%" }}
+          className="mt-4 min-h-[220px] w-full flex-1"
           role="img"
           aria-label={`Chart, ${label.toLowerCase()}: ${totalOrders} orders and ${amount(totalCommission).original} commission.`}
         >
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart
-              data={daily}
-              margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke={TEXT_COLOR}
-                strokeOpacity={0.15}
-              />
-              <XAxis
-                dataKey="day"
-                tickFormatter={(v) => formatBucket(String(v), bucket)}
-                tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                minTickGap={24}
-              />
-              <YAxis
-                yAxisId="orders"
-                allowDecimals={false}
-                tick={{ fill: ORDERS_COLOR, fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={32}
-              />
-              <YAxis
-                yAxisId="commission"
-                orientation="right"
-                tickFormatter={(v) => `$${v}`}
-                tick={{ fill: COMMISSION_COLOR, fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={48}
-              />
-              <Tooltip
-                labelFormatter={(l) => formatBucket(String(l), bucket)}
-                formatter={(value, name) => [
-                  name === "Commission"
-                    ? commissionText(Number(value))
-                    : String(value),
-                  String(name),
-                ]}
-              />
-              <Legend verticalAlign="bottom" height={28} />
-              <Bar
-                yAxisId="orders"
-                dataKey="orders"
-                name="Orders"
-                fill={ORDERS_COLOR}
-                radius={[2, 2, 0, 0]}
-                maxBarSize={bucket === "month" ? 32 : 20}
-              />
-              <Line
-                yAxisId="commission"
-                dataKey="commissionUsd"
-                name="Commission"
-                type="monotone"
-                stroke={COMMISSION_COLOR}
-                strokeWidth={2}
-                dot={false}
-              />
-            </ComposedChart>
+            {metric === "commission" ? (
+              <AreaChart
+                data={daily}
+                margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+              >
+                <defs>
+                  <linearGradient
+                    id="commissionFill"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="0%"
+                      style={{ stopColor: COMMISSION_COLOR, stopOpacity: 0.35 }}
+                    />
+                    <stop
+                      offset="100%"
+                      style={{ stopColor: COMMISSION_COLOR, stopOpacity: 0 }}
+                    />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid
+                  vertical={false}
+                  strokeDasharray="3 3"
+                  stroke={TEXT_COLOR}
+                  strokeOpacity={0.12}
+                />
+                <XAxis
+                  dataKey="day"
+                  tickFormatter={(v) => formatBucket(String(v), bucket)}
+                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  minTickGap={24}
+                />
+                <YAxis
+                  tickFormatter={(v) => `$${v}`}
+                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={48}
+                />
+                <Tooltip
+                  {...tooltipProps}
+                  cursor={{ stroke: TEXT_COLOR, strokeOpacity: 0.2 }}
+                  labelFormatter={(l) => formatBucket(String(l), bucket)}
+                  formatter={(value) => [
+                    commissionText(Number(value)),
+                    "Commission",
+                  ]}
+                />
+                <Area
+                  dataKey="commissionUsd"
+                  name="Commission"
+                  type="monotone"
+                  stroke={COMMISSION_COLOR}
+                  strokeWidth={2}
+                  fill="url(#commissionFill)"
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              </AreaChart>
+            ) : (
+              <BarChart
+                data={daily}
+                margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
+              >
+                <CartesianGrid
+                  vertical={false}
+                  strokeDasharray="3 3"
+                  stroke={TEXT_COLOR}
+                  strokeOpacity={0.12}
+                />
+                <XAxis
+                  dataKey="day"
+                  tickFormatter={(v) => formatBucket(String(v), bucket)}
+                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  minTickGap={24}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={32}
+                />
+                <Tooltip
+                  {...tooltipProps}
+                  cursor={{ fill: TEXT_COLOR, fillOpacity: 0.06 }}
+                  labelFormatter={(l) => formatBucket(String(l), bucket)}
+                  formatter={(value) => [String(value), "Orders"]}
+                />
+                <Bar
+                  dataKey="orders"
+                  name="Orders"
+                  fill={ORDERS_COLOR}
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={bucket === "month" ? 32 : 20}
+                />
+              </BarChart>
+            )}
           </ResponsiveContainer>
         </div>
       )}
-    </Card>
+    </div>
   );
 }

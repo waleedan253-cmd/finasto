@@ -92,7 +92,7 @@ export default function PaidPayoutsList({
       fixed: "left",
       width: 190,
       render: (value: string) => (
-        <span style={{ color: "#1677ff" }}>{value}</span>
+        <span className="font-medium text-green">{value}</span>
       ),
     },
     {
@@ -122,7 +122,7 @@ export default function PaidPayoutsList({
           <div>
             <strong>{converted.original}</strong>
             {converted.approx && (
-              <div style={{ fontSize: 12, color: "#888" }}>
+              <div className="text-[12px] text-warm-gray">
                 {converted.approx}
               </div>
             )}
@@ -142,7 +142,8 @@ export default function PaidPayoutsList({
             href={r.proofUrl}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ padding: 0, color: "green" }}
+            className="!text-green"
+            style={{ padding: 0 }}
           >
             View proof
           </Button>
@@ -153,7 +154,12 @@ export default function PaidPayoutsList({
   ];
 
   return (
-    <Card title="Paid payouts">
+    <Card
+      className="finasto-card"
+      bordered={false}
+      style={{ background: "var(--color-white)" }}
+      title="Paid payouts"
+    >
       <Table<PaidPayout>
         size="middle"
         rowKey="id"
@@ -182,15 +188,7 @@ export default function PaidPayoutsList({
                 colon={false}
               >
                 <Descriptions.Item
-                  label={
-                    <span
-                      style={{
-                        color: "green",
-                      }}
-                    >
-                      Paid at
-                    </span>
-                  }
+                  label={<span className="text-green">Paid at</span>}
                 >
                   {dateTime(r.paidAt)}
                 </Descriptions.Item>

@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AffiliateSidebar } from "./affiliate-sidebar";
 import { affiliateNav, isNavActive } from "./affiliate-nav";
 
 import { AffiliateNotificationBell } from "./notification-bell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Same layout as admin-shell.tsx: fixed 260px sidebar on desktop, a
 // slide-in drawer with overlay on mobile, and a sticky top bar showing
@@ -26,6 +27,8 @@ export function AffiliateShell({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+
+  const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   // Until username, phone and country are saved, only Settings is usable.
   const needsProfile =
@@ -50,7 +53,11 @@ export function AffiliateShell({
   }, [open]);
 
   return (
-    <div className="min-h-screen bg-[#F5F1EB]">
+    <div className="relative min-h-screen bg-cream dark:bg-cream-soft">
+      <div
+        aria-hidden
+        className="dark-glow pointer-events-none fixed -bottom-40 -right-40 z-0 h-[520px] w-[520px] rounded-full"
+      />
       {open && (
         <div
           aria-hidden="true"
@@ -63,15 +70,23 @@ export function AffiliateShell({
         id="affiliate-sidebar"
         aria-label="Affiliate navigation"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] border-r border-border bg-cream transition-transform duration-300 ease-out lg:w-[260px] lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-[280px] border-r border-border bg-cream transition-[transform,width] duration-300 ease-out lg:translate-x-0",
+          collapsed ? "lg:w-[76px]" : "lg:w-[260px]",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <AffiliateSidebar onNavigate={() => setOpen(false)} />
+        <AffiliateSidebar
+          onNavigate={() => setOpen(false)}
+          collapsed={collapsed}
+        />
       </aside>
-
-      <div className="lg:pl-[260px]">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-cream/95 px-4 backdrop-blur-sm sm:px-6">
+      <div
+        className={cn(
+          "transition-[padding] duration-300 ease-out",
+          collapsed ? "lg:pl-[76px]" : "lg:pl-[260px]",
+        )}
+      >
+        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between gap-3 border-b border-border bg-cream/80 px-4 backdrop-blur-xl backdrop-saturate-150 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <button
               type="button"
@@ -83,16 +98,40 @@ export function AffiliateShell({
             >
               <Menu className="h-6 w-6" strokeWidth={1.6} />
             </button>
-            <span className="truncate font-display text-[20px] text-espresso">
-              {title}
-            </span>
+
+            <button
+              type="button"
+              onClick={() => setCollapsed((c) => !c)}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              className="hidden h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-warm-gray transition-colors hover:bg-espresso/5 hover:text-espresso lg:inline-flex"
+            >
+              {collapsed ? (
+                <PanelLeftOpen className="h-5 w-5" strokeWidth={1.6} />
+              ) : (
+                <PanelLeftClose className="h-5 w-5" strokeWidth={1.6} />
+              )}
+            </button>
+            <div className="min-w-0">
+              <p className="hidden font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-copper sm:block">
+                Affiliate
+              </p>
+              <h1 className="truncate font-display text-[22px] leading-tight tracking-tight text-espresso">
+                {title}
+              </h1>
+            </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <ThemeToggle />
             <AffiliateNotificationBell />
 
+            <span
+              aria-hidden
+              className="mx-1 hidden h-6 w-px bg-border sm:block"
+            />
+
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-espresso font-sans text-[12px] font-medium text-cream">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-copper-light to-copper font-sans text-[12px] font-semibold text-espresso-deep ring-2 ring-copper/30">
                 {initials}
               </div>
               <div className="hidden min-w-0 md:block">

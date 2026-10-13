@@ -30,7 +30,7 @@ export default async function AffiliateLayout({
 
   if (!affiliate || affiliate.status !== "active") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F5F1EB] p-6">
+      <div className="flex min-h-screen items-center justify-center bg-cream p-6">
         <div className="w-full max-w-md rounded-2xl border border-border bg-white p-8 text-center">
           <h1 className="font-display text-[24px] leading-tight text-espresso">
             Account unavailable
