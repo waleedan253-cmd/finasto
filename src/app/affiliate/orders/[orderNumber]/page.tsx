@@ -3,6 +3,9 @@ import { getMyOrder } from "@/lib/affiliate/orders-queries";
 import { OrderDetailPanel } from "@/components/affiliate/orders/order-detail-panel";
 import { createClient } from "@/lib/supabase/server";
 import type { RateMap } from "@/lib/currency";
+import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
+
+export const metadata = { title: "specific order " };
 
 // /affiliate/orders/<order number>   e.g. /affiliate/orders/FIN-20261007-XS7Z
 //
@@ -17,7 +20,7 @@ export default async function AffiliateOrderPage({
   params: Promise<{ orderNumber: string }>;
 }) {
   const { orderNumber } = await params;
-
+  const { currency } = await getAffiliateDisplay();
   const order = await getMyOrder(decodeURIComponent(orderNumber));
   if (!order) notFound();
 
@@ -34,5 +37,5 @@ export default async function AffiliateOrderPage({
     };
   }
 
-  return <OrderDetailPanel order={order} rates={rates} />;
+  return <OrderDetailPanel order={order} rates={rates} currency={currency} />;
 }

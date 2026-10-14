@@ -11,6 +11,7 @@ import {
   isPaymentStatus,
 } from "@/components/affiliate/orders/order-status-badge";
 
+export const metadata = { title: "Orders" };
 // /affiliate/orders
 //
 // The affiliate's order history: customer first name and masked email,

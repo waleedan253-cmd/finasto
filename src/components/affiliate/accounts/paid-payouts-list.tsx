@@ -92,7 +92,9 @@ export default function PaidPayoutsList({
       fixed: "left",
       width: 190,
       render: (value: string) => (
-        <span className="font-medium text-green">{value}</span>
+        <span className="font-medium text-[#9A5A24] dark:text-copper">
+          {value}
+        </span>
       ),
     },
     {

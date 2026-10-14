@@ -70,7 +70,7 @@ export default function PayoutRequestsList({
       fixed: "left",
       width: 190,
       render: (value: string) => (
-        <span className="font-medium text-green">{value}</span>
+        <span className="font-medium text-copper">{value}</span>
       ),
     },
     {

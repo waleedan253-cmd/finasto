@@ -10,7 +10,7 @@ export const roleHome: Record<Role, string> = {
 export const portalEnabled: Record<Role, boolean> = {
   admin: true,
   affiliate: true,
-  stockist: false,
+  stockist: true,
 };
 
 export function isRole(v: unknown): v is Role {

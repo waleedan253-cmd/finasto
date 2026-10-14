@@ -25,12 +25,12 @@ export function EarningsDonut({
     {
       name: "Pending",
       value: Math.max(earnings.pendingUsd, 0),
-      color: "var(--color-warm-gray)",
+      color: "#C9B28A",
     },
     {
       name: "In review",
       value: Math.max(earnings.inReviewUsd, 0),
-      color: "var(--color-espresso)",
+      color: "#6F9DB5",
     },
     {
       name: "Paid out",

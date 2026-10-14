@@ -9,7 +9,7 @@ import { Metadata } from "next";
 // adds a short intro. Role and active-status checks happen in
 // app/affiliate/layout.tsx; getMySettings() re-checks the role itself.
 export const metadata: Metadata = {
-  title: "Setting — Finasto Affiliate",
+  title: "Setting ",
   robots: { index: false, follow: false },
 };
 export default async function AffiliateSettingsPage() {
@@ -21,10 +21,9 @@ export default async function AffiliateSettingsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+      s
       <CommissionCard commissionPercent={settings.commissionPercent} />
-
       <ProfileForm settings={settings} />
-
       <BankDetailsForm settings={settings} />
     </div>
   );

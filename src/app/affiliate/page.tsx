@@ -15,6 +15,8 @@ import { StatCards } from "@/components/affiliate/dashboard/stat-cards";
 import { OrdersChart } from "@/components/affiliate/dashboard/orders-chart";
 import { RecentOrders } from "@/components/affiliate/dashboard/recent-orders";
 import { EarningsDonut } from "@/components/affiliate/dashboard/earnings-donut";
+import { ReferralStrip } from "@/components/affiliate/dashboard/referral-strip";
+import { getMyReferralLink } from "@/lib/affiliate/referral-link-queries";
 import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 import { parseRange } from "@/lib/affiliate/dashboard-ranges";
 
@@ -33,6 +35,7 @@ export default async function AffiliateDashboardPage({
   const data = await getMyDashboard(range);
   // The affiliate's locked display currency and the rates (display only).
   const { currency, rates } = await getAffiliateDisplay();
+  const link = await getMyReferralLink();
 
   // Safety net: the layout normally blocks a login with no affiliate row.
   if (!data) {
@@ -61,6 +64,7 @@ export default async function AffiliateDashboardPage({
           rates={rates}
           currency={currency}
         />
+        {link && <ReferralStrip link={link} />}
 
         <StatCards
           counts={data.counts}

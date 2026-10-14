@@ -65,6 +65,8 @@ function formatBucket(day: string, bucket: "day" | "month"): string {
 const ORDERS_COLOR = "var(--color-green)";
 const COMMISSION_COLOR = "var(--color-copper)";
 const TEXT_COLOR = "var(--color-espresso)";
+const MUTED_COLOR = "var(--color-warm-gray)";
+const GRID_COLOR = "var(--color-border-strong)";
 
 export function OrdersChart({
   daily,
@@ -217,20 +219,20 @@ export function OrdersChart({
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
-                  stroke={TEXT_COLOR}
-                  strokeOpacity={0.12}
+                  stroke={GRID_COLOR}
+                  strokeOpacity={0.6}
                 />
                 <XAxis
                   dataKey="day"
                   tickFormatter={(v) => formatBucket(String(v), bucket)}
-                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tick={{ fill: MUTED_COLOR, fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   minTickGap={24}
                 />
                 <YAxis
                   tickFormatter={(v) => `$${v}`}
-                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tick={{ fill: MUTED_COLOR, fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   width={48}
@@ -252,7 +254,12 @@ export function OrdersChart({
                   strokeWidth={2}
                   fill="url(#commissionFill)"
                   dot={false}
-                  activeDot={{ r: 4 }}
+                  activeDot={{
+                    r: 5,
+                    fill: COMMISSION_COLOR,
+                    stroke: "var(--color-white)",
+                    strokeWidth: 2,
+                  }}
                 />
               </AreaChart>
             ) : (
@@ -263,20 +270,20 @@ export function OrdersChart({
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
-                  stroke={TEXT_COLOR}
-                  strokeOpacity={0.12}
+                  stroke={GRID_COLOR}
+                  strokeOpacity={0.6}
                 />
                 <XAxis
                   dataKey="day"
                   tickFormatter={(v) => formatBucket(String(v), bucket)}
-                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tick={{ fill: MUTED_COLOR, fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   minTickGap={24}
                 />
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fill: TEXT_COLOR, fillOpacity: 0.6, fontSize: 12 }}
+                  tick={{ fill: MUTED_COLOR, fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   width={32}

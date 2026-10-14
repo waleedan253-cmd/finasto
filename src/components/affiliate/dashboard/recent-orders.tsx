@@ -116,14 +116,15 @@ export function RecentOrders({
                   <p className="font-sans text-[13px] font-semibold tabular-nums text-green">
                     {a.original}
                   </p>
+
+                  <p className="mt-0.5 font-sans text-[11px] text-warm-gray">
+                    {COMMISSION_LABEL[o.commissionState] ?? o.commissionState}
+                  </p>
                   {a.approx && (
                     <p className="font-sans text-[11px] tabular-nums text-warm-gray">
                       {a.approx}
                     </p>
                   )}
-                  <p className="mt-0.5 font-sans text-[11px] text-warm-gray">
-                    {COMMISSION_LABEL[o.commissionState] ?? o.commissionState}
-                  </p>
                 </div>
               </li>
             );

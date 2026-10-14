@@ -254,8 +254,8 @@ export function withApprox(
   return {
     original,
     originalFull,
-    approx: `approx. ${formatMoneyFit(v.amount, v.currency)}`,
-    approxFull: `approx. ${formatMoney(v.amount, v.currency)}`,
+    approx: `≈ ${formatMoneyFit(v.amount, v.currency)}`,
+    approxFull: `≈ ${formatMoney(v.amount, v.currency)}`,
   };
 }
 
