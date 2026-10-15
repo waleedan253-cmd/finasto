@@ -134,7 +134,7 @@ export function StatCards({
           />
         </Col>
 
-        <Col xs={12} lg={6}>
+        <Col xs={12} lg={6} className="hero-col">
           <StatCard
             title="Available  request"
             value={usd(available)}

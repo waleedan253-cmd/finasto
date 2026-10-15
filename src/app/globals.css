@@ -24,23 +24,22 @@
 .dark {
   color-scheme: dark;
 
-  --color-cream: #232219;
-  --color-cream-soft: #1e1d17;
-  --color-white: #2a291f;
-  --color-espresso: #f2e9dc;
-  --color-espresso-deep: #14130e;
-  --color-green: #7fbf6a;
-  --color-green-deep: #95cd82;
-  --color-green-bg: #26301f;
-  --color-copper: #e0a56d;
-  --color-copper-light: #edbb88;
-  --color-red: #e06a5f;
-  --color-warm-gray: #b3ad9f;
-  --color-border: rgba(224, 165, 109, 0.22);
-  --color-border-strong: rgba(224, 165, 109, 0.36);
-  --color-disabled: #5a574c;
+  --color-cream: #12261c;
+  --color-cream-soft: #0e1d16;
+  --color-white: #162e22;
+  --color-espresso: #f4eee2;
+  --color-espresso-deep: #0a1510;
+  --color-green: #8fd07a;
+  --color-green-deep: #a5dc92;
+  --color-green-bg: #1d3a28;
+  --color-copper: #e8b27c;
+  --color-copper-light: #f1c79b;
+  --color-red: #ee8a7e;
+  --color-warm-gray: #b9c7bc;
+  --color-border: rgba(232, 178, 124, 0.2);
+  --color-border-strong: rgba(232, 178, 124, 0.32);
+  --color-disabled: #5b6d62;
 }
-
 @theme inline {
   --color-cream: var(--color-cream);
   --color-cream-soft: var(--color-cream-soft);
@@ -64,7 +63,7 @@
 .dark .hover\:bg-espresso-deep:hover,
 .dark .hover\:bg-espresso:hover {
   background-color: var(--color-copper-light);
-  color: #1e1d17;
+  color: #0e1d16;
 }
 
 body {
@@ -91,6 +90,21 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Moving copper border for announcement bar */
+/* The one focal card: copper gradient on the Available KPI */
+.hero-col > div {
+  background: linear-gradient(135deg, #f0b06e 0%, #c9803f 60%, #9a5a24 100%);
+  border-color: transparent;
+  box-shadow: 0 8px 22px rgba(232, 162, 93, 0.22);
+}
+.hero-col > div p {
+  color: #24110a;
+}
+.hero-col > div > div span {
+  background: rgba(36, 17, 10, 0.12);
+  color: #24110a;
 }
 
 /* Moving copper border for announcement bar */
@@ -167,6 +181,21 @@ html {
   white-space: nowrap;
   vertical-align: bottom;
 }
+/* The one focal card: copper gradient on the Available KPI */
+.hero-col > div {
+  background: linear-gradient(135deg, #f0b06e 0%, #c9803f 60%, #9a5a24 100%);
+  border-color: transparent;
+  box-shadow: 0 8px 22px rgba(232, 162, 93, 0.22);
+}
+.hero-col > div p {
+  color: #24110a;
+}
+.hero-col > div > div span {
+  background: rgba(36, 17, 10, 0.12);
+  color: #24110a;
+}
+
+/* Moving copper border for announcement bar */
 
 /* Moving copper border for announcement bar */
 @keyframes finasto-border-flow {

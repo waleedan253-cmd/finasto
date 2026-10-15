@@ -32,7 +32,7 @@ export function StockistShell({
   const pathname = usePathname();
   // Until username, phone and country are saved, only Settings is usable.
   const needsProfile =
-    !profileLocked && !pathname.startsWith("/affiliate/settings");
+    !profileLocked && !pathname.startsWith("/stockist/settings");
   const title =
     stockistNav.find((i) => isNavActive(pathname, i.href))?.label ?? "Stockist";
   const initials = (name || email || "A").trim().slice(0, 2).toUpperCase();

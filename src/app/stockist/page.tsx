@@ -1,29 +1,24 @@
-// Affiliate Dashboard. Replaces the "coming soon" placeholder.
-//
-// A server component: it reads everything through getMyDashboard(),
-// which finds the affiliate from the signed-in user, so no affiliate id
-// ever comes from the browser. If a query fails, getMyDashboard() throws
-// and the route's error boundary shows an error instead of fake zeros.
-//
-// `rates` feeds the "approx." amounts in the currency chosen in the
-// header menu. Load it exactly the way the Payout Requests page does
-// (see the TODO below).
+import { getMyStockistProfile } from "@/lib/stockist/settings-queries";
 
-// Always read fresh numbers for the signed-in affiliate.
-// export const dynamic = "force-dynamic";s
+// Stockist Dashboard placeholder. The real numbers (stock bought, sold and
+// remaining, open bulk orders, recent orders) are built last, once those
+// flows exist. getMyStockistProfile() calls requireRole("stockist") itself.
 
-export const metadata = { title: "Stockist - Dashboard" };
+export const metadata = { title: "Dashboard" };
 
-export default async function StockistDashboardPage({}: {}) {
+export default async function StockistDashboardPage() {
+  const profile = await getMyStockistProfile();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-[28px]s leading-tight text-espresso">
-          Dashboard
+        <h1 className="font-display text-[28px] leading-tight text-espresso">
+          {profile ? `Welcome, ${profile.name}` : "Dashboard"}
         </h1>
-        <p className="mt-1 font-sans text-[14px] text-warm-gray">
-          We could not find an affiliate account for this login. Contact support
-          if this looks wrong.
+        <p className="mt-1 max-w-xl font-sans text-[14px] leading-relaxed text-warm-gray">
+          {profile
+            ? "Your products, bulk orders, stock and orders will appear here as they are set up."
+            : "We could not find a stockist account for this login. Contact support if this looks wrong."}
         </p>
       </div>
     </div>

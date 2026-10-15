@@ -570,3 +570,11 @@ alter table public.affiliates
   validate constraint affiliates_profile_id_profiles_fkey;
 
 notify pgrst, 'reload schema';
+
+
+
+select name, email, status,
+       default_profit_percent as discount_percent,
+       profile_id is not null as has_login
+from public.stockists
+order by name;

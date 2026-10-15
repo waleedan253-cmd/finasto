@@ -9,24 +9,22 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function AffiliateLayout({
+export default async function StockistLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // Authoritative server-side gate for everything under /affiliate.
-  const { user, name } = await requireRole("affiliate");
+  const { user, name } = await requireRole("stockist");
 
   // Having the affiliate role is not enough: the admin can pause or
   // soft-delete an affiliate, and their login still exists. Check the
   // affiliates row on every request (RLS lets an affiliate read only
   // their own row).
   const supabase = await createClient();
-  const { data: stockist } = await supabase
-    .from("stockist")
-    .select("status, profile_locked_at")
-    .eq("profile_id", user.id)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("my_stockist_profile");
+  if (error) console.error("[stockist layout]", error.message);
+  const stockist = (data as { status: string }[] | null)?.[0];
 
   if (!stockist || stockist.status !== "active") {
     return (
@@ -53,11 +51,7 @@ export default async function AffiliateLayout({
   }
 
   return (
-    <StockistShell
-      name={name}
-      email={user.email ?? ""}
-      profileLocked={!!stockist.profile_locked_at}
-    >
+    <StockistShell name={name} email={user.email ?? ""} profileLocked={true}>
       {children}
     </StockistShell>
   );
