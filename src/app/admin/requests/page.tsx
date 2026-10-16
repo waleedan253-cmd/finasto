@@ -63,8 +63,8 @@ export default async function RequestsPage({
           Requests
         </h1>
         <p className="mt-1 font-sans text-[14px] text-warm-gray">
-          Stockists ask to move an affiliate to another stockist. Nothing
-          changes until you approve a request.
+          Stockists ask to have an affiliate assigned to them. Nothing changes
+          until you approve a request.
         </p>
       </div>
 

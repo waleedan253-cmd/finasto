@@ -37,13 +37,22 @@ export type RequestStatus = "pending" | "approved" | "rejected";
 export type RequestListItem = {
   id: string;
   status: RequestStatus;
-  reason: string;
+  description: string;
   adminNote: string | null;
   createdAt: string;
   reviewedAt: string | null;
-  affiliate: { id: string; name: string; email: string | null };
-  fromStockist: { id: string; name: string };
-  toStockist: { id: string; name: string };
+  // What the stockist typed.
+  affiliateName: string;
+  affiliateEmail: string;
+  // The stockist who is asking for the affiliate.
+  requestedBy: { id: string; name: string };
+  // The affiliate whose email matched, or null if no affiliate has that
+  // email yet. currentStockist is null when the affiliate is unassigned.
+  matched: {
+    id: string;
+    name: string;
+    currentStockist: { id: string; name: string } | null;
+  } | null;
 };
 
 export type RequestListResult = {
@@ -63,12 +72,13 @@ export type RequestCounts = Record<RequestStatus, number>;
 const DEFAULT_PAGE_SIZE = 20;
 
 const SELECT = `
-  id, status, reason, admin_note, created_at, reviewed_at,
-  affiliate:affiliates!stockist_requests_affiliate_id_fkey (
-    id, email, profiles ( name )
-  ),
-  from_stockist:stockists!stockist_requests_from_stockist_id_fkey ( id, name ),
-  to_stockist:stockists!stockist_requests_to_stockist_id_fkey ( id, name )
+  id, status, description, admin_note, created_at, reviewed_at,
+  affiliate_name, affiliate_email,
+  requested_by:stockists!requesting_stockist_id ( id, name ),
+  matched:affiliates!stockist_requests_affiliate_id_fkey (
+    id, email, profiles ( name ),
+    current_stockist:stockists!stockist_id ( id, name )
+  )
 `;
 
 export async function listRequests(params: {
@@ -109,31 +119,33 @@ export async function listRequests(params: {
   }
 
   const items: RequestListItem[] = (data ?? []).map((row: any) => {
-    const affiliate = one<any>(row.affiliate);
-    const profile = one<any>(affiliate?.profiles);
-    const fromStockist = one<any>(row.from_stockist);
-    const toStockist = one<any>(row.to_stockist);
+    const requestedBy = one<any>(row.requested_by);
+    const matched = one<any>(row.matched);
+    const profile = one<any>(matched?.profiles);
+    const current = one<any>(matched?.current_stockist);
 
     return {
       id: row.id,
       status: row.status,
-      reason: row.reason,
+      description: row.description,
       adminNote: row.admin_note ?? null,
       createdAt: row.created_at,
       reviewedAt: row.reviewed_at ?? null,
-      affiliate: {
-        id: affiliate?.id ?? "",
-        name: profile?.name ?? affiliate?.email ?? "Unnamed affiliate",
-        email: affiliate?.email ?? null,
+      affiliateName: row.affiliate_name,
+      affiliateEmail: row.affiliate_email,
+      requestedBy: {
+        id: requestedBy?.id ?? "",
+        name: requestedBy?.name ?? "Unknown stockist",
       },
-      fromStockist: {
-        id: fromStockist?.id ?? "",
-        name: fromStockist?.name ?? "Unknown stockist",
-      },
-      toStockist: {
-        id: toStockist?.id ?? "",
-        name: toStockist?.name ?? "Unknown stockist",
-      },
+      matched: matched
+        ? {
+            id: matched.id,
+            name: profile?.name ?? matched.email ?? row.affiliate_name,
+            currentStockist: current
+              ? { id: current.id, name: current.name }
+              : null,
+          }
+        : null,
     };
   });
 

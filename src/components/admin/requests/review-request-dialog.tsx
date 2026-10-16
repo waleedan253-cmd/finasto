@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Descriptions, Input, Modal, message } from "antd";
-import { ArrowRightOutlined } from "@ant-design/icons";
+
 import { approveRequest, rejectRequest } from "@/lib/admin/request-actions";
 import type { RequestListItem } from "@/lib/admin/request-queries";
 import { RequestStatusBadge } from "./request-status-badge";
@@ -85,7 +85,7 @@ export function ReviewRequestDialog({
       if (result.success) {
         message.success(
           kind === "approve"
-            ? `${r.affiliate.name} moved to ${r.toStockist.name}`
+            ? `${r.affiliateName} assigned to ${r.requestedBy.name}`
             : "Request rejected",
         );
         router.refresh();
@@ -176,30 +176,35 @@ export function ReviewRequestDialog({
             label: "Affiliate",
             children: (
               <div>
-                <div className="font-medium">{r.affiliate.name}</div>
-                {r.affiliate.email && (
-                  <div className="text-[12px] text-neutral-500">
-                    {r.affiliate.email}
-                  </div>
-                )}
+                <div className="font-medium">{r.affiliateName}</div>
+                <div className="text-[12px] text-neutral-500">
+                  {r.affiliateEmail}
+                </div>
               </div>
             ),
           },
           {
-            key: "move",
-            label: "Move",
-            children: (
-              <span className="inline-flex flex-wrap items-center gap-2">
-                <span>{r.fromStockist.name}</span>
-                <ArrowRightOutlined className="text-neutral-400" />
-                <span className="font-medium">{r.toStockist.name}</span>
+            key: "requestedBy",
+            label: "Requested by",
+            children: <span className="font-medium">{r.requestedBy.name}</span>,
+          },
+          {
+            key: "currentStockist",
+            label: "Currently with",
+            children: r.matched ? (
+              <span>{r.matched.currentStockist?.name ?? "Unassigned"}</span>
+            ) : (
+              <span className="text-[#cf1322]">
+                No affiliate with this email yet
               </span>
             ),
           },
           {
-            key: "reason",
-            label: "Reason",
-            children: <span className="whitespace-pre-wrap">{r.reason}</span>,
+            key: "description",
+            label: "Description",
+            children: (
+              <span className="whitespace-pre-wrap">{r.description}</span>
+            ),
           },
           {
             key: "submitted",
@@ -252,13 +257,28 @@ export function ReviewRequestDialog({
             showIcon
             className="mb-3"
             message={
-              <>
-                <strong>{r.affiliate.name}</strong> will move from{" "}
-                <strong>{r.fromStockist.name}</strong> to{" "}
-                <strong>{r.toStockist.name}</strong> right away. Orders already
-                placed keep <strong>{r.fromStockist.name}</strong>; new orders
-                use <strong>{r.toStockist.name}</strong>.
-              </>
+              r.matched ? (
+                <>
+                  <strong>{r.matched.name}</strong> will be assigned to{" "}
+                  <strong>{r.requestedBy.name}</strong> right away
+                  {r.matched.currentStockist ? (
+                    <>
+                      {" "}
+                      (currently with{" "}
+                      <strong>{r.matched.currentStockist.name}</strong>)
+                    </>
+                  ) : null}
+                  . Orders already placed keep their original stockist; new
+                  orders use <strong>{r.requestedBy.name}</strong>.
+                </>
+              ) : (
+                <>
+                  No affiliate had the email <strong>{r.affiliateEmail}</strong>{" "}
+                  when this was sent. Approval works only if they have signed up
+                  since. If not, you will see a message and can reject the
+                  request instead.
+                </>
+              )
             }
           />
           <label className="mb-1 block text-[13px] text-neutral-500">

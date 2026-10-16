@@ -69,37 +69,47 @@ export function RequestTable({
       render: (_, r) => (
         <div className="min-w-0">
           <div className="truncate font-medium" style={{ color: "#2E7D32" }}>
-            {r.affiliate.name}
+            {r.affiliateName}
           </div>
-          {r.affiliate.email && (
-            <div className="truncate text-[12px] text-neutral-500">
-              {r.affiliate.email}
-            </div>
-          )}
+          <div className="truncate text-[12px] text-neutral-500">
+            {r.affiliateEmail}
+          </div>
         </div>
       ),
     },
     {
-      title: "Move",
-      key: "move",
+      title: "Assign to",
+      key: "assign",
       width: 260,
-      render: (_, r) => (
-        <span className="inline-flex flex-wrap items-center gap-2">
-          <span style={{ color: "#d48806" }}>{r.fromStockist.name}</span>
-          <ArrowRightOutlined className="text-neutral-400" />
-          <span className="font-medium">{r.toStockist.name}</span>
-        </span>
-      ),
+      render: (_, r) =>
+        r.status === "pending" && r.matched ? (
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <span style={{ color: "#d48806" }}>
+              {r.matched.currentStockist?.name ?? "Unassigned"}
+            </span>
+            <ArrowRightOutlined className="text-neutral-400" />
+            <span className="font-medium">{r.requestedBy.name}</span>
+          </span>
+        ) : (
+          <div>
+            <div className="font-medium">{r.requestedBy.name}</div>
+            {r.status === "pending" && !r.matched && (
+              <div className="text-[12px] text-[#cf1322]">
+                No matching affiliate yet
+              </div>
+            )}
+          </div>
+        ),
     },
     {
-      title: "Reason",
-      key: "reason",
+      title: "Description",
+      key: "description",
       width: 260,
       render: (_, r) => (
         <Tooltip
-          title={<span className="whitespace-pre-wrap">{r.reason}</span>}
+          title={<span className="whitespace-pre-wrap">{r.description}</span>}
         >
-          <span className="line-clamp-2 text-neutral-600">{r.reason}</span>
+          <span className="line-clamp-2 text-neutral-600">{r.description}</span>
         </Tooltip>
       ),
     },
@@ -137,7 +147,7 @@ export function RequestTable({
           <Button
             type="primary"
             size="small"
-            aria-label={`Review request for ${r.affiliate.name}`}
+            aria-label={`Review request for ${r.affiliateName}`}
             onClick={() => setSelected(r)}
           >
             Review
@@ -145,7 +155,7 @@ export function RequestTable({
         ) : (
           <Button
             size="small"
-            aria-label={`View request for ${r.affiliate.name}`}
+            aria-label={`View request for ${r.affiliateName}`}
             onClick={() => setSelected(r)}
           >
             View
