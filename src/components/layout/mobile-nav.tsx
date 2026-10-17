@@ -57,9 +57,18 @@ export function MobileNav({
                   <Image
                     src="/brand/finasto-logo.png"
                     alt="Finasto"
-                    width={60}
-                    height={70}
+                    width={120}
+                    height={90}
                     priority
+                    className="h-11 w-auto dark:hidden"
+                  />
+                  <Image
+                    src="/brand/finasto-logo-dark.png"
+                    alt="Finasto"
+                    width={120}
+                    height={90}
+                    priority
+                    className="hidden h-11 w-auto dark:block"
                   />
                 </Link>
               </span>

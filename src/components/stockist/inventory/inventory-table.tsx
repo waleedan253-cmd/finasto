@@ -50,6 +50,15 @@ export function InventoryTable({ inventory }: { inventory: Inventory }) {
 
   const columns: TableColumnsType<InventoryRow> = [
     {
+      title: "#",
+      dataIndex: "sr",
+      width: 60,
+      render: (_, __, index) => (
+        <span className="tabular-nums text-neutral-500">{index + 1}</span>
+      ),
+    },
+
+    {
       title: "Product",
       dataIndex: "productName",
       render: (v: string) => (

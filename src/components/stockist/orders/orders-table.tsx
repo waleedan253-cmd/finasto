@@ -6,6 +6,7 @@ import {
   OrderStatusBadge,
   PaymentStatusBadge,
 } from "@/components/affiliate/orders/order-status-badge";
+import { Input } from "antd";
 
 // Read-only order list for the stockist: search, status filter, table on
 // desktop, cards on mobile, plain-link paging. Everything lives in the URL
@@ -61,11 +62,8 @@ export function StockistOrdersTable({
       <div className="mb-4 flex flex-col gap-3">
         <form action={BASE} method="get" className="relative max-w-sm">
           {status && <input type="hidden" name="status" value={status} />}
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-warm-gray"
-            aria-hidden="true"
-          />
-          <input
+
+          <Input.Search
             type="search"
             name="q"
             defaultValue={q}

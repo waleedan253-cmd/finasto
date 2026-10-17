@@ -26,7 +26,7 @@ export default async function StockistBulkOrdersPage({
   return (
     <div>
       <h1 className="font-display text-[28px] leading-tight text-espresso">
-        Bulk orders
+        Wholesale Orders
       </h1>
       <p className="mt-2 mb-6 max-w-xl font-sans text-[14px] leading-relaxed text-warm-gray">
         Request packs at your discounted price. Finasto reviews each request and

@@ -24,21 +24,21 @@
 .dark {
   color-scheme: dark;
 
-  --color-cream: #12261c;
-  --color-cream-soft: #0e1d16;
-  --color-white: #162e22;
-  --color-espresso: #f4eee2;
-  --color-espresso-deep: #0a1510;
-  --color-green: #8fd07a;
-  --color-green-deep: #a5dc92;
-  --color-green-bg: #1d3a28;
-  --color-copper: #e8b27c;
-  --color-copper-light: #f1c79b;
-  --color-red: #ee8a7e;
-  --color-warm-gray: #b9c7bc;
-  --color-border: rgba(232, 178, 124, 0.2);
-  --color-border-strong: rgba(232, 178, 124, 0.32);
-  --color-disabled: #5b6d62;
+  --color-cream: #1c211b;
+  --color-cream-soft: #171b16;
+  --color-white: #222820;
+  --color-espresso: #f7f0e4;
+  --color-espresso-deep: #0f120e;
+  --color-green: #8fcb78;
+  --color-green-deep: #a5d894;
+  --color-green-bg: #26331f;
+  --color-copper: #e0a56d;
+  --color-copper-light: #edbb88;
+  --color-red: #ee7f74;
+  --color-warm-gray: #b9b5a6;
+  --color-border: rgba(224, 165, 109, 0.2);
+  --color-border-strong: rgba(224, 165, 109, 0.34);
+  --color-disabled: #5b5e54;
 }
 @theme inline {
   --color-cream: var(--color-cream);
@@ -91,6 +91,12 @@ html {
     scroll-behavior: auto !important;
   }
 }
+/* Footer is dark in both modes, so its text must stay light */
+.dark .site-footer {
+  --color-cream: #f7f0e4;
+}
+
+/* Moving copper border for announcement bar */
 
 /* Moving copper border for announcement bar */
 /* The one focal card: copper gradient on the Available KPI */
@@ -131,7 +137,7 @@ html {
 }
 .dark .finasto-card {
   border-color: var(--color-border);
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 rgba(247, 240, 228, 0.07);
 }
 .dark .finasto-card::before {
   display: none;
@@ -158,8 +164,8 @@ html {
   display: block;
   background: radial-gradient(
     circle at center,
-    rgba(224, 165, 109, 0.06) 0%,
-    rgba(224, 165, 109, 0.03) 40%,
+    rgba(224, 165, 109, 0.14) 0%,
+    rgba(224, 165, 109, 0.06) 40%,
     transparent 70%
   );
   animation: finasto-glow-drift 24s ease-in-out infinite alternate;
@@ -196,6 +202,9 @@ html {
 }
 
 /* Moving copper border for announcement bar */
+.font-display {
+  font-feature-settings: "lnum" 1;
+}
 
 /* Moving copper border for announcement bar */
 @keyframes finasto-border-flow {

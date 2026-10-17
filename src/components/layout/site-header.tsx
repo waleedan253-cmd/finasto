@@ -104,24 +104,18 @@ export function SiteHeader() {
             <Image
               src="/brand/finasto-logo.png"
               alt="Finasto"
-              width={160}
-              height={120}
+              width={120}
+              height={90}
               priority
-              className={cn(
-                "w-auto transition-[height] duration-300 ease-out dark:hidden",
-                isCompact ? "h-11" : "h-14",
-              )}
+              className="h-11 w-auto dark:hidden"
             />
             <Image
-              src="/brand/glossy finasto.png"
+              src="/brand/finasto-logo-dark.png"
               alt="Finasto"
-              width={160}
-              height={120}
+              width={120}
+              height={90}
               priority
-              className={cn(
-                "hidden w-auto transition-[height] duration-300 ease-out dark:block",
-                isCompact ? "h-11" : "h-14",
-              )}
+              className="hidden h-11 w-auto dark:block"
             />
           </Link>
 

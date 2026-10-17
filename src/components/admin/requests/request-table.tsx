@@ -94,8 +94,8 @@ export function RequestTable({
           <div>
             <div className="font-medium">{r.requestedBy.name}</div>
             {r.status === "pending" && !r.matched && (
-              <div className="text-[12px] text-[#cf1322]">
-                No matching affiliate yet
+              <div className="text-[12px] text-neutral-500">
+                New affiliate, created on approval
               </div>
             )}
           </div>

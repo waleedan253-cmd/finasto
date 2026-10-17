@@ -12,7 +12,7 @@ const socialIcons = {
 
 export function SiteFooter() {
   return (
-    <footer className="bg-espresso-deep text-espresso/80">
+    <footer className="site-footer bg-espresso-deep text-cream/80">
       <div className="mx-auto max-w-[1440px] px-5 py-14 sm:px-8">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           {/* Logo + market */}
@@ -23,11 +23,20 @@ export function SiteFooter() {
               aria-label="Finasto home"
             >
               <Image
-                src="/brand/glossy finasto.png"
+                src="/brand/finasto-logo.png"
                 alt="Finasto"
-                width={140}
-                height={105}
-                className="h-16 w-auto rounded-md  p-1"
+                width={120}
+                height={90}
+                priority
+                className="h-11 w-auto dark:hidden bg-amber-50 p-1"
+              />
+              <Image
+                src="/brand/finasto-logo-dark.png"
+                alt="Finasto"
+                width={120}
+                height={90}
+                priority
+                className="hidden h-11 w-auto dark:block"
               />
             </Link>
           </div>

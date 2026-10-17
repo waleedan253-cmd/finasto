@@ -22,6 +22,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server"; // adjust to your server client helper
+import { inviteAffiliateUser } from "@/lib/admin/affiliate-actions";
 
 /* ------------------------------------------------------------------ */
 /* Validation                                                          */
@@ -37,6 +38,15 @@ const approveNoteSchema = z
   .nullable()
   .optional();
 
+// Approve: the commission only matters when the approval creates a new
+// affiliate (an existing affiliate keeps their own). Same 0 to 100 rule as
+// the affiliate form.
+const commissionSchema = z
+  .number({ message: "Enter a commission percentage" })
+  .finite()
+  .min(0, "Commission cannot be below 0")
+  .max(100, "Commission cannot be above 100");
+
 // Reject: the note is required. A rejection must explain itself.
 const rejectNoteSchema = z
   .string()
@@ -45,7 +55,15 @@ const rejectNoteSchema = z
   .max(500, "Keep the note under 500 characters");
 
 export type ActionResult =
-  | { success: true; requestId: string }
+  | {
+      success: true;
+      requestId: string;
+      // Approve only: true when a new affiliate was created.
+      affiliateCreated?: boolean;
+      // Approve only: set when the affiliate was created but the invite
+      // email failed (the approval still stands; use "Resend invite").
+      inviteError?: string;
+    }
   | { success: false; error: string; fieldErrors?: Record<string, string[]> };
 
 // Postgres code for "raise exception" inside our functions. Those messages
@@ -83,6 +101,7 @@ function revalidateAll() {
 export async function approveRequest(
   requestId: string,
   note?: string | null,
+  commissionPercent?: number,
 ): Promise<ActionResult> {
   await requireRole("admin");
 
@@ -90,24 +109,66 @@ export async function approveRequest(
   if (!id.success) return { success: false, error: "Invalid request." };
 
   const parsedNote = approveNoteSchema.safeParse(note);
-  if (!parsedNote.success) {
+  const parsedCommission = commissionSchema.safeParse(commissionPercent ?? 10);
+  if (!parsedNote.success || !parsedCommission.success) {
+    const fieldErrors: Record<string, string[]> = {};
+    if (!parsedNote.success) {
+      fieldErrors.note = parsedNote.error.issues.map((i) => i.message);
+    }
+    if (!parsedCommission.success) {
+      fieldErrors.commission = parsedCommission.error.issues.map(
+        (i) => i.message,
+      );
+    }
     return {
       success: false,
       error: "Please fix the highlighted fields.",
-      fieldErrors: { note: parsedNote.error.issues.map((i) => i.message) },
+      fieldErrors,
     };
   }
 
+  // One transaction in the database: creates the affiliate if the email has
+  // none yet (otherwise reassigns the existing one), writes the history row
+  // and marks the request approved.
   const supabase = await createClient();
-  const { error } = await supabase.rpc("approve_stockist_request", {
+  const { data, error } = await supabase.rpc("approve_stockist_request", {
     p_request_id: id.data,
     p_note: parsedNote.data || null,
+    p_commission_percent: parsedCommission.data,
   });
 
   if (error) return failure("approve", error);
 
+  // The function returns one row: { out_affiliate_id, out_created }.
+  const row = (Array.isArray(data) ? data[0] : data) as {
+    out_affiliate_id?: string;
+    out_created?: boolean;
+  } | null;
+  const affiliateId = row?.out_affiliate_id ?? null;
+  const created = row?.out_created === true;
+
+  // The invite goes out only AFTER the approval is saved. If it fails, the
+  // affiliate and the approval stand and the admin can use "Resend invite".
+  let inviteError: string | undefined;
+  if (created && affiliateId) {
+    try {
+      const invite = await inviteAffiliateUser(affiliateId);
+      if (!invite.success) {
+        inviteError = invite.error ?? "The invite email could not be sent.";
+      }
+    } catch (e) {
+      console.error("[requests] invite failed after approve:", e);
+      inviteError = "The invite email could not be sent.";
+    }
+  }
+
   revalidateAll();
-  return { success: true, requestId: id.data };
+  return {
+    success: true,
+    requestId: id.data,
+    affiliateCreated: created,
+    ...(inviteError ? { inviteError } : {}),
+  };
 }
 
 /* ------------------------------------------------------------------ */

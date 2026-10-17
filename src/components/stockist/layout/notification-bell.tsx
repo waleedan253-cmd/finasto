@@ -4,30 +4,34 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, Popover } from "antd";
 import {
+  Ban,
   Bell,
-  BadgeCheck,
   CheckCheck,
   CircleX,
-  ShoppingBag,
-  Wallet,
+  Landmark,
+  PackageCheck,
+  RotateCcw,
+  UserCheck,
+  UserX,
   X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  getAffiliateBellData,
-  markAffiliateNotificationRead,
-  markAllAffiliateNotificationsRead,
-  clearAffiliateNotification,
-  clearAllAffiliateNotifications,
-  type AffiliateBellData,
-} from "@/lib/affiliate/notification-actions";
+  getStockistBellData,
+  markStockistNotificationRead,
+  markAllStockistNotificationsRead,
+  clearStockistNotification,
+  clearAllStockistNotifications,
+  type StockistBellData,
+} from "@/lib/stockist/notification-actions";
 import type { Notification } from "@/lib/admin/notifications";
 
-// Affiliate header bell: payout approved, rejected and paid. Same look and
-// behavior as the admin bell, without the low-stock section. Polls every
-// 60s so the badge stays fresh without a manual refresh.
+// Stockist header bell: bulk order steps and affiliate request decisions.
+// Same look and behavior as the affiliate bell. Polls every 60s so the
+// badge stays fresh without a manual refresh.
 
-const POLL_MS = 60_000;
+const POLL_MS = 1000;
 
 const relativeTime = (iso: string) => {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -39,21 +43,30 @@ const relativeTime = (iso: string) => {
   return `${Math.round(hours / 24)}d ago`;
 };
 
-// Icon and color by notification type.
+// Icon and tone by notification type. Anything unknown gets a plain bell.
+const ICONS: Record<
+  string,
+  { icon: LucideIcon; tone: "good" | "bad" | "warn" }
+> = {
+  bulk_order_quoted: { icon: Landmark, tone: "good" },
+  bulk_order_approved: { icon: PackageCheck, tone: "good" },
+  bulk_order_returned: { icon: RotateCcw, tone: "warn" },
+  bulk_order_rejected: { icon: CircleX, tone: "bad" },
+  bulk_order_cancelled: { icon: Ban, tone: "bad" },
+  request_approved: { icon: UserCheck, tone: "good" },
+  request_rejected: { icon: UserX, tone: "bad" },
+};
+
 function TypeIcon({ type, isRead }: { type: string; isRead: boolean }) {
-  const Icon =
-    type === "payout_rejected"
-      ? CircleX
-      : type === "payout_paid"
-        ? Wallet
-        : type === "affiliate_new_order"
-          ? ShoppingBag
-          : BadgeCheck;
+  const config = ICONS[type];
+  const Icon = config?.icon ?? Bell;
   const tone = isRead
     ? "bg-cream text-warm-gray"
-    : type === "payout_rejected"
+    : config?.tone === "bad"
       ? "bg-red-50 text-red-600"
-      : "bg-green-bg text-green";
+      : config?.tone === "warn"
+        ? "bg-copper/15 text-copper"
+        : "bg-green-bg text-green";
   return (
     <span
       className={cn(
@@ -66,9 +79,9 @@ function TypeIcon({ type, isRead }: { type: string; isRead: boolean }) {
   );
 }
 
-export function AffiliateNotificationBell() {
+export function StockistNotificationBell() {
   const router = useRouter();
-  const [data, setData] = useState<AffiliateBellData>({
+  const [data, setData] = useState<StockistBellData>({
     notifications: [],
     unreadCount: 0,
   });
@@ -77,7 +90,7 @@ export function AffiliateNotificationBell() {
 
   const refresh = useCallback(async () => {
     try {
-      setData(await getAffiliateBellData());
+      setData(await getStockistBellData());
     } catch {
       // keep the last data; the next poll will try again
     }
@@ -92,23 +105,23 @@ export function AffiliateNotificationBell() {
   }, [refresh]);
 
   async function handleMarkAllRead() {
-    await markAllAffiliateNotificationsRead();
+    await markAllStockistNotificationsRead();
     void refresh();
   }
 
   async function handleClear(id: string) {
-    await clearAffiliateNotification(id);
+    await clearStockistNotification(id);
     void refresh();
   }
 
   async function handleClearAll() {
-    await clearAllAffiliateNotifications();
+    await clearAllStockistNotifications();
     void refresh();
   }
 
   async function handleNotificationClick(n: Notification) {
     if (!n.isRead) {
-      await markAffiliateNotificationRead(n.id);
+      await markStockistNotificationRead(n.id);
       void refresh();
     }
     setOpen(false);

@@ -15,7 +15,7 @@ export default async function StockistInventoryPage() {
   return (
     <div>
       <h1 className="font-display text-[28px] leading-tight text-espresso">
-        Inventory
+        Stock Overview
       </h1>
       <p className="mt-2 mb-6 max-w-xl font-sans text-[14px] leading-relaxed text-warm-gray">
         The packs you have bought, how many your affiliates have sold, and what

@@ -45,21 +45,14 @@ export function ProductsGrid({ catalog }: { catalog: StockistCatalog }) {
 
       {/* Filters */}
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <Input
+        <Input.Search
           size="large"
           allowClear
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search products"
           aria-label="Search products"
-          prefix={
-            <Search
-              className="h-4 w-4 text-warm-gray"
-              strokeWidth={1.6}
-              aria-hidden="true"
-            />
-          }
-          className="sm:max-w-sm"
+          className="w-full sm:max-w-sm"
         />
         <Select<string>
           size="large"

@@ -2,7 +2,15 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Alert, Button, Descriptions, Input, Modal, message } from "antd";
+import {
+  Alert,
+  Button,
+  Descriptions,
+  Input,
+  InputNumber,
+  Modal,
+  message,
+} from "antd";
 
 import { approveRequest, rejectRequest } from "@/lib/admin/request-actions";
 import type { RequestListItem } from "@/lib/admin/request-queries";
@@ -45,6 +53,10 @@ export function ReviewRequestDialog({
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [noteError, setNoteError] = useState<string | null>(null);
+  // Only used when approving creates a new affiliate. Same default as the
+  // affiliate form; it can be changed later from the affiliate's Edit page.
+  const [commission, setCommission] = useState<number | null>(10);
+  const [commissionError, setCommissionError] = useState<string | null>(null);
 
   // A newly opened request always starts from a clean "review" step.
   useEffect(() => {
@@ -54,6 +66,8 @@ export function ReviewRequestDialog({
     setNote("");
     setError(null);
     setNoteError(null);
+    setCommission(10);
+    setCommissionError(null);
   }, [request]);
 
   if (!shown) return null;
@@ -71,23 +85,48 @@ export function ReviewRequestDialog({
     setError(null);
     setNoteError(null);
 
+    setCommissionError(null);
+
     if (kind === "reject" && note.trim() === "") {
       setNoteError("Add a short note explaining the rejection");
+      return;
+    }
+
+    // The commission only matters when approval creates a new affiliate.
+    if (
+      kind === "approve" &&
+      !r.matched &&
+      (commission === null || commission < 0 || commission > 100)
+    ) {
+      setCommissionError("Enter a commission between 0 and 100");
       return;
     }
 
     startTransition(async () => {
       const result =
         kind === "approve"
-          ? await approveRequest(r.id, note)
+          ? await approveRequest(r.id, note, commission ?? 10)
           : await rejectRequest(r.id, note);
 
       if (result.success) {
-        message.success(
-          kind === "approve"
-            ? `${r.affiliateName} assigned to ${r.requestedBy.name}`
-            : "Request rejected",
-        );
+        if (kind === "approve") {
+          if (result.affiliateCreated && result.inviteError) {
+            message.warning(
+              `${r.affiliateName} was created and assigned to ${r.requestedBy.name}, but the invite email failed. Use “Resend invite” from the affiliates list.`,
+              6,
+            );
+          } else if (result.affiliateCreated) {
+            message.success(
+              `${r.affiliateName} created, assigned to ${r.requestedBy.name} and invited`,
+            );
+          } else {
+            message.success(
+              `${r.affiliateName} assigned to ${r.requestedBy.name}`,
+            );
+          }
+        } else {
+          message.success("Request rejected");
+        }
         router.refresh();
         onClose();
         return;
@@ -96,6 +135,8 @@ export function ReviewRequestDialog({
       setError(result.error);
       const fieldMessage = result.fieldErrors?.note?.[0];
       if (fieldMessage) setNoteError(fieldMessage);
+      const commissionMessage = result.fieldErrors?.commission?.[0];
+      if (commissionMessage) setCommissionError(commissionMessage);
     });
   }
 
@@ -134,7 +175,7 @@ export function ReviewRequestDialog({
         loading={isPending}
         onClick={() => submit("approve")}
       >
-        Confirm approval
+        {r.matched ? "Confirm approval" : "Approve & create affiliate"}
       </Button>
     </div>
   ) : (
@@ -194,8 +235,10 @@ export function ReviewRequestDialog({
             children: r.matched ? (
               <span>{r.matched.currentStockist?.name ?? "Unassigned"}</span>
             ) : (
-              <span className="text-[#cf1322]">
-                No affiliate with this email yet
+              <span className="text-neutral-500">
+                {isDecided
+                  ? "No affiliate with this email"
+                  : "New affiliate, created on approval"}
               </span>
             ),
           },
@@ -273,14 +316,70 @@ export function ReviewRequestDialog({
                 </>
               ) : (
                 <>
-                  No affiliate had the email <strong>{r.affiliateEmail}</strong>{" "}
-                  when this was sent. Approval works only if they have signed up
-                  since. If not, you will see a message and can reject the
-                  request instead.
+                  A new affiliate will be created:{" "}
+                  <strong>{r.affiliateName}</strong> ({r.affiliateEmail}),
+                  assigned to <strong>{r.requestedBy.name}</strong>, and an
+                  invite email will be sent right away.
                 </>
               )
             }
           />
+          {!r.matched && (
+            <div className="mb-3">
+              <label className="mb-1 block text-[13px] text-neutral-500">
+                Commission % <span className="text-[#ff4d4f]">*</span>
+              </label>
+              <InputNumber
+                min={0}
+                max={100}
+                step={0.5}
+                precision={2}
+                suffix="%"
+                value={commission}
+                onChange={(v) => setCommission(v)}
+                disabled={isPending}
+                status={commissionError ? "error" : undefined}
+                className="!w-full"
+              />
+              <p className="mt-1 text-[12px] text-neutral-500">
+                The share of each sale this affiliate earns. You can change it
+                later from the affiliate&apos;s Edit page.
+              </p>
+              {commissionError && (
+                <p className="mt-1 text-[12px] text-[#ff4d4f]">
+                  {commissionError}
+                </p>
+              )}
+            </div>
+          )}
+          {!r.matched && (
+            <div className="mb-3">
+              <label className="mb-1 block text-[13px] text-neutral-500">
+                Commission % <span className="text-[#ff4d4f]">*</span>
+              </label>
+              <InputNumber
+                min={0}
+                max={100}
+                step={0.5}
+                precision={2}
+                suffix="%"
+                value={commission}
+                onChange={(v) => setCommission(v)}
+                disabled={isPending}
+                status={commissionError ? "error" : undefined}
+                className="!w-full"
+              />
+              <p className="mt-1 text-[12px] text-neutral-500">
+                The share of each sale this affiliate earns. You can change it
+                later from the affiliate&apos;s Edit page.
+              </p>
+              {commissionError && (
+                <p className="mt-1 text-[12px] text-[#ff4d4f]">
+                  {commissionError}
+                </p>
+              )}
+            </div>
+          )}
           <label className="mb-1 block text-[13px] text-neutral-500">
             Note (optional)
           </label>

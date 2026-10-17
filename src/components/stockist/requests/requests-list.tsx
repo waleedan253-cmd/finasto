@@ -78,6 +78,14 @@ export function RequestsList({ requests }: { requests: MyRequest[] }) {
 
   const columns: TableColumnsType<MyRequest> = [
     {
+      title: "#",
+      key: "sr",
+      width: 60,
+      render: (_, __, index) => (
+        <span className="tabular-nums text-neutral-500">{index + 1}</span>
+      ),
+    },
+    {
       title: "Affiliate",
       key: "affiliate",
       width: 230,

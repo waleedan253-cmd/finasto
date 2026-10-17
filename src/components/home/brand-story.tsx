@@ -16,7 +16,7 @@ export function BrandStory() {
         alt="Terraced rice fields and a Balinese temple at sunrise, seen through tropical foliage"
         fill
         sizes="100vw"
-        className="object-cover object-center"
+        className="object-cover object-center dark:brightness-90"
       />
       {/* Darken for text contrast */}
       <div
@@ -50,12 +50,12 @@ export function BrandStory() {
             {storyContent.eyebrow}
             <span aria-hidden="true" className="h-px w-10 bg-copper-light" />
           </p>
-          <h2 className="mt-4 font-display text-[32px] leading-[1.15] text-white sm:text-[40px]">
+          <h2 className="mt-4 font-display text-[32px] leading-[1.15] text-[#FFFFFF] sm:text-[40px]">
             {storyContent.heading[0]}
             <br />
             {storyContent.heading[1]}
           </h2>
-          <p className="mt-4 font-sans text-[14px] leading-relaxed text-white/80 sm:text-[15px]">
+          <p className="mt-4 font-sans text-[14px] leading-relaxed text-[#FFFFFF]/80 sm:text-[15px]">
             {storyContent.paragraph}
           </p>
           <Link

@@ -60,10 +60,10 @@ export function WhyFinasto() {
           <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             Why Finasto
           </p>
-          <h2 className="mt-2 font-display text-[36px] leading-tight text-espresso-deep sm:text-[48px]">
+          <h2 className="mt-2 font-display text-[36px] leading-tight text-espresso-deep dark:text-espresso sm:text-[48px]">
             Why Choose Finasto?
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70">
+          <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70 dark:text-warm-gray">
             Discover what makes Finasto different and why it matters for your
             journey.
           </p>
@@ -101,19 +101,19 @@ export function WhyFinasto() {
                   <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
                     {slide.eyebrow}
                   </p>
-                  <h2 className="mt-3 font-display text-[32px] leading-tight text-espresso-deep sm:text-[40px]">
+                  <h2 className="mt-3 font-display text-[32px] leading-tight text-espresso-deep dark:text-espresso sm:text-[40px]">
                     {slide.heading}
                   </h2>
-                  <p className="mt-4 font-sans text-[15px] leading-relaxed text-espresso-deep/80">
+                  <p className="mt-4 font-sans text-[15px] leading-relaxed text-espresso-deep/80 dark:text-espresso/80">
                     {slide.description}
                   </p>
                   <ul className="mt-7 space-y-2">
                     {slide.details.map((d) => (
                       <li
                         key={d}
-                        className="flex items-start gap-2 font-sans text-[14px] text-espresso-deep/80"
+                        className="flex items-start gap-2 font-sans text-[14px] text-espresso-deep/80 dark:text-espresso/80"
                       >
-                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-espresso" />
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-espresso dark:bg-copper" />
                         {d}
                       </li>
                     ))}
@@ -140,8 +140,8 @@ export function WhyFinasto() {
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
                   i === active
-                    ? "w-6 bg-espresso-deep"
-                    : "w-1.5 bg-espresso-deep/30 hover:bg-espresso-deep/50",
+                    ? "w-6 bg-espresso-deep dark:bg-copper"
+                    : "w-1.5 bg-espresso-deep/30 hover:bg-espresso-deep/50 dark:bg-espresso/30 dark:hover:bg-espresso/50",
                 )}
               />
             ))}

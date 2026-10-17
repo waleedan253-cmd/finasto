@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { StockistSidebar } from "./stockist-sidebar";
 import { stockistNav, isNavActive } from "./stockist-nav";
 
-// import { StockistNotificationBell } from "./notification-bell";
+import { StockistNotificationBell } from "./notification-bell";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Same layout as admin-shell.tsx: fixed 260px sidebar on desktop, a
@@ -122,7 +122,7 @@ export function StockistShell({
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            {/* <StockistNotificationBell /> */}
+            <StockistNotificationBell />
 
             <span
               aria-hidden

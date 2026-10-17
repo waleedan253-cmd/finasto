@@ -30,7 +30,7 @@ export default async function StockistOrdersPage({
   return (
     <div>
       <h1 className="font-display text-[28px] leading-tight text-espresso">
-        Orders
+        Order History
       </h1>
       <p className="mt-2 mb-6 max-w-xl font-sans text-[14px] leading-relaxed text-warm-gray">
         Orders your affiliates have placed with your stock, and where each one

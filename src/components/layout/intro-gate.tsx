@@ -9,7 +9,7 @@ const HOLD_MS = 500; // how long the logo stays before the gate dismisses
 function Logo() {
   return (
     <Image
-      src="/brand/finasto-dark-transparent.png" // put your logo in /public
+      src="/brand/finasto-logo-dark.png" // put your logo in /public
       alt="Finasto"
       width={240}
       height={240}
@@ -51,13 +51,28 @@ export default function IntroGate() {
       style={{ transitionDuration: `${FADE_MS}ms` }}
       aria-hidden="true"
     >
+      {/* Light mode logo */}
       <Image
         src="/brand/finasto-logo.png"
         alt="Finasto"
         width={240}
         height={240}
         priority
-        className={`h-auto w-32 transition-all ease-out md:w-44 ${
+        className={`h-auto w-32 transition-all ease-out md:w-44 dark:hidden ${
+          phase === "fading"
+            ? "scale-100 opacity-0"
+            : "scale-95 opacity-0 animate-[finasto-logo-in_400ms_ease-out_forwards]"
+        }`}
+      />
+
+      {/* Dark mode logo */}
+      <Image
+        src="/brand/finasto-logo-dark.png"
+        alt="Finasto"
+        width={240}
+        height={240}
+        priority
+        className={`hidden h-auto w-32 transition-all ease-out md:w-44 dark:block ${
           phase === "fading"
             ? "scale-100 opacity-0"
             : "scale-95 opacity-0 animate-[finasto-logo-in_400ms_ease-out_forwards]"
