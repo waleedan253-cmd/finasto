@@ -319,7 +319,11 @@ export function AntdTheme({ children }: { children: ReactNode }) {
           },
 
           DatePicker: {
-            colorBgContainer: p.field,
+            colorBgContainer: isDark ? "#1A1F19" : "#FFFFFF",
+            colorBgContainerDisabled: isDark ? "#1A1F19" : "#F5F0E8",
+            colorTextLightSolid: p.primaryText,
+            cellActiveWithRangeBg: p.optionSelected,
+            cellHoverWithRangeBg: p.rowHover,
             controlHeight: 42,
             borderRadius: 10,
             activeBorderColor: p.accent,

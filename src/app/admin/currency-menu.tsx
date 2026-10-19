@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { writeCurrencyCookie } from "@/lib/currency";
 import { availableMarkets } from "@/data/site";
 import { useMarket } from "@/components/providers/market-provider";
 import { Flag } from "@/components/ui/flag";
@@ -10,6 +12,8 @@ import { Flag } from "@/components/ui/flag";
 export function CurrencyMenu() {
   const [open, setOpen] = useState(false);
   const { market: selected, setMarket } = useMarket();
+  const router = useRouter();
+  const [, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,6 +67,10 @@ export function CurrencyMenu() {
                   aria-selected={isSelected}
                   onClick={() => {
                     setMarket(market);
+                    // Save the choice for the server, then re-render the
+                    // server components (dashboard, tables) in the new currency.
+                    writeCurrencyCookie(market.currencyCode);
+                    startTransition(() => router.refresh());
                     setOpen(false);
                   }}
                   className="flex w-full cursor-pointer items-center justify-between px-4 py-2.5 text-left font-sans text-[14px] text-espresso/85 transition-colors hover:bg-espresso/5 hover:text-espresso"

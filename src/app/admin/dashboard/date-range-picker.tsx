@@ -66,7 +66,6 @@ export function DateRangePicker({
         presets={PRESETS}
         format="D MMM YYYY"
         allowClear={false}
-        size="large"
         disabled={isPending}
         disabledDate={(d) => d.isAfter(dayjs(), "day")}
         onChange={(dates) => {

@@ -26,8 +26,6 @@ export const adminNav: AdminNavItem[] = [
   { label: "Commissions & Payouts", href: "/admin/payouts", icon: Wallet },
   { label: "Requests", href: "/admin/requests", icon: Inbox },
   { label: "Announcement", href: "/admin/announcement", icon: Megaphone },
-
-  { label: "Reports", href: "/admin/reports", icon: BarChart3 },
 ];
 
 export function isNavActive(pathname: string, href: string) {

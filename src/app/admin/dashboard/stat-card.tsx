@@ -16,7 +16,7 @@ const RULE: Record<StatTone, string> = {
 const ICON_BG: Record<StatTone, string> = {
   green: "bg-green-bg text-green",
   copper: "bg-copper/10 text-copper",
-  neutral: "bg-cream-dark text-espresso/70",
+  neutral: "bg-espresso/5 text-warm-gray",
 };
 
 /**
@@ -68,19 +68,24 @@ export function StatCard({
     <div
       className={cn(
         "group relative min-w-0 overflow-hidden rounded-[20px]",
-        "border border-border/70 bg-cream",
+        "border border-border-strong bg-white dark:border-border",
         "p-5",
-        "shadow-[0_2px_10px_rgba(50,30,24,0.035)]",
+        "shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)]",
+        "dark:shadow-[inset_0_1px_0_rgba(247,240,228,0.07)]",
         "transition-all duration-200",
         "hover:-translate-y-[1px]",
-        "hover:shadow-[0_8px_24px_rgba(50,30,24,0.07)]",
+        "hover:shadow-[0_2px_4px_rgba(50,30,24,0.08),0_10px_24px_rgba(50,30,24,0.08)]",
+        "dark:hover:shadow-[inset_0_1px_0_rgba(247,240,228,0.07)]",
         className,
       )}
     >
       {/* Brand accent line */}
       <span
         aria-hidden="true"
-        className={cn("absolute inset-x-0 top-0 h-[3px]", RULE[tone])}
+        className={cn(
+          "absolute inset-x-0 top-0 h-[3px] dark:hidden",
+          RULE[tone],
+        )}
       />
 
       <div className="flex items-start justify-between gap-4">
@@ -168,7 +173,7 @@ function TrendBadge({ trend }: { trend: StatTrend }) {
     ? "bg-green-bg text-green"
     : down
       ? "bg-copper/10 text-copper"
-      : "bg-cream-dark text-warm-gray";
+      : "bg-espresso/5 text-warm-gray";
 
   const text = `${up ? "+" : ""}${percent.toFixed(1)}%`;
 
@@ -213,9 +218,9 @@ export function StatCardSkeleton({ className }: { className?: string }) {
       aria-hidden="true"
       className={cn(
         "relative overflow-hidden rounded-[20px]",
-        "border border-border/70 bg-white",
+        "border border-border-strong bg-white dark:border-border",
         "p-5",
-        "shadow-[0_2px_10px_rgba(50,30,24,0.035)]",
+        "shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] dark:shadow-none",
         className,
       )}
     >

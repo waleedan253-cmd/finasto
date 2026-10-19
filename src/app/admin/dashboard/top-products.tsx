@@ -22,9 +22,9 @@ export function TopProducts({
 }) {
   const rows = products.slice(0, TOP_LIMIT).map((p) => ({
     ...p,
-    salesMoney: money(p.sales, currency, rates),
+    salesMoney: money(p.revenue, currency, rates),
   }));
-  const maxSales = Math.max(...rows.map((r) => r.sales), 0);
+  const maxSales = Math.max(...rows.map((r) => r.revenue), 0);
   const anyRateFallback = rows.some((r) => r.salesMoney.fallback);
 
   return (
@@ -62,7 +62,10 @@ export function TopProducts({
       ) : (
         <ol className="mt-4 divide-y divide-border">
           {rows.map((row, i) => (
-            <li key={row.id} className="flex items-center gap-3 py-3">
+            <li
+              key={`${row.name}-${i}`}
+              className="flex items-center gap-3 py-3"
+            >
               <span
                 aria-hidden="true"
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-bg font-sans text-[12px] font-medium text-green"
@@ -87,7 +90,7 @@ export function TopProducts({
                   <div
                     className="h-full rounded-full bg-green"
                     style={{
-                      width: `${maxSales > 0 ? Math.max(4, (row.sales / maxSales) * 100) : 0}%`,
+                      width: `${maxSales > 0 ? Math.max(4, (row.revenue / maxSales) * 100) : 0}%`,
                     }}
                   />
                 </div>

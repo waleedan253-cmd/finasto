@@ -24,7 +24,7 @@ import type { Notification } from "@/lib/admin/notifications";
 //    state, from the shared notifications table.
 // Polls every 60s so the badge count stays fresh without a manual refresh.
 
-const POLL_MS = 60_000;
+const POLL_MS = 1000;
 
 const relativeTime = (iso: string) => {
   const diffMs = Date.now() - new Date(iso).getTime();

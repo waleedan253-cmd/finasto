@@ -30,7 +30,9 @@ export type NotificationType =
   | "payout_approved"
   | "payout_rejected"
   | "payout_paid"
-  | "affiliate_new_order";
+  | "affiliate_new_order"
+  | "bulk_order_request"
+  | "bulk_payment_submitted";
 
 export type Notification = {
   id: string;

@@ -39,7 +39,11 @@ export function AdminShell({
   }, [open]);
 
   return (
-    <div className="min-h-screen bg-[#F5F1EB]">
+    <div className="relative min-h-screen bg-cream dark:bg-cream-soft">
+      <div
+        aria-hidden
+        className="dark-glow pointer-events-none fixed -bottom-40 -right-40 z-0 h-[520px] w-[520px] rounded-full"
+      />
       {open && (
         <div
           aria-hidden="true"
@@ -59,8 +63,8 @@ export function AdminShell({
         <AdminSidebar onNavigate={() => setOpen(false)} />
       </aside>
 
-      <div className="lg:pl-[260px]">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-cream/95 px-4 backdrop-blur-sm sm:px-6">
+      <div className="relative z-10 lg:pl-[260px]">
+        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between gap-3 border-b border-border bg-cream/80 px-4 backdrop-blur-xl backdrop-saturate-150 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <button
               type="button"
@@ -72,17 +76,27 @@ export function AdminShell({
             >
               <Menu className="h-6 w-6" strokeWidth={1.6} />
             </button>
-            <span className="truncate font-display text-[20px] text-espresso">
-              {title}
-            </span>
+            <div className="min-w-0">
+              <p className="hidden font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-copper sm:block">
+                Admin
+              </p>
+              <h1 className="truncate font-display text-[22px] leading-tight tracking-tight text-espresso">
+                {title}
+              </h1>
+            </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
             <ThemeToggle />
             <CurrencyMenu />
             <NotificationBell />
+            <span
+              aria-hidden
+              className="mx-1 hidden h-6 w-px bg-border sm:block"
+            />
+
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-espresso font-sans text-[12px] font-medium text-cream">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-copper-light to-copper font-sans text-[12px] font-semibold text-espresso-deep ring-2 ring-copper/30">
                 {initials}
               </div>
               <div className="hidden min-w-0 md:block">

@@ -24,10 +24,10 @@ export const currencyCodeSchema = z
  * Keep in step with country_to_currency() in affiliate-profile-lock.sql.
  */
 export const COUNTRY_CURRENCY: Record<string, string> = {
-  ID: "IDR",
-  MY: "MYR",
-  GB: "GBP",
-  PK: "PKR",
+  ID: "Rp", // Indonesian Rupiah
+  MY: "RM", // Malaysian Ringgit
+  GB: "£", // British Pound Sterling
+  PK: "Rs", // Pakistani Rupee
 };
 
 export function countryToCurrency(
@@ -105,18 +105,41 @@ export function roundMoney(amount: number, code: string): number {
   return Math.round((amount + Number.EPSILON) * f) / f;
 }
 
-/** The only place a money string is produced. No hardcoded symbols. */
+/** Symbols shown instead of the ISO code. Others use Intl's default. */
+const SYMBOLS: Record<string, string> = {
+  IDR: "Rp",
+  MYR: "RM",
+  GBP: "£",
+  PKR: "Rs",
+};
+
+/** Formats with Intl, then swaps only the currency part for our symbol. */
+function formatCurrency(
+  amount: number,
+  code: string,
+  options: Intl.NumberFormatOptions,
+): string {
+  const parts = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: code,
+    ...options,
+  }).formatToParts(amount);
+  const symbol = SYMBOLS[code];
+  return parts
+    .map((p) => (p.type === "currency" && symbol ? symbol : p.value))
+    .join("");
+}
+
+/** The only place a money string is produced. */
 export function formatMoney(amount: number, code: string): string {
   const c = code.toUpperCase();
   const safe = Number.isFinite(amount) ? amount : 0;
   const d = fractionDigits(c);
   try {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: c,
+    return formatCurrency(safe, c, {
       minimumFractionDigits: d,
       maximumFractionDigits: d,
-    }).format(safe);
+    });
   } catch {
     return `${c} ${safe.toFixed(2)}`;
   }
@@ -133,12 +156,10 @@ export function formatMoneyCompact(amount: number, code: string): string {
   const c = code.toUpperCase();
   const safe = Number.isFinite(amount) ? amount : 0;
   try {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: c,
+    return formatCurrency(safe, c, {
       notation: "compact",
       maximumFractionDigits: 2,
-    }).format(safe);
+    });
   } catch {
     return `${c} ${safe.toExponential(2)}`;
   }

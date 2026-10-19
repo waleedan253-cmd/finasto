@@ -25,7 +25,15 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
             width={120}
             height={90}
             priority
-            className="h-11 w-auto"
+            className="h-11 w-auto dark:hidden"
+          />
+          <Image
+            src="/brand/finasto-logo-dark.png"
+            alt="Finasto"
+            width={120}
+            height={90}
+            priority
+            className="hidden h-11 w-auto dark:block"
           />
         </Link>
         <button
@@ -49,14 +57,23 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 font-sans text-[14px] transition-colors",
+                    "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 font-sans text-[14px] transition-all duration-200",
                     active
-                      ? "bg-espresso text-cream"
-                      : "text-espresso/80 hover:bg-espresso/5 hover:text-espresso",
+                      ? "bg-copper/10 font-medium text-espresso dark:bg-green/15 dark:ring-1 dark:ring-green/25"
+                      : "text-warm-gray hover:bg-espresso/5 hover:text-espresso dark:hover:bg-green/10",
                   )}
                 >
+                  {active && (
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-copper"
+                    />
+                  )}
                   <Icon
-                    className="h-[18px] w-[18px] shrink-0"
+                    className={cn(
+                      "h-[18px] w-[18px] shrink-0 transition-colors",
+                      active ? "text-copper" : "group-hover:text-copper",
+                    )}
                     strokeWidth={1.6}
                   />
                   <span className="truncate">{label}</span>
@@ -71,7 +88,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
         <form action={signOutAction}>
           <button
             type="submit"
-            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 font-sans text-[14px] text-espresso/80 transition-colors hover:bg-espresso/5 hover:text-espresso"
+            className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 font-sans text-[14px] text-warm-gray transition-colors hover:bg-red/10 hover:text-red"
           >
             <LogOut className="h-[18px] w-[18px]" strokeWidth={1.6} />
             Sign out

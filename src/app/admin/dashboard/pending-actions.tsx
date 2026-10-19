@@ -1,22 +1,35 @@
 import Link from "next/link";
 import {
+  Banknote,
   CheckCircle2,
   ChevronRight,
   Package,
+  PackageX,
+  Truck,
   UserPlus,
   Wallet,
+  Warehouse,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { RateMap } from "@/lib/currency";
+import { money, type RateMap } from "@/lib/currency";
 import type { DashboardData } from "@/lib/admin/dashboard-queries";
-import { summarise } from "./commission-summary";
 
-// Section 7: things that need an admin's attention. Server component.
-// Withdrawal amounts keep their original currency (same rule as
-// commissions), so they go through summarise().
+// "Needs attention": everything waiting for an admin click, most urgent
+// first. Server component. Only items with something waiting are listed;
+// when nothing is, it shows an "all caught up" state.
+// Payout amounts arrive in USD and are converted at the live rate.
 
 const count = new Intl.NumberFormat("en-US");
+
+// Where each item leads. Change a path here if your admin route differs.
+const HREFS = {
+  payouts: "/admin/payouts",
+  bulkOrders: "/admin/bulk-orders",
+  requests: "/admin/requests",
+  orders: "/admin/orders",
+  products: "/admin/products",
+} as const;
 
 type Item = {
   key: string;
@@ -25,52 +38,80 @@ type Item = {
   count: number;
   href: string;
   icon: LucideIcon;
+  urgent?: boolean; // shown in red instead of copper
 };
 
 export function PendingActions({
-  pending,
+  attention,
   rates,
   currency,
   className,
 }: {
-  pending: DashboardData["pending"];
+  attention: DashboardData["attention"];
   rates: RateMap;
   currency: string;
   className?: string;
 }) {
-  const withdrawalAmount = summarise(
-    pending.withdrawals.amount,
-    currency,
-    rates,
-  );
+  const toReview = money(attention.payoutsToReview.amount, currency, rates);
+  const toPay = money(attention.payoutsToPay.amount, currency, rates);
 
   const items: Item[] = [
     {
-      key: "withdrawals",
-      label: "Withdrawal requests",
-      detail:
-        pending.withdrawals.count > 0
-          ? `${withdrawalAmount.value} requested`
-          : undefined,
-      count: pending.withdrawals.count,
-      href: "/admin/withdrawals",
+      key: "payouts-review",
+      label: "Payout requests to review",
+      detail: `${toReview.text} requested`,
+      count: attention.payoutsToReview.count,
+      href: HREFS.payouts,
       icon: Wallet,
+    },
+    {
+      key: "payouts-pay",
+      label: "Approved payouts to pay",
+      detail: `${toPay.text} to send`,
+      count: attention.payoutsToPay.count,
+      href: HREFS.payouts,
+      icon: Banknote,
+    },
+    {
+      key: "bulk-orders",
+      label: "Bulk orders waiting",
+      detail: "New requests and payment proofs",
+      count: attention.bulkOrdersToReview,
+      href: HREFS.bulkOrders,
+      icon: Warehouse,
     },
     {
       key: "stockist-requests",
       label: "Stockist requests",
-      detail: "Waiting for approval",
-      count: pending.stockistRequests,
-      href: "/admin/stockists",
+      detail: "Waiting for a decision",
+      count: attention.stockistRequests,
+      href: HREFS.requests,
       icon: UserPlus,
     },
     {
+      key: "orders-ship",
+      label: "Paid orders to ship",
+      detail: "Paid, not shipped yet",
+      count: attention.ordersToShip,
+      href: HREFS.orders,
+      icon: Truck,
+    },
+    {
       key: "low-stock",
-      label: "Low stock products",
-      detail: "Running out soon",
-      count: pending.lowStock,
-      href: "/admin/products",
+      label: "Low stock packs",
+      detail: "5 or fewer left",
+      count: attention.lowStock,
+      href: HREFS.products,
       icon: Package,
+    },
+    {
+      key: "out-of-stock",
+      label: "Out of stock packs",
+      detail: "Customers cannot order these",
+      count: attention.outOfStock,
+      href: HREFS.products,
+      icon: PackageX,
+      urgent: true,
     },
   ];
 
@@ -90,7 +131,7 @@ export function PendingActions({
           id="pending-actions-heading"
           className="font-display text-[22px] leading-tight text-espresso"
         >
-          Pending actions
+          Needs attention
         </h2>
         {total > 0 && (
           <span className="rounded-full bg-copper/10 px-2.5 py-0.5 font-sans text-[12px] font-medium tabular-nums text-copper">
@@ -110,11 +151,12 @@ export function PendingActions({
             You&apos;re all caught up
           </p>
           <p className="mt-1 font-sans text-[13px] text-warm-gray">
-            Requests and stock alerts will show up here.
+            Payouts, requests, orders to ship and stock alerts will show up
+            here.
           </p>
         </div>
       ) : (
-        <ul className="mt-4 divide-y divide-border">
+        <ul className="mt-4 max-h-96 overflow-y-auto divide-y divide-border">
           {active.map((item) => {
             const Icon = item.icon;
             return (
@@ -125,7 +167,12 @@ export function PendingActions({
                 >
                   <span
                     aria-hidden="true"
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-copper/10 text-copper"
+                    className={cn(
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                      item.urgent
+                        ? "bg-red/10 text-red"
+                        : "bg-copper/10 text-copper",
+                    )}
                   >
                     <Icon className="h-4 w-4" strokeWidth={1.75} />
                   </span>
@@ -167,7 +214,7 @@ export function PendingActionsSkeleton({ className }: { className?: string }) {
     >
       <div className="h-6 w-40 animate-pulse rounded bg-border/70" />
       <div className="mt-5 space-y-4">
-        {Array.from({ length: 3 }).map((_, i) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="h-10 animate-pulse rounded bg-border/70" />
         ))}
       </div>

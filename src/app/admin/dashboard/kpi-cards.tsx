@@ -1,12 +1,29 @@
-import { MousePointerClick, ShoppingCart, Users, Wallet } from "lucide-react";
+import {
+  Banknote,
+  Coins,
+  Package,
+  Receipt,
+  ShoppingCart,
+  Store,
+  Undo2,
+  Users,
+  Wallet,
+} from "lucide-react";
 import { money, type RateMap } from "@/lib/currency";
 import type { DashboardData } from "@/lib/admin/dashboard-queries";
 import { StatCard, StatCardSkeleton, percentChange } from "./stat-card";
 
-// Section 1: the four headline numbers. Server component, so it needs no
-// "use client". Revenue arrives in USD and is converted at the live rate;
-// if that rate is missing or stale it shows USD with a clear note instead
-// of a wrong number.
+// Section 1: the headline numbers, in two rows of four.
+//   Sales   : Revenue, Orders, Average order, Refunds
+//   Network : Wholesale (bulk orders), Commission earned, Payouts paid,
+//             Active affiliates
+// Server component, so it needs no "use client". Amounts arrive in USD and
+// are converted at the live rate; if that rate is missing or stale it shows
+// USD with a clear note instead of a wrong number.
+//
+// Every card that has a previous-period number shows the change against it.
+// Refunds show no arrow on purpose: a "rise" there is bad news, and a green
+// arrow would say the opposite.
 
 const count = new Intl.NumberFormat("en-US");
 
@@ -26,15 +43,23 @@ export function KpiCards({
   rates: RateMap;
   currency: string;
 }) {
-  const revenue = money(kpis.revenue, currency, rates);
-  const avgOrder =
-    kpis.orders > 0 ? money(kpis.revenue / kpis.orders, currency, rates) : null;
+  const m = (usd: number) => money(usd, currency, rates);
+  const fallbackNote = (fallback: boolean) =>
+    fallback ? "Rate unavailable, showing USD" : undefined;
+
+  const revenue = m(kpis.revenue);
+  const aov = m(kpis.aov);
+  const refunded = m(kpis.refundsUsd);
+  const wholesale = m(kpis.wholesaleUsd);
+  const commission = m(kpis.commissionUsd);
+  const paidOut = m(kpis.payoutsPaidUsd);
 
   return (
     <section
       aria-label="Key metrics"
-      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+      className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
     >
+      {/* Sales */}
       <StatCard
         label="Revenue"
         value={revenue.text}
@@ -42,8 +67,8 @@ export function KpiCards({
         tone="copper"
         iconClassName="bg-copper/10 text-copper"
         trend={trendFor(kpis.revenue, kpis.revenuePrev)}
-        hint={avgOrder ? `Avg. order ${avgOrder.text}` : undefined}
-        note={revenue.fallback ? "Rate unavailable, showing USD" : undefined}
+        hint="Paid orders, retail"
+        note={fallbackNote(revenue.fallback)}
       />
 
       <StatCard
@@ -53,6 +78,71 @@ export function KpiCards({
         tone="copper"
         iconClassName="bg-green-bg text-green"
         trend={trendFor(kpis.orders, kpis.ordersPrev)}
+        hint="Paid orders"
+      />
+      <StatCard
+        label="Refunds"
+        value={count.format(kpis.refunds)}
+        icon={Undo2}
+        tone="copper"
+        iconClassName="bg-red/10 text-red"
+        hint={
+          kpis.refunds > 0
+            ? `${refunded.text} refunded`
+            : "No refunds this period"
+        }
+        note={kpis.refunds > 0 ? fallbackNote(refunded.fallback) : undefined}
+      />
+      <StatCard
+        label="Average order"
+        value={kpis.orders > 0 ? aov.text : "—"}
+        icon={Receipt}
+        tone="copper"
+        iconClassName="bg-blue-50 text-blue-600"
+        trend={trendFor(kpis.aov, kpis.aovPrev)}
+        note={kpis.orders > 0 ? fallbackNote(aov.fallback) : undefined}
+      />
+
+      {/* Network */}
+      <StatCard
+        label="Wholesale"
+        value={wholesale.text}
+        icon={Package}
+        tone="copper"
+        iconClassName="bg-purple-50 text-purple-600"
+        trend={trendFor(kpis.wholesaleUsd, kpis.wholesaleUsdPrev)}
+        hint={`Bulk orders · ${count.format(kpis.activeStockists)} active ${
+          kpis.activeStockists === 1 ? "stockist" : "stockists"
+        }`}
+        note={fallbackNote(wholesale.fallback)}
+      />
+
+      <StatCard
+        label="Commission earned"
+        value={commission.text}
+        icon={Coins}
+        tone="copper"
+        iconClassName="bg-copper/10 text-copper"
+        hint="On this period's affiliate orders"
+        note={fallbackNote(commission.fallback)}
+      />
+
+      <StatCard
+        label="Payouts paid"
+        value={paidOut.text}
+        icon={Banknote}
+        tone="copper"
+        iconClassName="bg-green-bg text-green"
+        trend={trendFor(kpis.payoutsPaidUsd, kpis.payoutsPaidUsdPrev)}
+        note={fallbackNote(paidOut.fallback)}
+      />
+      <StatCard
+        label="Active stockists"
+        value={count.format(kpis.activeStockists)}
+        icon={Store}
+        tone="copper"
+        iconClassName="bg-green-bg text-green"
+        hint="Active right now"
       />
 
       <StatCard
@@ -64,17 +154,8 @@ export function KpiCards({
         hint={
           kpis.newAffiliates > 0
             ? `${count.format(kpis.newAffiliates)} new this period`
-            : undefined
+            : "None new this period"
         }
-      />
-
-      <StatCard
-        label="Referral clicks"
-        value={count.format(kpis.clicks)}
-        icon={MousePointerClick}
-        tone="copper"
-        iconClassName="bg-purple-50 text-purple-600"
-        trend={trendFor(kpis.clicks, kpis.clicksPrev)}
       />
     </section>
   );
@@ -84,7 +165,7 @@ export function KpiCards({
 export function KpiCardsSkeleton() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, i) => (
+      {Array.from({ length: 9 }).map((_, i) => (
         <StatCardSkeleton key={i} />
       ))}
     </div>
