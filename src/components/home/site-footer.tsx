@@ -23,28 +23,19 @@ export function SiteFooter() {
               aria-label="Finasto home"
             >
               <Image
-                src="/brand/finasto-logo.png"
-                alt="Finasto"
-                width={120}
-                height={90}
-                priority
-                className="h-11 w-auto dark:hidden bg-amber-50 p-1"
-              />
-              <Image
                 src="/brand/finasto-logo-dark.png"
                 alt="Finasto"
                 width={120}
                 height={90}
-                priority
-                className="hidden h-11 w-auto dark:block"
+                className="h-12 w-auto"
               />
             </Link>
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:gap-x-16">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:gap-x-24">
             {footerColumns.map((column) => (
-              <div key={column.title}>
+              <div key={column.title} className={column.title === "About Finasto" ? "lg:ml-12" : ""}>
                 <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-cream">
                   {column.title}
                 </h3>

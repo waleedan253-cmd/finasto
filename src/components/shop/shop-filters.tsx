@@ -66,12 +66,12 @@ export function ShopFilters({
   const step = currency === "IDR" ? 1000 : currency === "PKR" ? 100 : 0.5;
   return (
     <aside className="w-full shrink-0 lg:w-[240px]">
-      <div className="rounded-[16px] border border-border bg-white p-5 lg:sticky lg:top-24">
+      <div className="rounded-2xl border border-border-strong bg-white p-5 shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] dark:border-border dark:shadow-[inset_0_1px_0_rgba(247,240,228,0.07)] lg:sticky lg:top-24">
         <div className="flex items-center justify-between border-b border-border pb-4">
           <h2 className="flex items-center gap-2 font-sans text-[15px] font-semibold text-espresso">
             Filters
             {activeCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-espresso px-1.5 font-sans text-[11px] font-semibold text-white">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-copper px-1.5 font-sans text-[11px] font-semibold text-espresso-deep">
                 {activeCount}
               </span>
             )}

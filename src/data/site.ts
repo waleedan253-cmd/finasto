@@ -79,9 +79,8 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Shop",
     links: [
-      { label: "Shop", href: "/shop" },
-      { label: "Velora", href: "/shop/velora" },
-      { label: "Blue Moon", href: "/shop/blue-moon" },
+      { label: "Velora", href: "/shop" },
+      { label: "Blue Moon", href: "/shop" },
     ],
   },
   {
@@ -96,7 +95,6 @@ export const footerColumns: FooterColumn[] = [
     title: "About Finasto",
     links: [
       { label: "Our Story", href: "/our-story" },
-      { label: "Sustainability", href: "/sustainability" },
       { label: "Contact", href: "/contact" },
     ],
   },

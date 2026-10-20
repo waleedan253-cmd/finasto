@@ -25,7 +25,7 @@ export function ShopIntro() {
         <div className="max-w-2xl">
           <h2
             id="shop-intro-heading"
-            className="font-display text-[28px] leading-tight text-espresso md:text-[36px]"
+            className="font-display text-[28px] leading-tight text-copper md:text-[36px]"
           >
             Sourced from Bali, shipped worldwide
           </h2>
@@ -51,7 +51,7 @@ export function ShopIntro() {
               >
                 <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border bg-espresso">
                   <Icon
-                    className="h-6 w-6  text-cream"
+                    className="h-6 w-6  text-copper"
                     strokeWidth={1.5}
                     aria-hidden="true"
                   />
@@ -59,7 +59,7 @@ export function ShopIntro() {
                     {index + 1}
                   </span>
                 </div>
-                <p className="mt-3 max-w-[140px] font-sans text-[13px] font-semibold text-espresso sm:max-w-none sm:text-[14px]">
+                <p className="mt-3 max-w-[140px] font-sans text-[10px]  text-espresso sm:max-w-none sm:text-[14px]">
                   {title}
                 </p>
               </li>

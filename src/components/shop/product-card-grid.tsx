@@ -6,7 +6,8 @@ import { getComparePrice, getPrice, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { formatStoreDate } from "@/lib/store-time";
-import { Heart, Star } from "lucide-react";
+import { Eye, Heart, Star } from "lucide-react";
+import { ProductQuickView } from "@/components/shop/product-quick-view";
 import { useState } from "react";
 const stateLabel: Record<Product["state"], string> = {
   new: "New",
@@ -17,11 +18,11 @@ const stateLabel: Record<Product["state"], string> = {
 };
 
 const stateClass: Record<Product["state"], string> = {
-  new: "bg-copper text-white",
+  new: "bg-copper text-espresso-deep",
   available: "bg-green text-white",
-  "low-stock": "bg-copper-light text-espresso",
-  "out-of-stock": "bg-disabled text-white",
-  offer: "bg-copper-light text-espresso",
+  "low-stock": "bg-copper-light text-espresso-deep",
+  "out-of-stock": "bg-disabled text-white dark:text-espresso",
+  offer: "bg-copper-light text-espresso-deep",
 };
 
 /**
@@ -32,6 +33,7 @@ const stateClass: Record<Product["state"], string> = {
 export function ProductCardGrid({ product }: { product: Product }) {
   const isOutOfStock = product.state === "out-of-stock";
   const [wishlisted, setWishlisted] = useState(false);
+  const [quickOpen, setQuickOpen] = useState(false);
   const { market } = useMarket();
   const { addItem } = useCart();
 
@@ -41,7 +43,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
   const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border bg-white transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)]">
+    <article className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:hover:border-copper/40">
       <Link
         href={`/shop/${product.slug}`}
         className="relative block aspect-square w-full overflow-hidden"
@@ -88,6 +90,19 @@ export function ProductCardGrid({ product }: { product: Product }) {
           aria-hidden="true"
         />
       </button>
+          <button
+        type="button"
+        onClick={() => setQuickOpen(true)}
+        aria-label={`Quick view ${product.name}`}
+        className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/90 text-espresso shadow-sm backdrop-blur transition-all hover:bg-white hover:text-copper focus-visible:translate-y-0 focus-visible:opacity-100 md:translate-y-1 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+      >
+        <Eye className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
+      </button>
+      <ProductQuickView
+        product={product}
+        open={quickOpen}
+        onClose={() => setQuickOpen(false)}
+      />
       <div className="flex flex-1 flex-col p-4">
         <p className="font-sans text-[11px] uppercase tracking-[0.12em] text-warm-gray">
           {product.category}
@@ -165,7 +180,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
           type="button"
           onClick={() => addItem(product.id)}
           disabled={isOutOfStock}
-          className="mt-3 h-10 w-full rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[13px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none"
+          className="mt-3 h-10 w-full rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[13px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso"
         >
           {isOutOfStock ? "Out of Stock" : "Add to Cart"}
         </button>

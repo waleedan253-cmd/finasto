@@ -42,7 +42,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className="mt-6 grid gap-8 md:grid-cols-2 lg:gap-14">
         {/* Image */}
         <div
-          className="relative aspect-square w-full overflow-hidden rounded-[16px] border border-border"
+          className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border-strong shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] dark:border-border dark:shadow-none"
           style={{ backgroundColor: `${product.accentColor}1A` }}
         >
           <Image
@@ -118,7 +118,7 @@ export function ProductDetail({ product }: { product: Product }) {
               {product.tagline.map((word) => (
                 <li
                   key={word}
-                  className="rounded-full border border-border bg-white px-3 py-1 font-sans text-[13px] text-espresso"
+                  className="rounded-full border border-border-strong bg-white px-3 py-1 font-sans text-[13px] text-espresso dark:border-border"
                 >
                   {word}
                 </li>
@@ -131,7 +131,7 @@ export function ProductDetail({ product }: { product: Product }) {
             type="button"
             onClick={() => addItem(product.id)}
             disabled={isOutOfStock}
-            className="mt-7 h-12 w-full cursor-pointer rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[15px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none sm:max-w-xs"
+            className="mt-7 h-12 w-full cursor-pointer rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[15px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso sm:max-w-xs"
           >
             {isOutOfStock ? "Out of stock" : "Add to cart"}
           </button>

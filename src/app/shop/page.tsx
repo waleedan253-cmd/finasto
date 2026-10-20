@@ -20,7 +20,6 @@ export default async function ShopPage() {
     <main className="flex-1 bg-cream-soft">
       <AnnouncementBar />
       <SiteHeader />
-
       <ShopHero />
       <ShopIntro />
       <Suspense fallback={null}>

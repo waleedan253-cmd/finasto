@@ -92,7 +92,8 @@ html {
   }
 }
 /* Footer is dark in both modes, so its text must stay light */
-.dark .site-footer {
+.dark .site-footer,
+.dark .on-dark {
   --color-cream: #f7f0e4;
 }
 

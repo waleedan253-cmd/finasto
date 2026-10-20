@@ -4,8 +4,7 @@ import { ProductDetail } from "@/components/shop/product-detail";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
-import { ShopPageClient } from "@/components/shop/shop-page-client";
-import { Suspense } from "react";
+
 
 // /shop/<product id>
 //
@@ -30,9 +29,7 @@ export default async function ProductPage({
       <AnnouncementBar />
       <SiteHeader />
       <ProductDetail product={product} />
-      <Suspense fallback={null}>
-        <ShopPageClient products={products} />
-      </Suspense>
+  
       <SiteFooter />
     </main>
   );

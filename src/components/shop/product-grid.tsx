@@ -5,7 +5,7 @@ import { ProductCardGrid } from "@/components/shop/product-card-grid";
 export function ProductGrid({ products }: { products: Product[] }) {
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-[16px] border border-dashed border-border py-20 text-center">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-strong bg-white py-20 text-center">
         <Leaf
           className="h-6 w-6 text-warm-gray"
           strokeWidth={1.4}

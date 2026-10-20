@@ -63,7 +63,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-espresso/40"
+            className="fixed inset-0 z-50 bg-[#1F1512]/45 backdrop-blur-[2px] dark:bg-black/60"
           />
 
           <motion.aside
@@ -75,7 +75,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[420px] flex-col bg-cream shadow-2xl"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[420px] flex-col border-l border-border bg-cream shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
@@ -118,7 +118,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 <Link
                   href="/shop"
                   onClick={closeCart}
-                  className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep px-6 font-sans text-[13px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md"
+                  className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep px-6 font-sans text-[13px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light"
                 >
                   Continue shopping
                 </Link>
@@ -135,7 +135,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                           href={`/shop/${product.slug}`}
                           onClick={closeCart}
                           style={{
-                            background: `linear-gradient(to bottom, ${product.accentColor}26, #ffffff)`,
+                            background: `linear-gradient(to bottom, ${product.accentColor}26, var(--color-white))`,
                           }}
                           className="relative h-24 w-24 shrink-0 overflow-hidden rounded-[12px] border border-border"
                         >
@@ -249,7 +249,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                   <Link
                     href="/checkout"
                     onClick={closeCart}
-                    className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[14px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md"
+                    className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[14px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light"
                   >
                     Checkout
                   </Link>

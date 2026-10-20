@@ -51,7 +51,7 @@ export async function AnnouncementBar() {
   const group = Array.from({ length: REPEAT }, () => announcements).flat();
 
   return (
-    <div className="w-full overflow-hidden bg-espresso text-cream">
+    <div className="relative w-full overflow-hidden bg-espresso text-cream dark:bg-cream dark:text-espresso">
       <div
         aria-hidden
         className="absolute inset-x-0 bottom-0 h-[2px] animate-border-flow"
