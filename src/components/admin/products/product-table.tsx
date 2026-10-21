@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useMemo, useOptimistic, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  LoadingOutlined,
   MoreOutlined,
   StopOutlined,
 } from "@ant-design/icons";
@@ -69,12 +70,19 @@ function Thumbnail({ item, size }: { item: ProductListItem; size: number }) {
 function RowActions({
   item,
   onDelete,
+  onOptimisticStatus,
 }: {
   item: ProductListItem;
   onDelete: (item: ProductListItem) => void;
+  onOptimisticStatus: (id: string, status: ProductStatus) => void;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  useEffect(() => {
+  console.log("[RowActions] MOUNT", item.id);
+  return () => console.log("[RowActions] UNMOUNT", item.id);
+}, [item.id]);
+  console.log("[RowActions]", item.name, "isPending:", isPending);
   const isActive = item.status === "active";
 
   const items: MenuProps["items"] = [
@@ -95,27 +103,41 @@ function RowActions({
   function handleClick({ key }: { key: string }) {
     if (key === "edit") router.push(`/admin/products/${item.id}`);
     if (key === "delete") onDelete(item);
+    
     if (key === "toggle") {
+      
+      
       const next: ProductStatus = isActive ? "disabled" : "active";
+  
       startTransition(async () => {
-        await setProductStatus(item.id, next);
+         onOptimisticStatus(item.id, next); 
+            console.log("[toggle] start", item.id, "->", next);
+         try {
+      const result = await setProductStatus(item.id, next);
+      console.log("[toggle] done", result);
+    } catch (err) {
+      console.error("[toggle] failed", err);
+    }
       });
     }
   }
 
   return (
-    <Dropdown
-      trigger={["click"]}
-      placement="bottomRight"
-      menu={{ items, onClick: handleClick }}
-    >
-      <Button
-        type="text"
-        loading={isPending}
-        icon={<MoreOutlined />}
-        aria-label={`Actions for ${item.name}`}
-      />
-    </Dropdown>
+    <div onClick={(e) => e.stopPropagation()}>
+      <Dropdown
+        trigger={["click"]}
+        placement="bottomRight"
+        getPopupContainer={() => document.body}
+        menu={{ items, onClick: handleClick }}
+        destroyPopupOnHide
+      >
+        <Button
+          type="text"
+          icon={isPending ? <LoadingOutlined /> : <MoreOutlined />}
+          aria-label={`Actions for ${item.name}`}
+        />
+      </Dropdown>
+    </div>
   );
 }
 
@@ -133,104 +155,107 @@ export function ProductTable({
   const [deleteTarget, setDeleteTarget] = useState<ProductListItem | null>(
     null,
   );
+  const [optimisticProducts, setOptimistic] = useOptimistic(
+    products,
+    (state, { id, status }: { id: string; status: ProductStatus }) =>
+      state.map((p) => (p.id === id ? { ...p, status } : p)),
+  );
+  const handleOptimisticStatus = (id: string, status: ProductStatus) =>
+    setOptimistic({ id, status });
 
-  const columns: ColumnsType<ProductListItem> = [
-    {
-      title: "#",
-      key: "sr",
-      width: 60,
-      render: (_, __, index) => (
-        <span className="tabular-nums text-neutral-500">
-          {startIndex + index + 1}
-        </span>
-      ),
-    },
-    {
-      title: "Product",
-      key: "product",
-      width: 240,
+  const columns: ColumnsType<ProductListItem> = useMemo(
+    () => [
+      {
+        title: "#",
+        key: "sr",
+        width: 60,
+        render: (_, __, index) => (
+          <span className="tabular-nums text-neutral-500">
+            {startIndex + index + 1}
+          </span>
+        ),
+      },
+      {
+        title: "Product",
+        key: "product",
+        width: 240,
+        render: (_, item) => (
+          <div className="flex items-center gap-3">
+            <Thumbnail item={item} size={44} />
+            <Link
+              href={`/admin/products/${item.id}`}
+              className="min-w-0 truncate"
+            >
+              {item.name}
+            </Link>
+          </div>
+        ),
+      },
+      {
+        title: "Category",
+        dataIndex: "category",
+        key: "category",
+        render: (category: string | null) => category ?? "—",
+      },
+      {
+        title: "Status",
+        key: "status",
+        render: (_, item) => (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <ProductStatusBadge status={item.status} />
+            {item.isLowStock && <LowStockBadge />}
+          </div>
+        ),
+      },
+      {
+        title: "Price",
+        key: "price",
+        render: (_, item) => (
+          <span className="tabular-nums">
+            {priceLabel(item, rates, currency)}
+          </span>
+        ),
+      },
+      {
+        title: "Stock",
+        dataIndex: "totalStock",
+        key: "stock",
+        render: (stock: number) => <span className="tabular-nums">{stock}</span>,
+      },
+      {
+        title: "Updated",
+        dataIndex: "updatedAt",
+        key: "updated",
+        render: (updatedAt: string) => (
+          <Typography.Text type="secondary">
+            {dateFmt.format(new Date(updatedAt))}
+          </Typography.Text>
+        ),
+      },
+      {
+        title: "Actions",
+        key: "actions",
+        align: "center",
+        render: (_, item) => (
+          <RowActions
+            item={item}
+            onDelete={setDeleteTarget}
+            onOptimisticStatus={handleOptimisticStatus}
+          />
+        ),
+      },
+    ],
+    [startIndex, rates, currency]
+  );
 
-      render: (_, item) => (
-        <div className="flex items-center gap-3">
-          <Thumbnail item={item} size={44} />
-          <Link
-            href={`/admin/products/${item.id}`}
-            className="min-w-0 truncate font-medium"
-            style={{ color: "#2E7D32" }}
-          >
-            {item.name}
-          </Link>
-        </div>
-      ),
-    },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      width: 140,
-      render: (category: string | null) => category ?? "—",
-    },
-    {
-      title: "Status",
-      key: "status",
-      width: 140,
-      render: (_, item) => (
-        <div className="flex flex-wrap items-center gap-1.5">
-          <ProductStatusBadge status={item.status} />
-          {item.isLowStock && <LowStockBadge />}
-        </div>
-      ),
-    },
-    {
-      title: "Price",
-      key: "price",
-      // align: "right",
-      width: 140,
-      render: (_, item) => (
-        <span className="tabular-nums">
-          {priceLabel(item, rates, currency)}
-        </span>
-      ),
-    },
-    {
-      title: "Stock",
-      dataIndex: "totalStock",
-      key: "stock",
-      // align: "right",
-      width: 140,
-      render: (stock: number) => <span className="tabular-nums">{stock}</span>,
-    },
-    {
-      title: "Updated",
-      dataIndex: "updatedAt",
-      key: "updated",
-      width: 140,
-      render: (updatedAt: string) => (
-        <Typography.Text type="secondary">
-          {dateFmt.format(new Date(updatedAt))}
-        </Typography.Text>
-      ),
-    },
-    {
-      // title: "Actions",
-      key: "actions",
-      align: "center",
-      width: 80,
-      fixed: "right",
-      render: (_, item) => (
-        <RowActions item={item} onDelete={setDeleteTarget} />
-      ),
-    },
-  ];
-  const TABLE_WIDTH = 1080;
   return (
     <>
       <Table<ProductListItem>
         rowKey="id"
         columns={columns}
-        dataSource={products}
+        dataSource={optimisticProducts}
         pagination={false}
-        scroll={{ x: TABLE_WIDTH }}
+      
         locale={{
           emptyText: (
             <Empty
@@ -241,7 +266,7 @@ export function ProductTable({
                   <p className="m-0 text-[13px] text-neutral-500">
                     Try a different search or status filter, or add your first
                     product.
-                  </p>
+                  </p> 
                 </div>
               }
             />

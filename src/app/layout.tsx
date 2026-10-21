@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "flag-icons/css/flag-icons.min.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
@@ -12,18 +12,26 @@ import { CartDrawer } from "@/components/cart/cart-drawer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
 
-const cormorant = Cormorant_Garamond({
+const cormorant = localFont({
   variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
   display: "swap",
+  src: [
+    { path: "../fonts/CormorantGaramond-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/CormorantGaramond-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/CormorantGaramond-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/CormorantGaramond-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/CormorantGaramond-Italic.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/CormorantGaramond-MediumItalic.woff2", weight: "500", style: "italic" },
+    { path: "../fonts/CormorantGaramond-SemiBoldItalic.woff2", weight: "600", style: "italic" },
+    { path: "../fonts/CormorantGaramond-BoldItalic.woff2", weight: "700", style: "italic" },
+  ],
 });
 
-const inter = Inter({
+const inter = localFont({
   variable: "--font-inter",
-  subsets: ["latin"],
   display: "swap",
+  src: "../fonts/Inter-Variable.woff2",
+  weight: "100 900",
 });
 
 export const metadata: Metadata = {

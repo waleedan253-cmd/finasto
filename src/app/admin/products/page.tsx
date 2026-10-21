@@ -56,7 +56,7 @@ export default async function AdminProductsPage({
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="font-display text-[28px] leading-tight text-espresso">
-          Products
+       Catalog Management
         </h1>
         <p className="mt-1 font-sans text-[14px] text-warm-gray">
           Manage the Finasto catalog — pricing, stock, variants and

@@ -31,7 +31,7 @@ import type { Notification } from "@/lib/admin/notifications";
 // Same look and behavior as the affiliate bell. Polls every 60s so the
 // badge stays fresh without a manual refresh.
 
-const POLL_MS = 1000;
+const POLL_MS = 60_000;
 
 const relativeTime = (iso: string) => {
   const diffMs = Date.now() - new Date(iso).getTime();

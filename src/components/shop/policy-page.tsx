@@ -6,6 +6,8 @@ const PAGES = [
   { href: "/shipping", label: "Shipping & Delivery" },
   { href: "/returns", label: "Returns & Refunds" },
   { href: "/faq", label: "FAQ" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
 ] as const;
 
 // Shared layout for the store's information pages (Shipping, Returns, FAQ).

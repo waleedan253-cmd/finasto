@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, MotionConfig } from "motion/react";
 import { heroContent } from "@/data/home";
 
 /**
@@ -10,18 +10,13 @@ import { heroContent } from "@/data/home";
  
  */
 export function HeroSection() {
-  const prefersReducedMotion = useReducedMotion();
-
   const easeOut = [0.22, 1, 0.36, 1] as const;
 
-  const riseIn = (delay = 0) =>
-    prefersReducedMotion
-      ? {}
-      : {
-          initial: { opacity: 0, y: 18 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.6, delay, ease: easeOut },
-        };
+  const riseIn = (delay = 0) => ({
+    initial: { opacity: 0, y: 18 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, delay, ease: easeOut },
+  });
 
   return (
     <section className="relative isolate  overflow-hidden bg-cream">
@@ -102,13 +97,9 @@ export function HeroSection() {
             pixel height, so it scales cleanly at every breakpoint instead
             of overflowing or leaving dead space on small/large screens. */}
         <motion.div
-          {...(prefersReducedMotion
-            ? {}
-            : {
-                initial: { opacity: 0, y: 24 },
-                animate: { opacity: 1, y: 0 },
-                transition: { duration: 0.7, delay: 0.15, ease: easeOut },
-              })}
+                    initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: easeOut }}
           className="relative ml-auto mr-[calc(-1*max(1rem,env(safe-area-inset-right)))] aspect-[3/4] w-full max-w-[320px] -mr-4 sm:-mr-6 sm:aspect-[5/4] sm:max-w-[520px] md:-mr-8 lg:mx-0 lg:mr-[calc(50%-30vw)] lg:aspect-auto lg:h-[560px] lg:max-w-none lg:w-auto"
         >
           <Image

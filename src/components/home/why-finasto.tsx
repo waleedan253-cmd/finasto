@@ -178,7 +178,7 @@ export function WhyFinasto() {
                     "object-cover object-center",
                     i === active &&
                       !prefersReducedMotion &&
-                      "animate-water-wave",
+                      "animate-water-wave",  
                   )}
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
