@@ -48,7 +48,30 @@ export function emptyVariant(): VariantDraft {
 
 type FieldErrors = Partial<Record<keyof VariantDraft, string>>;
 
+
 type Row = VariantDraft & { _index: number };
+// Input + inline error message, so a mistake is visible on its own cell.
+// Defined at module level so React keeps the same component type between
+// renders (a Cell defined inside VariantRepeater would remount its inputs
+// on every change).
+function Cell({
+  error,
+  children,
+}: {
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      {children}
+      {error && (
+        <div className="mt-0.5 text-[12px] leading-tight text-[#ff4d4f]">
+          {error}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function VariantRepeater({
   value,
@@ -75,25 +98,7 @@ export function VariantRepeater({
 
   const canRemove = value.length > 1;
 
-  // Input + inline error message, so a mistake is visible on its own cell.
-  function Cell({
-    error,
-    children,
-  }: {
-    error?: string;
-    children: React.ReactNode;
-  }) {
-    return (
-      <div>
-        {children}
-        {error && (
-          <div className="mt-0.5 text-[12px] leading-tight text-[#ff4d4f]">
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  }
+
 
   const columns: ColumnsType<Row> = [
     {

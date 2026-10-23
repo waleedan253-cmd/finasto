@@ -73,34 +73,46 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+      overflow-x: clip;
 }
 html {
   scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
-/* antd overrides ConfigProvider tokens can't fully reach */
 
-/* Respect reduced motion globally */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
 /* Footer is dark in both modes, so its text must stay light */
 .dark .site-footer,
 .dark .on-dark {
   --color-cream: #f7f0e4;
 }
 
+/* Paste at the bottom of globals.css */
+
+/* Hero slide progress bar: fills 0 → 100% over the slide duration */
+@keyframes hero-progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.hero-progress {
+  animation-name: hero-progress-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-progress {
+    animation: none;
+    width: 100%;
+  }
+}
 /* Moving copper border for announcement bar */
 
-/* Moving copper border for announcement bar */
-/* The one focal card: copper gradient on the Available KPI */
 .hero-col > div {
   background: linear-gradient(135deg, #f0b06e 0%, #c9803f 60%, #9a5a24 100%);
   border-color: transparent;
@@ -114,7 +126,7 @@ html {
   color: #24110a;
 }
 
-/* Moving copper border for announcement bar */
+
 /* Shared premium card: border, soft shadow, copper top line (light mode) */
 .finasto-card {
   position: relative;
@@ -172,12 +184,6 @@ html {
   animation: finasto-glow-drift 24s ease-in-out infinite alternate;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .dark .dark-glow {
-    animation: none;
-  }
-}
-
 /* Safety net: no amount can overflow its box (all currencies) */
 .tabular-nums {
   display: inline-block;
@@ -202,7 +208,6 @@ html {
   color: #24110a;
 }
 
-/* Moving copper border for announcement bar */
 .font-display {
   font-feature-settings: "lnum" 1;
 }
@@ -230,11 +235,7 @@ html {
   animation: finasto-border-flow 6s linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-border-flow {
-    animation: none;
-  }
-}
+
 
 /* Marquee for announcement bar */
 @keyframes finasto-marquee {
@@ -250,65 +251,3 @@ html {
   animation: finasto-marquee 28s linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
-}
-/* Ken Burns slow zoom for the Why Finasto carousel */
-@keyframes finasto-kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.08);
-  }
-}
-
-.animate-water-wave {
-  animation: water-wave 10s ease-in-out infinite alternate;
-}
-
-@keyframes water-wave {
-  0% {
-    transform: scale(1.06) translateX(-2%);
-  }
-  100% {
-    transform: scale(1.06) translateX(2%);
-  }
-}
-@keyframes finasto-logo-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-\[finasto-logo-in_400ms_ease-out_forwards\] {
-    animation: none;
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-@keyframes finasto-bag-bump {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.25);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-\[finasto-bag-bump_350ms_ease-out\] {
-    animation: none;
-  }
-}

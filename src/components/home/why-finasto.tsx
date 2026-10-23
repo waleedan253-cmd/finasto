@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { whySlides } from "@/data/home";
 
-const SLIDE_DURATION_MS = 5000;
-const TRANSITION_MS = 500;
+const SLIDE_DURATION_MS = 6000; 
+const TRANSITION_MS = 500; 
 
 // Cycled per-slide panel background — keeps the "green family" palette
 // varied across slides instead of one flat wash.
@@ -31,24 +31,19 @@ const TRANSITION_MS = 500;
 export function WhyFinasto() {
   const prefersReducedMotion = useReducedMotion();
   const [active, setActive] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const total = whySlides.length;
+const total = whySlides.length;
 
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    timerRef.current = setInterval(() => {
-      setActive((prev) => (prev + 1) % total);
-    }, SLIDE_DURATION_MS);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [prefersReducedMotion, total]);
+useEffect(() => {
+  if (total < 2) return;
+  const id = setTimeout(() => {
+    setActive((prev) => (prev + 1) % total);
+  }, SLIDE_DURATION_MS);
+  return () => clearTimeout(id);
+}, [active, total]);
 
-  const goTo = (index: number) => {
-    setActive(((index % total) + total) % total);
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
-
+const goTo = (index: number) => {
+  setActive(((index % total) + total) % total);
+};
   return (
     <section
       className="relative w-full overflow-hidden"
@@ -95,7 +90,7 @@ export function WhyFinasto() {
                       : "pointer-events-none absolute inset-0",
                     translate,
                   )}
-                  style={{ transitionDuration: `${TRANSITION_MS}ms` }}
+                  style={{ transitionDuration: prefersReducedMotion ? "0ms" : `${TRANSITION_MS}ms` }}
                   aria-hidden={i !== active}
                 >
                   <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
@@ -149,7 +144,7 @@ export function WhyFinasto() {
         </div>
 
         {/* IMAGE PANEL — order-1 on mobile (on top), order-2 on desktop (right) */}
-        <div className="relative order-1 h-[280px] overflow-hidden bg-transparent sm:h-[360px] lg:order-2 lg:h-[450px]">
+        <div className="relative order-1 h-[280px] overflow-hidden bg-green-bg sm:h-[360px] lg:order-2 lg:h-[560px]">
           {whySlides.map((slide, i) => {
             const diff = (i - active + total) % total;
             const translate =
@@ -166,7 +161,7 @@ export function WhyFinasto() {
                   "absolute inset-0 transition-transform ease-in-out",
                   translate,
                 )}
-                style={{ transitionDuration: `${TRANSITION_MS}ms` }}
+                style={{ transitionDuration: prefersReducedMotion ? "0ms" : `${TRANSITION_MS}ms` }}
                 aria-hidden={i !== active}
               >
                 <Image

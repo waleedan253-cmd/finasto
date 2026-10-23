@@ -1,116 +1,270 @@
 "use client";
 
-import Image from "next/image";
+// src/components/HeroSection.tsx  (replaces the old layered-image hero)
+// Needs: npm i lucide-react   (skip if already installed)
+
 import Link from "next/link";
-import { motion, MotionConfig } from "motion/react";
-import { heroContent } from "@/data/home";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Award,
+  Globe,
+  Handshake,
+  HandHeart,
+  Leaf,
+  Package,
+  ShieldCheck,
+  Sprout,
+  Sun,
+  Wind,
+  ArrowRight,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  HERO_SLIDE_DURATION,
+  heroSlides,
+  type HeroFeature,
+} from "@/data/hero-slides";
 
-/**
- * Hero is built as layered images (temple background, woman cutout, leaf
- 
- */
+const ICONS: Record<HeroFeature["icon"], LucideIcon> = {
+  leaf: Leaf,
+  sun: Sun,
+  sprout: Sprout,
+  globe: Globe,
+  handshake: Handshake,
+  shield: ShieldCheck,
+  steam: Wind,
+  award: Award,
+  hand: HandHeart,
+  package: Package,
+};
+
+/** Cloudinary optimisation: 1600px wide, auto quality, H.264 for every browser. */
+const videoSrc = (url: string) =>
+  url.replace("/upload/", "/upload/f_mp4,vc_h264,q_auto:good,w_1600/");
+const posterSrc = (url: string) =>
+  url
+    .replace("/upload/", "/upload/so_0,f_jpg,q_auto,w_1600/")
+    .replace(/\.mp4$/, ".jpg");
+
 export function HeroSection() {
-  const easeOut = [0.22, 1, 0.36, 1] as const;
+  const [active, setActive] = useState(0);
+  const [reduced, setReduced] = useState(false);
+  const [paused, setPaused] = useState(false); // tab hidden
+  const [ready, setReady] = useState(false); // active video has started playing
+  const videos = useRef<(HTMLVideoElement | null)[]>([]);
+  const total = heroSlides.length;
+  const next = (active + 1) % total;
 
-  const riseIn = (delay = 0) => ({
-    initial: { opacity: 0, y: 18 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, delay, ease: easeOut },
-  });
+  // Respect reduced-motion and data-saver: poster only, no rotation.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const saveData = (navigator as unknown as { connection?: { saveData?: boolean } })
+      .connection?.saveData;
+    const update = () => setReduced(mq.matches || !!saveData);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Pause everything when the tab is hidden.
+  useEffect(() => {
+    const onVis = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  // Each new slide waits for its video to really start playing.
+  // If it is still not playing after 3.5s (slow network), continue anyway.
+  useEffect(() => {
+    setReady(false);
+    const fallback = setTimeout(() => setReady(true), 3500);
+    return () => clearTimeout(fallback);
+  }, [active]);
+
+  // Slide timer: 6s per slide, counted from when the video is playing.
+  useEffect(() => {
+    if (reduced || paused || !ready) return;
+    const t = setTimeout(
+      () => setActive((i) => (i + 1) % total),
+      HERO_SLIDE_DURATION,
+    );
+    return () => clearTimeout(t);
+  }, [active, ready, reduced, paused, total]);
+
+  // Only the active video plays; the rest stay paused.
+  useEffect(() => {
+    videos.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === active && !reduced && !paused) {
+        v.muted = true; // React doesn't always write the muted attribute; autoplay needs it
+        v.currentTime = 0;
+        v.play().catch(() => {});
+      } else {
+        v.pause();
+      }
+    });
+  }, [active, reduced, paused]);
+
+  const go = useCallback((i: number) => setActive(i), []);
 
   return (
-    <section className="relative isolate  overflow-hidden bg-cream">
-      {/* Bali temple/landscape background.
-          Mobile: full-bleed low-opacity backdrop behind everything.
-          sm+: fades in from the right edge, widening with the viewport. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent,black_45%,black_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_45%,black_100%)] sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[55%] sm:opacity-100 sm:[mask-image:linear-gradient(to_right,transparent,black_22%,black_100%)] sm:[-webkit-mask-image:linear-gradient(to_right,transparent,black_22%,black_100%)] md:w-[55%] lg:w-[57%] xl:w-[55%]"
-      >
-        <div
-          className="absolute inset-0 hidden sm:block"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent, black 22%, black 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to right, transparent, black 22%, black 100%)",
-          }}
-        />
-        <Image
-          src="/hero/hero-bg-temple.png"
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 57vw, (min-width: 640px) 55vw, 100vw"
-          className="object-cover object-center"
-          priority
-        />
+    <section
+      aria-roledescription="carousel"
+      aria-label="Finasto Bali highlights"
+      className="relative isolate overflow-hidden bg-cream"
+    >
+      {/* LCP: preload the first poster so the hero paints immediately */}
+      <link
+        rel="preload"
+        as="image"
+        href={posterSrc(heroSlides[0].video)}
+        fetchPriority="high"
+      />
+
+      {/* VIDEO LAYER: full-bleed, sits behind the copy */}
+      <div aria-hidden="true" className="absolute inset-0 z-0">
+        {heroSlides.map((s, i) => (
+          <video
+            key={s.id}
+            ref={(el) => {
+              videos.current[i] = el;
+            }}
+            poster={posterSrc(s.video)}
+            muted
+            loop
+            playsInline
+            disablePictureInPicture
+            controls={false}
+            tabIndex={-1}
+            autoPlay={i === 0 && !reduced}
+            onPlaying={() => {
+              if (i === active) setReady(true);
+            }}
+            preload={i === active ? "auto" : i === next ? "metadata" : "none"}
+            className={`absolute inset-0 h-full w-full object-cover object-[70%_center] transition-opacity duration-[800ms] ease-out sm:object-center ${
+              i === active ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {/* 1st: optimised Cloudinary version. 2nd: your original file,
+                used automatically if the optimised one fails or is still
+                being transcoded. */}
+            <source src={videoSrc(s.video)} type="video/mp4" />
+            <source src={s.video} type="video/mp4" />
+          </video>
+        ))}
+
+        {/* Readability fade: cream on the left (desktop) / bottom (mobile) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-cream via-cream/85 via-45% to-transparent to-75% lg:hidden" />
+        <div className="absolute inset-0 hidden bg-gradient-to-r from-cream from-[28%] via-cream/70 via-[42%] to-transparent to-[62%] lg:block" />
+        {/* Soft top fade so the header/nav stays legible */}
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-cream/80 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1440px] grid-cols-1 items-end gap-8 overflow-x-hidden px-4 pb-0 pt-10 sm:gap-10 sm:px-6 sm:pt-14 md:px-8 lg:grid-cols-2 lg:gap-6 lg:overflow-visible lg:pt-20">
-        {/* Copy column */}
-        <div className="relative z-20 min-w-0 max-w-xl pb-10 sm:pb-14 lg:pb-28">
-          <motion.p
-            {...riseIn(0)}
-            className="mb-3 font-sans text-[11px] uppercase tracking-[0.22em] text-copper sm:mb-4 sm:text-[12px] md:text-[13px]"
-          >
-            {heroContent.eyebrow}
-          </motion.p>
+      {/* COPY LAYER */}
+      <div className="relative z-10 mx-auto flex min-h-[640px] w-full max-w-[1440px] flex-col justify-end px-4 pb-24 pt-[300px] sm:px-6 sm:pt-[340px] md:px-8 lg:min-h-[min(820px,calc(100svh-80px))] lg:justify-center lg:pb-28 lg:pt-24">
+        <div className="grid max-w-xl">
+          {heroSlides.map((s, i) => {
+            const isActive = i === active;
+            const Heading = i === 0 ? "h1" : "h2"; // one H1 per page
+            return (
+              <div
+                key={s.id}
+                aria-hidden={!isActive}
+                inert={!isActive}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${i + 1} of ${total}`}
+                className={`col-start-1 row-start-1 transition-[opacity,transform] duration-[800ms] ease-out ${
+                  isActive
+                    ? "translate-y-0 opacity-100"
+                    : "pointer-events-none translate-y-3 opacity-0"
+                }`}
+              >
+                <p className="mb-3 font-sans text-[11px] uppercase tracking-[0.22em] text-copper sm:mb-4 sm:text-[12px] md:text-[13px]">
+                  {s.eyebrow}
+                </p>
 
-          <motion.h1
-            {...riseIn(0.08)}
-            className="font-display text-[34px] leading-[1.1] text-espresso xs:text-[38px] sm:text-[44px] sm:leading-[1.08] md:text-[52px] lg:text-[60px] xl:text-[68px]"
-          >
-            {heroContent.headline[0]}
-            <br />
-            {heroContent.headline[1]}
-          </motion.h1>
+                <Heading className="font-display text-[36px] leading-[1.08] text-green-deep sm:text-[46px] md:text-[54px] lg:text-[62px] xl:text-[70px]">
+                  {s.headline[0]}
+                  <br />
+                  {s.headline[1]}
+                </Heading>
 
-          <motion.p
-            {...riseIn(0.16)}
-            className="mt-4 max-w-sm font-sans text-[15px] leading-relaxed text-warm-gray sm:mt-5 sm:text-[16px] md:text-[17px]"
-          >
-            {heroContent.subheading}
-          </motion.p>
+                <p className="mt-4 max-w-md font-sans text-[15px] leading-relaxed text-espresso/80 sm:mt-5 sm:text-[16px] md:text-[17px]">
+                  {s.body}
+                </p>
 
-          <motion.div
-            {...riseIn(0.24)}
-            className="mt-6 flex flex-wrap items-center gap-3 sm:mt-8 sm:gap-4"
-          >
-            <Link
-              href={heroContent.primaryCta.href}
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-espresso px-5 font-sans text-[13px] font-medium text-cream transition-colors hover:bg-espresso-deep sm:h-12 sm:px-6 sm:text-[14px]"
-            >
-              {heroContent.primaryCta.label}
-              <span aria-hidden="true">→</span>
-            </Link>
-            <Link
-              href={heroContent.secondaryCta.href}
-              className="inline-flex h-11 items-center rounded-full border border-border-strong px-5 font-sans text-[13px] font-medium text-espresso transition-colors hover:border-copper sm:h-12 sm:px-6 sm:text-[14px]"
-            >
-              {heroContent.secondaryCta.label}
-            </Link>
-          </motion.div>
+                <ul className="mt-6 flex flex-wrap items-stretch gap-y-4 sm:mt-8">
+                  {s.features.map((f, k) => {
+                    const Icon = ICONS[f.icon];
+                    return (
+                      <li
+                        key={f.label}
+                        className={`flex w-[88px] flex-col items-center gap-2 px-2 text-center sm:w-[104px] ${
+                          k > 0 ? "border-l border-border-strong" : ""
+                        }`}
+                      >
+                        <Icon
+                          aria-hidden="true"
+                          className="h-6 w-6 text-green-deep"
+                          strokeWidth={1.25}
+                        />
+                        <span className="font-sans text-[9.5px] font-medium uppercase leading-snug tracking-[0.16em] text-espresso sm:text-[10px]">
+                          {f.label}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                <Link
+                  href={s.cta.href}
+                  tabIndex={isActive ? 0 : -1}
+                  className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-green-deep px-6 font-sans text-[14px] font-medium text-cream-soft transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
+                >
+                  {s.cta.label}
+                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Woman + tea — main hero visual, meaningful alt text.
-            Height is driven by aspect-ratio + width instead of a fixed
-            pixel height, so it scales cleanly at every breakpoint instead
-            of overflowing or leaving dead space on small/large screens. */}
-        <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: easeOut }}
-          className="relative ml-auto mr-[calc(-1*max(1rem,env(safe-area-inset-right)))] aspect-[3/4] w-full max-w-[320px] -mr-4 sm:-mr-6 sm:aspect-[5/4] sm:max-w-[520px] md:-mr-8 lg:mx-0 lg:mr-[calc(50%-30vw)] lg:aspect-auto lg:h-[560px] lg:max-w-none lg:w-auto"
+        {/* PROGRESS INDICATOR: each bar fills over exactly 6 seconds */}
+        <div
+          role="tablist"
+          aria-label="Choose slide"
+          className="absolute bottom-8 left-4 flex gap-2 sm:left-6 md:left-8"
         >
-          <Image
-            src="/hero/hero-woman.png"
-            alt="Woman relaxing with a warm cup of Finasto botanical tea on a Bali terrace"
-            fill
-            priority
-            sizes="(min-width: 1024px) 45vw, (min-width: 640px) 60vw, 85vw"
-            className="object-contain object-bottom"
-          />
-        </motion.div>
+          {heroSlides.map((s, i) => (
+            <button
+              key={s.id}
+              role="tab"
+              type="button"
+              aria-selected={i === active}
+              aria-label={`Show slide ${i + 1}: ${s.headline.join(" ")}`}
+              onClick={() => go(i)}
+              className="group relative h-6 w-12 sm:w-16"
+            >
+              <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-full bg-espresso/20">
+                <span
+                  key={`${i}-${i === active ? active : "x"}`}
+                  className={`block h-full origin-left rounded-full bg-copper ${
+                    i < active || (reduced && i === active) ? "w-full" : "w-0"
+                  } ${i === active && !reduced && ready ? "hero-progress" : ""}`}
+                  style={
+                    i === active && !reduced && ready
+                      ? {
+                          animationDuration: `${HERO_SLIDE_DURATION}ms`,
+                          animationPlayState: paused ? "paused" : "running",
+                        }
+                      : undefined
+                  }
+                />
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

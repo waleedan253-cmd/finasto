@@ -78,11 +78,7 @@ function RowActions({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  useEffect(() => {
-  console.log("[RowActions] MOUNT", item.id);
-  return () => console.log("[RowActions] UNMOUNT", item.id);
-}, [item.id]);
-  console.log("[RowActions]", item.name, "isPending:", isPending);
+ 
   const isActive = item.status === "active";
 
   const items: MenuProps["items"] = [
@@ -127,9 +123,9 @@ function RowActions({
       <Dropdown
         trigger={["click"]}
         placement="bottomRight"
-        getPopupContainer={() => document.body}
+  
         menu={{ items, onClick: handleClick }}
-        destroyPopupOnHide
+        
       >
         <Button
           type="text"
