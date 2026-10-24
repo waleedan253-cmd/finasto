@@ -173,7 +173,7 @@ export function MobileNav({
 
            <div className="border-t border-border px-5 py-4">
   <div className="mb-3 flex items-center justify-between">
-    <span className="font-sans text-[15px] text-espresso">Theme</span>
+    <span className="font-sans text-[15px] text-espresso">Appearance</span>
     <ThemeToggle />
   </div>
   {onOpenAuth && (
