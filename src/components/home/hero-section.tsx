@@ -183,7 +183,7 @@ useEffect(() => {
                     : "pointer-events-none translate-y-3 opacity-0"
                 }`}
               >
-                <p className="mb-3 font-sans text-[13px] uppercase tracking-[0.22em] text-copper-deep">
+                <p className="mb-3 font-sans text-[13px] uppercase tracking-[0.22em] text-copper">
                   {s.eyebrow}
                 </p>
 
