@@ -30,7 +30,8 @@ const TRANSITION_MS = 500;
  */
 export function WhyFinasto() {
   const prefersReducedMotion = useReducedMotion();
-  const [active, setActive] = useState(0);
+const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
 const total = whySlides.length;
 
 useEffect(() => {
@@ -48,14 +49,19 @@ const goTo = (index: number) => {
     <section
       className="relative w-full overflow-hidden"
       aria-roledescription="carousel"
-      aria-label="Why Finasto"
+ aria-label="Why Finasto"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+<div className="relative grid grid-cols-1 border-t border-copper/30 bg-gradient-to-b from-cream to-cream-soft lg:grid-cols-2">
         <div className="col-span-full px-5 py-10 text-center sm:px-8">
           <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             Why Finasto
           </p>
-          <h2 className="mt-2 font-display text-[36px] leading-tight text-espresso-deep dark:text-espresso sm:text-[48px]">
+          <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep   sm:text-[48px]">
             Why Choose Finasto?
           </h2>
           <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70 dark:text-warm-gray">
@@ -67,10 +73,10 @@ const goTo = (index: number) => {
         {/* TEXT PANEL — order-2 on mobile (under image), order-1 on desktop (left) */}
         <div
           className={cn(
-            "relative order-2 flex h-[460px] items-center overflow-hidden bg-green-bg px-5 py-10 sm:h-[420px] sm:px-8 lg:order-1 lg:h-[560px]",
+            "relative order-2 flex h-[460px] items-center overflow-hidden border border-border-strong bg-green-bg px-5 py-10 sm:h-[420px] sm:px-8 lg:order-1 lg:h-[560px]",
           )}
         >
-          <ul className="relative mx-auto w-full max-w-lg list-none p-0">
+          <ul className="mx-auto grid w-full max-w-lg list-none p-0">
             {whySlides.map((slide, i) => {
               const diff = (i - active + total) % total;
               const translate =
@@ -85,9 +91,8 @@ const goTo = (index: number) => {
                   key={slide.id}
                   className={cn(
                     "transition-all ease-in-out",
-                    i === active
-                      ? "relative"
-                      : "pointer-events-none absolute inset-0",
+                    "col-start-1 row-start-1",
+                    i !== active && "pointer-events-none",
                     translate,
                   )}
                   style={{ transitionDuration: prefersReducedMotion ? "0ms" : `${TRANSITION_MS}ms` }}
@@ -96,19 +101,19 @@ const goTo = (index: number) => {
                   <p className="font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
                     {slide.eyebrow}
                   </p>
-                  <h2 className="mt-3 font-display text-[32px] leading-tight text-espresso-deep dark:text-espresso sm:text-[40px]">
+                  <h3 className="mt-3 font-display text-[32px] leading-tight text-green-deep sm:text-[40px]">
                     {slide.heading}
-                  </h2>
-                  <p className="mt-4 font-sans text-[15px] leading-relaxed text-espresso-deep/80 dark:text-espresso/80">
+                  </h3>
+                  <p className="mt-4 font-sans text-[15px] leading-relaxed text-warm-gray">
                     {slide.description}
                   </p>
                   <ul className="mt-7 space-y-2">
                     {slide.details.map((d) => (
                       <li
                         key={d}
-                        className="flex items-start gap-2 font-sans text-[14px] text-espresso-deep/80 dark:text-espresso/80"
+                        className="flex items-start gap-2 font-sans text-[14px] text-warm-gray"
                       >
-                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-espresso dark:bg-copper" />
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-copper" />
                         {d}
                       </li>
                     ))}
@@ -119,7 +124,7 @@ const goTo = (index: number) => {
           </ul>
 
           {/* Screen-reader-only live announcement of the current slide */}
-          <span className="sr-only" role="status" aria-live="polite">
+          <span className="sr-only" role="status" aria-live={paused ? "polite" : "off"}>
             {`Slide ${active + 1} of ${total}: ${whySlides[active].heading}`}
           </span>
 
@@ -135,8 +140,9 @@ const goTo = (index: number) => {
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
                   i === active
-                    ? "w-6 bg-espresso-deep dark:bg-copper"
-                    : "w-1.5 bg-espresso-deep/30 hover:bg-espresso-deep/50 dark:bg-espresso/30 dark:hover:bg-espresso/50",
+                   
+                    ? "w-6 bg-copper"
+: "w-1.5 bg-espresso/25 hover:bg-espresso/45",
                 )}
               />
             ))}
@@ -175,8 +181,7 @@ const goTo = (index: number) => {
                       !prefersReducedMotion &&
                       "animate-water-wave",  
                   )}
-                  priority={i === 0}
-                  loading={i === 0 ? undefined : "lazy"}
+                  loading={i === active || i === (active + 1) % total ? "eager" : "lazy"}
                 />
               </div>
             );

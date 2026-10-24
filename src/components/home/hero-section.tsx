@@ -1,7 +1,6 @@
 "use client";
 
-// src/components/HeroSection.tsx  (replaces the old layered-image hero)
-// Needs: npm i lucide-react   (skip if already installed)
+
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,6 +16,8 @@ import {
   Sun,
   Wind,
   ArrowRight,
+    Pause,
+  Play,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -50,22 +51,22 @@ export function HeroSection() {
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
   const [paused, setPaused] = useState(false); // tab hidden
+  const [userPaused, setUserPaused] = useState(false); // visitor pressed pause
+const halted = paused || userPaused;
   const [ready, setReady] = useState(false); // active video has started playing
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
+  const lastActive = useRef(-1);
   const total = heroSlides.length;
   const next = (active + 1) % total;
 
   // Respect reduced-motion and data-saver: poster only, no rotation.
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const saveData = (navigator as unknown as { connection?: { saveData?: boolean } })
-      .connection?.saveData;
-    const update = () => setReduced(mq.matches || !!saveData);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
+ // Video autoplays for everyone (muted background loop). Only data-saver
+// mode falls back to the poster, since that is about bandwidth, not motion.
+useEffect(() => {
+  const saveData = (navigator as unknown as { connection?: { saveData?: boolean } })
+    .connection?.saveData;
+  setReduced(!!saveData);
+}, []);
   // Pause everything when the tab is hidden.
   useEffect(() => {
     const onVis = () => setPaused(document.hidden);
@@ -83,27 +84,29 @@ export function HeroSection() {
 
   // Slide timer: 6s per slide, counted from when the video is playing.
   useEffect(() => {
-    if (reduced || paused || !ready) return;
+    if (reduced ||halted || !ready) return;
     const t = setTimeout(
       () => setActive((i) => (i + 1) % total),
       HERO_SLIDE_DURATION,
     );
     return () => clearTimeout(t);
-  }, [active, ready, reduced, paused, total]);
-
+  }, [active, ready, reduced, halted, total]);
   // Only the active video plays; the rest stay paused.
   useEffect(() => {
+    const slideChanged = lastActive.current !== active;
+    lastActive.current = active;
+
     videos.current.forEach((v, i) => {
       if (!v) return;
-      if (i === active && !reduced && !paused) {
+      if (i === active && !reduced && !halted) {
         v.muted = true; // React doesn't always write the muted attribute; autoplay needs it
-        v.currentTime = 0;
+        if (slideChanged) v.currentTime = 0; // restart only on a new slide, not on resume
         v.play().catch(() => {});
       } else {
         v.pause();
       }
     });
-  }, [active, reduced, paused]);
+  }, [active, reduced, halted]);
 
   const go = useCallback((i: number) => setActive(i), []);
 
@@ -135,15 +138,15 @@ export function HeroSection() {
             playsInline
             disablePictureInPicture
             controls={false}
-            tabIndex={-1}
-            autoPlay={i === 0 && !reduced}
+            tabIndex={-1} 
+            // autoPlay={i === 0 && !reduced}
             onPlaying={() => {
               if (i === active) setReady(true);
             }}
             preload={i === active ? "auto" : i === next ? "metadata" : "none"}
-            className={`absolute inset-0 h-full w-full object-cover object-[70%_center] transition-opacity duration-[800ms] ease-out sm:object-center ${
-              i === active ? "opacity-100" : "opacity-0"
-            }`}
+           className={`absolute inset-0 h-full w-full scale-110 object-cover object-[70%_center] transition-opacity duration-[800ms] ease-out sm:object-center ${
+  i === active ? "opacity-100" : "opacity-0"
+}`}
           >
             {/* 1st: optimised Cloudinary version. 2nd: your original file,
                 used automatically if the optimised one fails or is still
@@ -190,7 +193,7 @@ export function HeroSection() {
                   {s.headline[1]}
                 </Heading>
 
-                <p className="mt-4 max-w-md font-sans text-[15px] leading-relaxed text-espresso/80 sm:mt-5 sm:text-[16px] md:text-[17px]">
+                <p className="mt-4 max-w-md text-[10px] leading-relaxed text-warm-gray sm:mt-5 sm:text-[16px] md:text-[17px]">
                   {s.body}
                 </p>
 
@@ -256,7 +259,7 @@ export function HeroSection() {
                     i === active && !reduced && ready
                       ? {
                           animationDuration: `${HERO_SLIDE_DURATION}ms`,
-                          animationPlayState: paused ? "paused" : "running",
+                          animationPlayState: halted  ? "paused" : "running",
                         }
                       : undefined
                   }
@@ -265,6 +268,19 @@ export function HeroSection() {
             </button>
           ))}
         </div>
+        <button
+  type="button"
+  onClick={() => setUserPaused((p) => !p)}
+  aria-label={userPaused ? "Play background video" : "Pause background video"}
+  aria-pressed={userPaused}
+  className="absolute bottom-6 right-4 flex h-12 w-12 items-center justify-center rounded-full border border-border-strong bg-cream/80 text-espresso backdrop-blur transition-colors hover:bg-cream sm:right-6 md:right-8"
+>
+  {userPaused ? (
+    <Play aria-hidden="true" className="h-5 w-5" />
+  ) : (
+    <Pause aria-hidden="true" className="h-5 w-5" />
+  )}
+</button>
       </div>
     </section>
   );

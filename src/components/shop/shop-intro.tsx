@@ -19,13 +19,13 @@ export function ShopIntro() {
   return (
     <section
       aria-labelledby="shop-intro-heading"
-      className="border-b border-border bg-cream"
+      className="border-b border-border-strong bg-cream"
     >
       <div className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 md:py-14 lg:px-16">
         <div className="max-w-2xl">
           <h2
             id="shop-intro-heading"
-            className="font-display text-[28px] leading-tight text-copper md:text-[36px]"
+            className="font-display text-[28px] leading-tight text-green-deep md:text-[36px]"
           >
             Sourced from Bali, shipped worldwide
           </h2>
@@ -40,7 +40,7 @@ export function ShopIntro() {
           {/* connecting line, runs behind the circles */}
           <div
             aria-hidden="true"
-            className="absolute left-[16.66%] right-[16.66%] top-7 h-px bg-border"
+            className="absolute left-[16.66%] right-[16.66%] top-7 h-px bg-border-strong"
           />
 
           <ol className="grid grid-cols-3">
@@ -49,17 +49,17 @@ export function ShopIntro() {
                 key={title}
                 className="flex flex-col items-center text-center"
               >
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border bg-espresso">
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-green-bg shadow-[0_4px_14px_rgba(50,30,24,0.08)]">
                   <Icon
-                    className="h-6 w-6  text-copper"
+                    className="h-6 w-6 text-green-deep"
                     strokeWidth={1.5}
                     aria-hidden="true"
                   />
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-espresso font-sans text-[11px] font-semibold text-white">
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-copper font-sans text-[11px] font-semibold text-[#24110a]">
                     {index + 1}
                   </span>
                 </div>
-                <p className="mt-3 max-w-[140px] font-sans text-[10px]  text-espresso sm:max-w-none sm:text-[14px]">
+                <p className="mt-3 max-w-[110px] font-sans text-[12px] font-medium leading-snug text-espresso sm:max-w-none sm:text-[14px]">
                   {title}
                 </p>
               </li>

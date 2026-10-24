@@ -11,7 +11,7 @@ import { CartProvider } from "@/components/providers/cart-provider";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
-
+import { AuthLoadingProvider } from "@/components/AuthLoadingProvider";
 const cormorant = localFont({
   variable: "--font-cormorant",
   display: "swap",
@@ -60,12 +60,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <AntdRegistry>
             <AntdTheme>
               <IntroGate />
-              <MarketProvider>
-                <CartProvider>
-                  {children}
-                  <CartDrawer products={products} />
-                </CartProvider>
-              </MarketProvider>
+                            <AuthLoadingProvider>
+                <MarketProvider>
+                  <CartProvider>
+                    {children}
+                    <CartDrawer products={products} />
+                  </CartProvider>
+                </MarketProvider>
+              </AuthLoadingProvider>
               <ScrollToTop />
             </AntdTheme>
           </AntdRegistry>

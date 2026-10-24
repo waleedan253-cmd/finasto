@@ -9,6 +9,7 @@ import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { X, Loader2 } from "lucide-react";
 import { signInAction } from "@/lib/auth/actions";
+import { useAuthLoading } from "@/components/AuthLoadingProvider";
 
 const signInSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
@@ -38,7 +39,9 @@ export function AuthModal({
   } = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
   });
-  const [serverError, setServerError] = useState<string | null>(null);
+ const [serverError, setServerError] = useState<string | null>(null);
+const [redirecting, setRedirecting] = useState(false);
+const authLoading = useAuthLoading();
 
   useEffect(() => {
     if (!open) {
@@ -58,9 +61,28 @@ export function AuthModal({
 
   async function onSubmit(values: SignInValues) {
     setServerError(null);
-    const result = await signInAction(values);
-    if (result?.error) setServerError(result.error);
+    authLoading.show(); // full-page loading starts immediately
+    try {
+      const result = await signInAction(values);
+      if (result?.error) {
+        authLoading.hide();
+        setServerError(result.error);
+        return;
+      }
+      setRedirecting(true); // keep the page covered until the dashboard opens
+    } catch {
+      authLoading.hide();
+      setServerError("Something went wrong. Please try again.");
+    }
   }
+    useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <AnimatePresence>
@@ -71,7 +93,7 @@ export function AuthModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] bg-espresso-deep/45"
+            className="fixed inset-0 z-[60] bg-espresso-deep/55 backdrop-blur-sm"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -84,38 +106,53 @@ export function AuthModal({
               role="dialog"
               aria-modal="true"
               aria-labelledby="auth-modal-title"
-              className="relative w-full max-w-[420px] rounded-2xl border border-border bg-cream-soft p-8 shadow-2xl"
+              className="relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft p-8 shadow-2xl sm:p-10"
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-copper via-copper-light to-copper"
+              />
+             
+
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close sign in"
-                className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center text-espresso/70 transition-colors hover:text-espresso"
+                className="absolute right-3 top-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-green-bg hover:text-espresso"
               >
-                <X
-                  className="h-5 w-5"
-                  strokeWidth={1.6}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                />
+                <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               </button>
 
               <div className="flex flex-col items-center text-center">
-                <Image
-                  src="/brand/finasto-logo.png"
-                  alt="Finasto"
-                  width={72}
-                  height={54}
-                  className="h-14 w-auto"
-                />
+               
+                <Link
+                            href="/"
+                          
+                          >
+                            <Image
+                              src="/brand/finasto-logo.png"
+                              alt="Finasto"
+                              width={120}
+                              height={90}
+                              priority
+                              className="h-11 w-auto dark:hidden"
+                            />
+                            <Image
+                              src="/brand/finasto-logo-dark.png"
+                              alt="Finasto"
+                              width={120}
+                              height={90}
+                              priority
+                              className="hidden h-11 w-auto dark:block"
+                            />
+                          </Link>
                 <h2
                   id="auth-modal-title"
-                  className="mt-4 font-display text-[28px] text-espresso"
+                  className="mt-4 font-display text-[30px] leading-tight text-green-deep"
                 >
                   Sign in
                 </h2>
-                <p className="mt-1 font-sans text-[13px] text-warm-gray">
+                <p className="mt-1.5 font-sans text-[13px] text-espresso/70">
                   For Finasto Admin and Affiliate accounts
                 </p>
               </div>
@@ -138,6 +175,7 @@ export function AuthModal({
                   label="Email"
                   type="email"
                   autoComplete="email"
+                  autoFocus
                   error={errors.email?.message}
                   {...register("email")}
                 />
@@ -152,20 +190,17 @@ export function AuthModal({
                   <Link
                     href="/forgot-password"
                     onClick={onClose}
-                    className="font-sans text-[13px] text-warm-gray transition-colors hover:text-espresso"
+                    className="font-sans text-[13px] text-espresso/70 underline-offset-4 transition-colors hover:text-green-deep hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-espresso font-sans text-[15px] text-cream transition-colors hover:bg-espresso-deep disabled:opacity-70"
-                  style={{
-                    cursor: "pointer",
-                  }}
+             disabled={isSubmitting || redirecting}
+                  className="mt-1 flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-green-deep font-sans text-[15px] font-medium text-cream-soft transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {(isSubmitting || redirecting) && <Loader2 className="h-4 w-4 animate-spin" />}
                   Sign in
                 </button>
               </form>
@@ -193,11 +228,11 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="font-sans text-[13px] text-espresso/80">{label}</span>
+      <span className="font-sans text-[13px] font-medium text-espresso">{label}</span>
       <input
         type={type}
         aria-invalid={!!error}
-        className="h-12 rounded-lg border border-border bg-white px-4 font-sans text-[15px] text-espresso outline-none transition-colors focus:border-copper"
+        className="h-12 rounded-lg border border-border-strong bg-white px-4 font-sans text-[15px] text-espresso outline-none transition-all placeholder:text-warm-gray/60 focus:border-copper focus:ring-2 focus:ring-copper/25 aria-[invalid=true]:border-red"
         {...props}
       />
       {error && (

@@ -12,7 +12,7 @@ const socialIcons = {
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer bg-espresso-deep text-cream/80">
+   <footer className="site-footer relative border-t-2 border-copper/60 bg-[#183321] text-cream/80 dark:bg-espresso-deep">
       <div className="mx-auto max-w-[1440px] px-5 py-14 sm:px-8">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           {/* Logo + market */}
@@ -30,13 +30,17 @@ export function SiteFooter() {
                 className="h-12 w-auto"
               />
             </Link>
+           <p className="max-w-[260px] font-sans text-[14px] leading-relaxed text-cream/60">
+              Premium Bali coffee and tea, grown with care and shared with the world.
+            </p>
           </div>
 
+
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:gap-x-24">
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:gap-x-24">
             {footerColumns.map((column) => (
               <div key={column.title} className={column.title === "About Finasto" ? "lg:ml-12" : ""}>
-                <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-cream">
+                <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-copper-light">
                   {column.title}
                 </h3>
                 <ul className="mt-4 flex flex-col gap-3">
@@ -44,7 +48,7 @@ export function SiteFooter() {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="font-sans text-[14px] text-cream/70 transition-colors hover:text-copper-light"
+                        className="font-sans text-[14px] text-cream/70 transition-colors hover:text-copper-light focus-visible:text-copper-light focus-visible:outline-none"
                       >
                         {link.label}
                       </Link>
@@ -53,11 +57,11 @@ export function SiteFooter() {
                 </ul>
               </div>
             ))}
-          </div>
+          </nav>
 
           {/* Social */}
           <div>
-            <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-cream">
+            <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-copper-light">
               Follow Us
             </h3>
             <div className="mt-4 flex items-center gap-3">
@@ -70,7 +74,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-cream/70 transition-colors hover:border-copper-light hover:text-copper-light"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-copper-light/30 text-cream/70 transition-all hover:-translate-y-0.5 hover:border-copper-light hover:bg-copper-light/10 hover:text-copper-light"
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -81,7 +85,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 flex flex-col-reverse items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-          <p className="font-sans text-[12px] text-cream/50">
+          <p className="font-sans text-[12px] text-cream/60">
             © {new Date().getFullYear()} Finasto. All rights reserved.
           </p>
           <div className="flex gap-5">

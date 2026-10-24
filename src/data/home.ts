@@ -100,7 +100,7 @@ export const whySlides: WhySlide[] = [
       "No artificial flavors, colorants or fillers",
       "Full ingredient list on every pack",
     ],
-    image: "/why/Nothing.png",
+    image: "/why/Sunlit Herbal Tea and Botanicals.png",
     imageAlt:
       "A clear water droplet beside a mountain spring and fresh tea leaf, symbolizing natural purity",
   },
@@ -115,7 +115,7 @@ export const whySlides: WhySlide[] = [
       "Packaged to preserve freshness in transit",
       "Designed for a daily moment of calm",
     ],
-    image: "/why/Trust.png",
+    image: "/why/Balinese Man Savoring Coffee.png",
     imageAlt:
       "A woman closing her eyes while breathing in the steam from a warm cup of tea",
   },

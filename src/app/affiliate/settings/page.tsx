@@ -21,7 +21,7 @@ export default async function AffiliateSettingsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
-      s
+      
       <CommissionCard commissionPercent={settings.commissionPercent} />
       <ProfileForm settings={settings} />
       <BankDetailsForm settings={settings} />

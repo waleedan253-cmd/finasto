@@ -54,7 +54,7 @@ export async function FeaturedCollection() {
               {copy.label}
               <span aria-hidden="true" className="h-px w-10 bg-copper-light" />
             </p>
-            <h2 className="mt-3 font-display text-[38px] leading-tight text-espresso sm:text-[46px]">
+            <h2 className="mt-3 font-display text-[38px] leading-tight text-green-deep sm:text-[46px]">
               {copy.heading}
             </h2>
             <p className="mt-3 font-sans text-[15px] leading-relaxed text-warm-gray">

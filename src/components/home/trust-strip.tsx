@@ -14,24 +14,24 @@ const icons = {
  */
 export function TrustStrip() {
   return (
-    <div className="relative z-10 bg-espresso">
+    <div className="relative z-10 bg-green dark:bg-cream dark:text-espresso ">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-y-6 px-5 py-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-8 sm:px-8 lg:grid-cols-4 lg:gap-8 lg:py-8">
         {trustItems.map((item) => {
           const Icon = icons[item.id as keyof typeof icons] ?? Check;
           return (
             <div key={item.id} className="flex items-start gap-4 px-0 lg:px-6">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-copper/40 bg-white/5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-copper/90 bg-white">
                 <Icon
-                  className="h-5 w-5 text-copper-light"
+                  className="h-5 w-5 text-copper"
                   strokeWidth={1.4}
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p className="font-sans text-[14px] font-medium leading-snug text-cream">
+                <p className="font-sans text-[14px] font-medium leading-snug text-cream dark:text-espresso">
                   {item.title}
                 </p>
-                <p className="font-sans text-[13px] leading-snug text-cream/60">
+                <p className="font-sans text-[13px] leading-snug text-cream/60 dark:text-copper">
                   {item.description}
                 </p>
               </div>
