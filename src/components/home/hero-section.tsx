@@ -193,7 +193,7 @@ useEffect(() => {
                   {s.headline[1]}
                 </Heading>
 
-                <p className="mt-4 max-w-md text-[10px] leading-relaxed text-warm-gray sm:mt-5 sm:text-[16px] md:text-[17px]">
+                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-warm-gray ">
                   {s.body}
                 </p>
 
