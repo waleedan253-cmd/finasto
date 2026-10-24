@@ -131,9 +131,7 @@ export function MobileNav({
                               strokeWidth={1.6}
                             />
                           </button>
-                          <div className="hidden sm:block">
-                            <ThemeToggle />
-                          </div>
+                          
                           <AnimatePresence initial={false}>
                             {isExpanded && (
                               <motion.ul
@@ -173,8 +171,12 @@ export function MobileNav({
               </ul>
             </nav>
 
-            <div className="border-t border-border px-5 py-4">
-              {onOpenAuth && (
+           <div className="border-t border-border px-5 py-4">
+  <div className="mb-3 flex items-center justify-between">
+    <span className="font-sans text-[15px] text-espresso">Theme</span>
+    <ThemeToggle />
+  </div>
+  {onOpenAuth && (
                 <button
                   type="button"
                   onClick={() => {
