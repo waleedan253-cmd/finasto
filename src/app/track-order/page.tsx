@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrackOrderClient } from "../../components/track-order/track-order-client";
+import { ShopIntro } from "@/components/shop/shop-intro";
 
 export const metadata: Metadata = {
   title: "Track Your Order — Finasto",
@@ -17,6 +18,7 @@ export default async function TrackOrderPage({
   return (
     <main className="flex-1 bg-cream-soft py-10 sm:py-14">
       <div className="mx-auto max-w-[560px] px-5 sm:px-8">
+            <ShopIntro />
         <TrackOrderClient
           initialCode={params.code ?? ""}
           initialEmail={params.email ?? ""}

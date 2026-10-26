@@ -93,11 +93,20 @@ const authLoading = useAuthLoading();
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] bg-espresso-deep/55 backdrop-blur-sm"
+            className="fixed inset-0 z-[60]"
             onClick={onClose}
             aria-hidden="true"
-          />
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          >
+            <Image
+              src="/brand/Good Things.png"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </motion.div>
+          <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center p-4 lg:justify-end lg:pr-24">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -106,7 +115,26 @@ const authLoading = useAuthLoading();
               role="dialog"
               aria-modal="true"
               aria-labelledby="auth-modal-title"
-              className="relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft p-8 shadow-2xl sm:p-10"
+              style={
+                {
+                  colorScheme: "light",
+                  "--color-cream": "#f7f1e7",
+                  "--color-cream-soft": "#fbf8f3",
+                  "--color-white": "#ffffff",
+                  "--color-espresso": "#321e18",
+                  "--color-espresso-deep": "#1f1512",
+                  "--color-green": "#3e762f",
+                  "--color-green-deep": "#234d2a",
+                  "--color-green-bg": "#eef2e8",
+                  "--color-copper": "#c98245",
+                  "--color-copper-light": "#e0a56d",
+                  "--color-red": "#b84e45",
+                  "--color-warm-gray": "#756b62",
+                  "--color-border": "#e6ded3",
+                  "--color-border-strong": "#d8ccbe",
+                } as React.CSSProperties
+              }
+              className="pointer-events-auto relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft p-8 shadow-2xl sm:p-10"
             >
               <span
                 aria-hidden="true"
@@ -129,21 +157,14 @@ const authLoading = useAuthLoading();
                             href="/"
                           
                           >
+                           
                             <Image
                               src="/brand/finasto-logo.png"
                               alt="Finasto"
                               width={120}
                               height={90}
                               priority
-                              className="h-11 w-auto dark:hidden"
-                            />
-                            <Image
-                              src="/brand/finasto-logo-dark.png"
-                              alt="Finasto"
-                              width={120}
-                              height={90}
-                              priority
-                              className="hidden h-11 w-auto dark:block"
+                              className="h-17 w-auto "
                             />
                           </Link>
                 <h2
@@ -153,7 +174,7 @@ const authLoading = useAuthLoading();
                   Sign in
                 </h2>
                 <p className="mt-1.5 font-sans text-[13px] text-espresso/70">
-                  For Finasto Admin and Affiliate accounts
+                 Access Management
                 </p>
               </div>
 
@@ -205,10 +226,7 @@ const authLoading = useAuthLoading();
                 </button>
               </form>
 
-              <p className="mt-5 text-center font-sans text-[12px] leading-relaxed text-warm-gray">
-                Not an admin or affiliate? You don&apos;t need an account — just
-                shop and check out as a guest.
-              </p>
+              
             </motion.div>
           </div>
         </>

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { ShopHero } from "@/components/shop/shop-hero";
 import { ShopPageClient } from "@/components/shop/shop-page-client";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ShopIntro } from "@/components/shop/shop-intro";
+// import { ShopIntro } from "@/components/shop/shop-intro";
 import { SiteFooter } from "@/components/home/site-footer";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
@@ -21,7 +21,7 @@ export default async function ShopPage() {
       <AnnouncementBar />
       <SiteHeader />
       <ShopHero />
-      <ShopIntro />
+      {/* <ShopIntro /> */}
       <Suspense fallback={null}>
         <ShopPageClient products={products} />
       </Suspense>

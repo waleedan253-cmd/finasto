@@ -14,24 +14,45 @@ const icons = {
  */
 export function TrustStrip() {
   return (
-    <div className="relative z-10 bg-green dark:bg-cream dark:text-espresso ">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-y-6 px-5 py-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-8 sm:px-8 lg:grid-cols-4 lg:gap-8 lg:py-8">
+    <section
+      aria-label="Why shop with Finasto"
+      className="relative z-10 overflow-hidden bg-gradient-to-br from-green-deep via-green to-green-deep dark:from-cream-soft dark:via-cream dark:to-cream-soft"
+    >
+      {/* Copper hairlines (top and bottom) */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-copper-light to-transparent"
+      />
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-copper/60 to-transparent"
+      />
+      {/* Soft copper glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_0%,rgba(224,165,109,0.20),transparent_55%)]"
+      />
+
+      <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-y-8 px-5 py-10 sm:grid-cols-2 sm:gap-x-8 sm:px-8 lg:grid-cols-4 lg:gap-0 lg:py-12">
         {trustItems.map((item) => {
           const Icon = icons[item.id as keyof typeof icons] ?? Check;
           return (
-            <div key={item.id} className="flex items-start gap-4 px-0 lg:px-6">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-copper/90 bg-white">
+            <div
+              key={item.id}
+              className="group flex items-start gap-4 lg:border-l lg:border-[#ffffff]/15 lg:px-8 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0 dark:lg:border-copper/20"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-copper-light bg-gradient-to-br from-[#fbf8f3] to-[#efe2cf] shadow-[0_4px_14px_rgba(0,0,0,0.22)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_8px_20px_rgba(224,165,109,0.35)] dark:from-white dark:to-green-bg">
                 <Icon
-                  className="h-5 w-5 text-copper"
-                  strokeWidth={1.4}
+                  className="h-[22px] w-[22px] text-copper transition-transform duration-300 group-hover:scale-110"
+                  strokeWidth={1.5}
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p className="font-sans text-[14px] font-medium leading-snug text-cream dark:text-espresso">
+                <p className="font-sans text-[15px] font-semibold leading-snug tracking-wide text-[#fbf8f3] dark:text-espresso">
                   {item.title}
                 </p>
-                <p className="font-sans text-[13px] leading-snug text-cream/60 dark:text-copper">
+                <p className="mt-1 font-sans text-[13px] leading-relaxed text-[#fbf8f3]/70 dark:text-copper">
                   {item.description}
                 </p>
               </div>
@@ -39,6 +60,6 @@ export function TrustStrip() {
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

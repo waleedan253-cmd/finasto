@@ -10,6 +10,7 @@ export type NavLink = {
 
 export const primaryNav: NavLink[] = [
   { label: "Home", href: "/" },
+   { label: "brand", href: "/brand" },
   { label: "Shop", href: "/shop" },
   { label: "Our Story", href: "/our-story" },
   { label: "Track Order", href: "/track-order" },
@@ -107,8 +108,8 @@ export type SocialLink = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
-  { label: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
-  { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
+  { label: "Instagram", href: "https://www.instagram.com/finasto.id", icon: "instagram" },
+  { label: "Facebook", href: "https://www.facebook.com/finasto.id", icon: "facebook" },
+  { label: "TikTok", href: "https://www.tiktok.com/@finasto.id", icon: "tiktok" },
+  // { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
 ];

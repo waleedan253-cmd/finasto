@@ -24,7 +24,7 @@ export const trustItems: TrustItem[] = [
   },
   {
     id: "origin",
-    title: "Authentic Bali Origin",
+    title: "Authentic  Origin",
     description: "From the rich volcanic soil.",
   },
   {
@@ -85,7 +85,7 @@ export const whySlides: WhySlide[] = [
       "Whole leaf only, no dust or fannings",
       "Blended in small, controlled batches",
     ],
-    image: "/why/why-craft.png",
+    image: "/why/Artisanal Tea Leaf Sorting.png",
     imageAlt:
       "Hands sorting loose tea leaves into a wooden bowl beside a cast-iron teapot and brewed tea",
   },
@@ -115,9 +115,32 @@ export const whySlides: WhySlide[] = [
       "Packaged to preserve freshness in transit",
       "Designed for a daily moment of calm",
     ],
-    image: "/why/Balinese Man Savoring Coffee.png",
+    image: "/why/Cozy Finasto Coffee.png",
     imageAlt:
       "A woman closing her eyes while breathing in the steam from a warm cup of tea",
+  },
+];
+// Add this to "@/data/home" (replace the copy with your real promises)
+export const philosophyPromises = [
+  {
+    id: "natural",
+    title: "Natural ingredients",
+    description: "Plant-based formulas with nothing you can't pronounce.",
+  },
+  {
+    id: "tested",
+    title: "Dermatologist tested",
+    description: "Checked for safety on sensitive skin before it reaches you.",
+  },
+  {
+    id: "handmade",
+    title: "Made in small batches",
+    description: "Every batch is prepared by hand and checked before it ships.",
+  },
+  {
+    id: "delivery",
+    title: "Home  delivery",
+    description: "Tracked shipping on every order, packed to arrive fresh.",
   },
 ];
 

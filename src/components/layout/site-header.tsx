@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react";
 import {
   Menu,
@@ -36,7 +36,8 @@ export function SiteHeader() {
   const { market: selectedMarket, setMarket } = useMarket();
   const { count, openCart } = useCart();
   const marketRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+const router = useRouter();
+  const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -92,7 +93,7 @@ export function SiteHeader() {
         <div
           className={cn(
             "mx-auto flex max-w-[1440px] items-center justify-between px-5 transition-[height] duration-300 ease-out sm:px-8",
-            isCompact ? "h-[64px]" : "h-[80px]",
+            isCompact ? "h-[70px]" : "h-[90px]",
           )}
         >
           {/* Logo */}
@@ -107,7 +108,7 @@ export function SiteHeader() {
               width={120}
               height={90}
               priority
-              className="h-11 w-auto dark:hidden"
+              className="h-16 w-auto dark:hidden"
             />
             <Image
               src="/brand/finasto-logo-dark.png"
@@ -115,7 +116,7 @@ export function SiteHeader() {
               width={120}
               height={90}
               priority
-              className="hidden h-11 w-auto dark:block"
+              className="hidden h-16 w-auto dark:block"
             />
           </Link>
 
@@ -127,9 +128,16 @@ export function SiteHeader() {
                   key={item.href}
                   className="group relative flex h-full items-center"
                 >
-                  <Link
+                                   <Link
                     href={item.href}
-                    className="relative flex items-center gap-1 font-sans text-[15px] text-espresso/85 transition-colors hover:text-espresso after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-copper after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100 group-focus-within:after:scale-x-100"
+                    aria-current={
+                      isActive(pathname, item.href) ? "page" : undefined
+                    }
+                    className={cn(
+                      "relative flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] text-espresso/85 transition-colors hover:text-espresso after:absolute after:-bottom-1 after:left-4 after:right-4 after:h-px after:origin-left after:scale-x-0 after:bg-copper after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100 group-focus-within:after:scale-x-100",
+                      isActive(pathname, item.href) &&
+                        "bg-copper/15 font-medium text-espresso after:hidden",
+                    )}
                   >
                     {item.label}
                     {item.children && (
@@ -357,6 +365,13 @@ export function SiteHeader() {
       <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
+}
+
+function isActive(pathname: string, href: string) {
+  const path = href.split("?")[0].split("#")[0];
+  return path === "/"
+    ? pathname === "/"
+    : pathname === path || pathname.startsWith(path + "/");
 }
 
 function IconButton({

@@ -24,14 +24,15 @@ export function BrandStory() {
         src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792832151/1024.mp4"
         className="absolute inset-0 h-full w-full object-cover object-center dark:brightness-90"
       />
-           <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-cream/90 via-cream/60 to-transparent"
-      />
+          
 
      
       {/* Copy */}
-      <div className="relative z-10 mx-auto flex h-full max-w-[1440px] items-center px-5 py-16 sm:px-8 lg:py-20">
+      <div className="relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
+        <div
+      aria-hidden="true"
+      className="pointer-events-none absolute -inset-x-5 -inset-y-8 -z-10 bg-gradient-to-r from-cream/90 via-cream/65 to-transparent blur-2xl sm:-inset-x-8"
+    />
         <div className="max-w-md">
           <p className="flex items-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             {storyContent.eyebrow}
