@@ -12,7 +12,7 @@ export const primaryNav: NavLink[] = [
   { label: "Home", href: "/" },
    { label: "brand", href: "/brand" },
   { label: "Shop", href: "/shop" },
-  { label: "Our Story", href: "/our-story" },
+  // { label: "Our Story", href: "/our-story" },
   { label: "Track Order", href: "/track-order" },
   { label: "Contact", href: "/contact" },
 ];
@@ -54,10 +54,10 @@ export const availableMarkets: Market[] = [
     countryLabel: "Malaysia",
     currencyCode: "MYR",
   },
-  {
-    countryCode: "GB",
-    countryLabel: "United Kingdom",
-    currencyCode: "GBP",
+   {
+    countryCode: "TR",
+    countryLabel: "Turkey",
+    currencyCode: "TRY",
   },
   {
     countryCode: "US",
@@ -65,10 +65,11 @@ export const availableMarkets: Market[] = [
     currencyCode: "USD",
   },
   {
-    countryCode: "PK",
-    countryLabel: "Pakistan",
-    currencyCode: "PKR",
+    countryCode: "GLOBAL",
+    countryLabel: "Global",
+    currencyCode: "USD",
   },
+
 ];
 
 export type FooterColumn = {

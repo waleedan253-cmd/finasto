@@ -12,6 +12,7 @@ import {
   X,
   Check,
   ChevronDown,
+    Globe,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthModal } from "@/components/auth/auth-modal";
+import { GlobalOutlined } from "@ant-design/icons";
 import { Flag } from "@/components/ui/flag";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -134,9 +136,9 @@ const router = useRouter();
                       isActive(pathname, item.href) ? "page" : undefined
                     }
                     className={cn(
-                      "relative flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] text-espresso/85 transition-colors hover:text-espresso after:absolute after:-bottom-1 after:left-4 after:right-4 after:h-px after:origin-left after:scale-x-0 after:bg-copper after:transition-transform after:duration-300 after:ease-out group-hover:after:scale-x-100 group-focus-within:after:scale-x-100",
+                      "relative flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] font-medium tracking-[0.01em] text-espresso/85 transition-colors duration-300 hover:text-espresso after:absolute after:-bottom-1 after:left-4 after:right-4 after:h-[2px] after:origin-left after:scale-x-0 after:rounded-full after:bg-copper after:transition-transform after:duration-500 after:ease-out group-hover:after:scale-x-100 group-focus-within:after:scale-x-100",
                       isActive(pathname, item.href) &&
-                        "bg-copper/15 font-medium text-espresso after:hidden",
+                        "bg-green font-semibold text-cream after:hidden",
                     )}
                   >
                     {item.label}
@@ -168,9 +170,7 @@ const router = useRouter();
 
           {/* Utility cluster */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <div className="hidden sm:block">
-              <ThemeToggle />
-            </div>
+           
             <div ref={marketRef} className="relative block">
               <button
                 type="button"
@@ -183,8 +183,8 @@ const router = useRouter();
                   cursor: "pointer",
                 }}
               >
-                <Flag code={selectedMarket.countryCode} />
-                <span>{selectedMarket.currencyCode}</span>
+                                <MarketIcon code={selectedMarket.countryCode} />
+                {/* <span>{selectedMarket.currencyCode}</span> */}
                 <ChevronDown
                   className={cn(
                     "h-3.5 w-3.5 transition-transform duration-200",
@@ -199,11 +199,11 @@ const router = useRouter();
                   className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-cream py-1 shadow-lg"
                 >
                   {availableMarkets.map((market) => {
-                    const isSelected =
-                      market.currencyCode === selectedMarket.currencyCode;
+                                       const isSelected =
+                      market.countryCode === selectedMarket.countryCode;
                     return (
                       <li
-                        key={market.currencyCode}
+                        key={market.countryCode}
                         style={{
                           cursor: "pointer",
                         }}
@@ -222,8 +222,8 @@ const router = useRouter();
                           className="flex w-full items-center justify-between px-4 py-2.5 text-left font-sans text-[14px] text-espresso/85 transition-colors hover:bg-espresso/5 hover:text-espresso"
                         >
                           <span className="flex items-center gap-3">
-                            <Flag code={market.countryCode} />
-                            {market.countryLabel} · {market.currencyCode}
+                                                    <MarketIcon code={market.countryCode} />
+                            {market.countryLabel}
                           </span>
                           {isSelected && (
                             <Check className="h-4 w-4 text-copper" />
@@ -236,7 +236,7 @@ const router = useRouter();
               )}
             </div>
 
-            <IconButton
+            {/* <IconButton
               label="Search"
               expanded={isSearchOpen}
               onClick={() => {
@@ -251,7 +251,7 @@ const router = useRouter();
                 className="h-[19px] w-[19px]"
                 strokeWidth={1.6}
               />
-            </IconButton>
+            </IconButton> */}
 
             <IconButton
               label="Account"
@@ -365,6 +365,13 @@ const router = useRouter();
       <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
+}
+
+function MarketIcon({ code }: { code: string }) {
+  if (code === "GLOBAL") {
+    return <GlobalOutlined style={{ fontSize: 16 }} aria-hidden="true" />;
+  }
+  return <Flag code={code} />;
 }
 
 function isActive(pathname: string, href: string) {

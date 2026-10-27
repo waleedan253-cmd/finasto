@@ -88,25 +88,16 @@ const authLoading = useAuthLoading();
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60]"
-            onClick={onClose}
-            aria-hidden="true"
-          >
-            <Image
-              src="/brand/Good Things.png"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center"
-            />
-          </motion.div>
-          <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center p-4 lg:justify-end lg:pr-24">
+        <motion.div
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.2 }}
+  className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
+  onClick={onClose}
+  aria-hidden="true"
+/>
+          <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -134,24 +125,22 @@ const authLoading = useAuthLoading();
                   "--color-border-strong": "#d8ccbe",
                 } as React.CSSProperties
               }
-              className="pointer-events-auto relative w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft p-8 shadow-2xl sm:p-10"
+              className="pointer-events-auto relative grid w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft shadow-2xl lg:max-w-[880px] lg:grid-cols-[1.05fr_1fr]"
             >
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-copper via-copper-light to-copper"
-              />
+             
              
 
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close sign in"
-                className="absolute right-3 top-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-green-bg hover:text-espresso"
+                className="absolute right-3 top-3 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-green-bg hover:text-espresso lg:text-cream-soft/80 lg:hover:bg-white/10 lg:hover:text-white"
               >
                 <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               </button>
 
-              <div className="flex flex-col items-center text-center">
+              <div className="p-8 sm:p-10 lg:py-12">
+<div className="flex flex-col items-center text-center">
                
                 <Link
                             href="/"
@@ -225,6 +214,41 @@ const authLoading = useAuthLoading();
                   Sign in
                 </button>
               </form>
+              </div>
+
+              {/* Right brand panel */}
+              <div className="relative hidden overflow-hidden rounded-l-[190px] bg-gradient-to-br from-green-deep via-[#1b3d22] to-espresso-deep lg:flex lg:flex-col lg:justify-center lg:pl-16 lg:pr-10">
+                {/* Optional leaf image: drop a file in /public/brand/ and uncomment
+                <Image
+                  src="/brand/leaves.png"
+                  alt=""
+                  fill
+                  sizes="440px"
+                  className="object-cover opacity-40 mix-blend-soft-light"
+                />
+                */}
+                <svg
+  aria-hidden="true"
+  viewBox="0 0 300 500"
+  preserveAspectRatio="xMidYMid slice"
+  className="pointer-events-none absolute inset-0 h-full w-full"
+>
+  <path d="M300 40 C220 90 200 190 230 300 C290 260 310 140 300 40Z" fill="#0f2f1a" opacity="0.55" />
+  <path d="M300 220 C230 270 215 370 245 480 C300 440 315 330 300 220Z" fill="#0c2615" opacity="0.5" />
+  <path d="M120 0 C90 70 110 150 170 210 C190 130 170 50 120 0Z" fill="#2f6a3a" opacity="0.35" />
+  <path d="M60 330 C90 390 150 420 210 430 C190 370 130 330 60 330Z" fill="#2f6a3a" opacity="0.3" />
+</svg>
+                <div className="relative">
+                  <p className="font-display text-[28px] leading-snug text-cream-soft">
+                    Manage
+                    <br />
+                    Grow
+                    <br />
+                    Succeed
+                  </p>
+                  <span className="mt-3 block h-[2px] w-10 bg-copper" />
+                </div>
+              </div>
 
               
             </motion.div>

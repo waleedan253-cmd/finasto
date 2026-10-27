@@ -43,7 +43,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
   const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:hover:border-copper/40">
+    <article id="shop" className=" group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:hover:border-copper/40">
       <Link
         href={`/shop/${product.slug}`}
         className="relative block aspect-square w-full overflow-hidden"

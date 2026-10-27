@@ -104,21 +104,21 @@ export const whySlides: WhySlide[] = [
     imageAlt:
       "A clear water droplet beside a mountain spring and fresh tea leaf, symbolizing natural purity",
   },
-  {
-    id: "trust",
-    eyebrow: "Trust",
-    heading: "A Ritual Worth Returning To",
-    description:
-      "From checkout to the first sip, Finasto is built around the small moments of calm people come back for. Ordering is simple, delivery is careful, and every cup is meant to slow your day down.",
-    details: [
-      "Fast guest checkout, no account required",
-      "Packaged to preserve freshness in transit",
-      "Designed for a daily moment of calm",
-    ],
-    image: "/why/Cozy Finasto Coffee.png",
-    imageAlt:
-      "A woman closing her eyes while breathing in the steam from a warm cup of tea",
-  },
+  // {
+  //   id: "trust",
+  //   eyebrow: "Trust",
+  //   heading: "A Ritual Worth Returning To",
+  //   description:
+  //     "From checkout to the first sip, Finasto is built around the small moments of calm people come back for. Ordering is simple, delivery is careful, and every cup is meant to slow your day down.",
+  //   details: [
+  //     "Fast guest checkout, no account required",
+  //     "Packaged to preserve freshness in transit",
+  //     "Designed for a daily moment of calm",
+  //   ],
+  //   image: "/why/Cozy Finasto Coffee.png",
+  //   imageAlt:
+  //     "A woman closing her eyes while breathing in the steam from a warm cup of tea",
+  // },
 ];
 // Add this to "@/data/home" (replace the copy with your real promises)
 export const philosophyPromises = [

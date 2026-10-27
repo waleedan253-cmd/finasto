@@ -19,7 +19,7 @@ type MarketContextValue = {
 const STORAGE_KEY = "finasto-market";
 
 const defaultMarket =
-  availableMarkets.find((m) => m.currencyCode === activeMarket.currencyCode) ??
+  availableMarkets.find((m) => m.countryCode === activeMarket.countryCode) ??
   availableMarkets[0];
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -33,7 +33,10 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      const found = availableMarkets.find((m) => m.currencyCode === saved);
+      const found =
+        availableMarkets.find((m) => m.countryCode === saved) ??
+        // older saves stored the currency code (e.g. "IDR")
+        availableMarkets.find((m) => m.currencyCode === saved);
       if (found) {
         setMarketState(found);
         if (
@@ -53,7 +56,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
     writeCurrencyCookie(next.currencyCode);
     router.refresh();
     try {
-      localStorage.setItem(STORAGE_KEY, next.currencyCode);
+      localStorage.setItem(STORAGE_KEY, next.countryCode);
     } catch {
       // ignore
     }

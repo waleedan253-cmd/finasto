@@ -10,7 +10,7 @@ import { BackgroundVideo } from "./BackgroundVideo";
  */
 export function BrandStory() {
   return (
-    <section className="relative isolate min-h-[520px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
+    <section className=" dark relative isolate min-h-[520px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
       {/* Landscape background */}
       <Image
         src="/story/golden-dawn-bali-rice-terraces.png"

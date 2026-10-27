@@ -210,7 +210,7 @@ export function SiteFooter() {
         className="absolute inset-x-0 top-0 -z-10 h-[340px] sm:inset-0 sm:h-auto"
       >
         <Image
-          src="/brand/Vintage Folk-Art Travel Festival Panorama.png"
+          src="/brand/Bali and India Travel Carnival Collage.png"
           alt=""
           fill
           sizes="100vw"

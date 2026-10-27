@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
+import { LaunchCollection } from "@/components/shop/LaunchCollection";
 
 export const metadata: Metadata = {
   title: "Shop — Finasto Botanical Tea",
@@ -22,6 +23,7 @@ export default async function ShopPage() {
       <SiteHeader />
       <ShopHero />
       {/* <ShopIntro /> */}
+<LaunchCollection/>
       <Suspense fallback={null}>
         <ShopPageClient products={products} />
       </Suspense>

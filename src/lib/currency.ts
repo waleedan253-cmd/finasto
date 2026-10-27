@@ -23,11 +23,16 @@ export const currencyCodeSchema = z
  * The four supported markets. Any other country sees USD.
  * Keep in step with country_to_currency() in affiliate-profile-lock.sql.
  */
+/**
+ * Supported markets. Any other country (and "GLOBAL") sees USD.
+ * Keep in step with country_to_currency() in affiliate-profile-lock.sql.
+ */
 export const COUNTRY_CURRENCY: Record<string, string> = {
-  ID: "Rp", // Indonesian Rupiah
-  MY: "RM", // Malaysian Ringgit
-  GB: "£", // British Pound Sterling
-  PK: "Rs", // Pakistani Rupee
+  ID: "IDR", // Indonesian Rupiah
+  MY: "MYR", // Malaysian Ringgit
+  TR: "TRY", // Turkish Lira
+  US: "USD",
+  GLOBAL: "USD",
 };
 
 export function countryToCurrency(
