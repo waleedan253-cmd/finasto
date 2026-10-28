@@ -22,8 +22,8 @@ const featureIcons = [Leaf, Coffee, Sprout];
 export function ProductCard({ product }: { product: Product }) {
   const router = useRouter();
   const isOutOfStock = product.state === "out-of-stock";
-  const cardBg = `${product.accentColor}1A`; // ~10% tint of the admin color
-  const pillBg = `${product.accentColor}40`; // ~25% tint
+  const cardBg = `linear-gradient(135deg, color-mix(in srgb, ${product.accentColor} 45%, black), color-mix(in srgb, ${product.accentColor} 75%, black) 50%, ${product.accentColor})`;
+  const glowColor = `${product.accentColor}55`;
   const { market } = useMarket();
   const { addItem } = useCart();
 
@@ -34,11 +34,17 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <article
       className={cn(
-        "relative overflow-hidden rounded-[28px] border border-border p-6 shadow-[0_1px_2px_rgba(50,30,24,0.04)] transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)]",
-        "flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8",
+        "group relative overflow-hidden rounded-[2rem] p-8 text-white shadow-[0_10px_30px_rgba(0,0,0,0.15)] transition-shadow duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)]",
+        "flex flex-col gap-8 sm:min-h-[420px] sm:flex-row sm:items-center sm:gap-10 sm:p-12",
       )}
-      style={{ backgroundColor: cardBg }}
+      style={{ backgroundImage: cardBg }}
     >
+      {/* Ambient glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full blur-3xl"
+        style={{ backgroundColor: glowColor }}
+      />
       {(product.state === "new" || product.state === "offer") && (
         <span className="absolute left-6 top-6 z-10 rounded-full bg-white/90 px-3 py-1 font-sans text-[11px] font-medium uppercase tracking-wide text-espresso shadow-sm">
           {stateLabel[product.state]}
@@ -48,23 +54,23 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Image */}
       <Link
         href={`/shop/${product.slug}`}
-        className="relative mx-auto block aspect-square w-full max-w-[240px] shrink-0 sm:mx-0 sm:w-[38%] sm:max-w-none"
+        className="relative mx-auto block aspect-square w-full max-w-[300px] shrink-0 sm:mx-0 sm:w-[45%] sm:max-w-none"
       >
         <Image
           src={product.image}
           alt={`${product.name} — ${product.category} pouch`}
           fill
           sizes="(min-width: 640px) 30vw, 60vw"
-          className="object-contain"
+          className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition duration-700 group-hover:-rotate-2 group-hover:scale-105"
         />
       </Link>
 
       {/* Content */}
-      <div className="flex flex-1 flex-col text-center sm:text-left">
-        <h3 className="font-serif text-[26px] leading-tight text-espresso">
+      <div className="relative flex flex-1 flex-col text-center sm:text-left">
+        <h3 className="font-serif text-[32px] leading-tight text-white sm:text-[38px]">
           {product.name}
         </h3>
-        <p className="mt-1 font-sans text-[14px] text-warm-gray">
+        <p className="mt-1 font-sans text-[13px] uppercase tracking-[0.2em] text-white/70">
           {product.category}
         </p>
 
@@ -72,15 +78,14 @@ export function ProductCard({ product }: { product: Product }) {
           {product.tagline.map((tag) => (
             <span
               key={tag}
-              className="rounded-full px-3 py-1 font-sans text-[12px] font-medium text-espresso"
-              style={{ backgroundColor: pillBg }}
+              className="rounded-full bg-white/10 px-3 py-1 font-sans text-[12px] font-medium text-white backdrop-blur"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <p className="mt-4 font-sans text-[14px] leading-relaxed text-warm-gray">
+        <p className="mt-4 font-sans text-[15px] leading-relaxed text-white/85">
           {product.shortDescription}
         </p>
 
@@ -90,10 +95,10 @@ export function ProductCard({ product }: { product: Product }) {
             return (
               <span
                 key={feature}
-                className="flex items-center gap-2 font-sans text-[12px] text-warm-gray"
+                className="flex items-center gap-2 font-sans text-[12px] text-white/75"
               >
                 <Icon
-                  className="h-4 w-4 text-espresso/60"
+                  className="h-4 w-4 text-white/60"
                   strokeWidth={1.5}
                   aria-hidden="true"
                 />
@@ -104,16 +109,16 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {(product.origin || product.weight) && (
-          <div className="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-1 font-sans text-[13px] text-warm-gray sm:justify-start">
+          <div className="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-1 font-sans text-[13px] text-white/75 sm:justify-start">
             {product.origin && (
               <span>
-                <span className="text-espresso/70">Origin</span> ·{" "}
+                <span className="text-white/60">Origin</span> ·{" "}
                 {product.origin}
               </span>
             )}
             {product.weight && (
               <span>
-                <span className="text-espresso/70">Weight</span> ·{" "}
+                <span className="text-white/60">Weight</span> ·{" "}
                 {product.weight}
               </span>
             )}
@@ -126,16 +131,16 @@ export function ProductCard({ product }: { product: Product }) {
             type="button"
             onClick={() => router.push("/shop")}
             disabled={isOutOfStock}
-            className="inline-flex h-11 w-fit items-center gap-2 rounded-full bg-espresso px-6 font-sans text-[14px] font-medium text-cream transition-colors hover:bg-espresso-deep disabled:cursor-not-allowed disabled:bg-disabled"
+            className="inline-flex h-11 w-fit items-center gap-2 rounded-full bg-white px-6 font-sans text-[14px] font-medium text-espresso transition hover:gap-3 hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-white/30 disabled:text-white/70"
           >
             {isOutOfStock ? "Out of Stock" : "Shop Now"}
             {!isOutOfStock && <span aria-hidden="true">→</span>}
           </button>
 
           <div className="text-right">
-            <p className="font-sans text-[17px] font-medium text-espresso">
+            <p className="font-sans text-[20px] font-medium text-white">
               {onOffer && (
-                <span className="mr-2 text-[13px] text-warm-gray line-through">
+                <span className="mr-2 text-[13px] text-white/60 line-through">
                   {formatPrice(compare, market.currencyCode)}
                 </span>
               )}
@@ -144,7 +149,7 @@ export function ProductCard({ product }: { product: Product }) {
             {onOffer && product.offerEndsAt && (
               <p
                 suppressHydrationWarning
-                className="font-sans text-[11px] text-warm-gray"
+                className="font-sans text-[11px] text-white/60"
               >
                 Offer ends {formatStoreDate(product.offerEndsAt)}
               </p>

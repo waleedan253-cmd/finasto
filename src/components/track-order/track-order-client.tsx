@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Input, Typography } from "antd";
-import { Loader2, Mail, Search } from "lucide-react";
+import { Input } from "antd";
+import { Loader2, Lock, Mail, Search } from "lucide-react";
 import { lookupOrderStatusAction } from "../../lib/track-order/track-order-actions";
 import type { OrderStatusResult } from "@/lib/track-order/track-order-queries";
 import { TrackOrderResult } from "@/components/track-order/track-order-result";
@@ -56,33 +56,25 @@ export function TrackOrderClient({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-border bg-white p-6 sm:p-8"
+      className="rounded-[2rem] border border-copper/20 bg-white p-6 shadow-[0_20px_50px_-20px_rgba(50,30,24,0.25)] sm:p-10"
     >
-      <Typography.Title
-        level={1}
-        className="!font-display !text-[28px] !leading-tight !text-espresso"
-      >
-        Track Your Order
-      </Typography.Title>
-      <Typography.Paragraph className="!mt-1 !font-sans !text-[14px] !text-warm-gray">
-        Enter the email and tracking code from your order confirmation.
-      </Typography.Paragraph>
-
       {error && (
         <div
           role="alert"
-          className="mt-4 rounded-xl bg-copper/10 px-4 py-3 font-sans text-[13px] leading-relaxed text-copper"
+          className="mb-5 rounded-xl bg-copper/10 px-4 py-3 font-sans text-[13px] leading-relaxed text-copper"
         >
           {error}
         </div>
       )}
 
-      <div className="mt-5 flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <div>
           <label className="mb-1 block font-sans text-[13px] text-warm-gray">
             Email
           </label>
           <Input
+            type="email"
+            autoComplete="email"
             prefix={
               <Mail
                 className="h-4 w-4 text-warm-gray"
@@ -107,6 +99,9 @@ export function TrackOrderClient({
             placeholder="FIN-20261103-A7K2"
             style={{ height: 44, fontFamily: "monospace" }}
           />
+          <p className="mt-1.5 font-sans text-[12px] text-warm-gray">
+            Found in your confirmation email.
+          </p>
         </div>
       </div>
 
@@ -124,6 +119,11 @@ export function TrackOrderClient({
         )}
         {isPending ? "Searching..." : "Track Order"}
       </button>
+
+      <p className="mt-4 flex items-center justify-center gap-1.5 font-sans text-[12px] text-warm-gray">
+        <Lock className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
+        Your details are only used to find your order.
+      </p>
     </form>
   );
 }

@@ -15,6 +15,9 @@ import {
   Select,
   Space,
   AutoComplete,
+    
+  Switch,
+Tag,
 } from "antd";
 import {
   createProduct,
@@ -42,7 +45,7 @@ import {
 } from "./country-price-repeater";
 import { OfferDrawer } from "./offer-drawer";
 import { formatStoreDate } from "@/lib/store-time";
-import { Tag } from "lucide-react";
+
 
 // Shared create/edit form (admin/products/new and admin/products/[id]).
 //
@@ -252,6 +255,15 @@ const FORM_FIELDS: (keyof FormValues)[] = [
   "metaTitle",
   "metaDescription",
 ];
+function FeaturedSwitch({
+  checked,
+  onChange,
+}: {
+  checked?: boolean;
+  onChange?: (v: boolean) => void;
+}) {
+  return <Switch checked={checked} onChange={onChange} />;
+}
 
 export function ProductForm({
   mode,
@@ -705,6 +717,22 @@ export function ProductForm({
                       },
                     ]}
                   />
+                </Form.Item>
+
+                <Form.Item
+                  name="featured"
+                  valuePropName="checked"
+                  className="!mb-4"
+                >
+                  <div className="flex items-center justify-between rounded-lg border border-neutral-200 p-3">
+                    <div>
+                      <span className="font-medium">Featured</span>
+                      <p className="text-[13px] text-neutral-500">
+                        Show in the shop's featured strip
+                      </p>
+                    </div>
+                    <FeaturedSwitch />
+                  </div>
                 </Form.Item>
 
                 <div className="mb-4 rounded-lg border border-neutral-200 p-3">

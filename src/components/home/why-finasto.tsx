@@ -455,14 +455,34 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { whySlides } from "@/data/home";
 import { Reveal } from "@/components/ui/reveal";
-
-const SLIDE_DURATION_MS = 6000;
+import {
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  Check,
+  Gem,
+  Globe,
+  Handshake,
+  Leaf,
+  Package,
+  ShieldCheck,
+  Sprout,
+  Sun,
+  type LucideIcon,
+} from "lucide-react";
+const SLIDE_DURATION_MS = 3000;
 const TRANSITION_MS = 500;
+// Icons per card, in the same order as whySlides. Each inner list matches that
+// card's detail rows by position. Missing icons fall back to the check mark.
+const SLIDE_ICONS: LucideIcon[][] = [
+  [Leaf, Globe, Gem], // card 1
+  [Sprout, Sun, ShieldCheck], // card 2
+  [Package, Handshake, Award], // card 3
+];
 
 const revealCls = (on: boolean) =>
   cn(
@@ -480,12 +500,12 @@ export function WhyFinasto() {
   const total = whySlides.length;
 
   useEffect(() => {
-    if (total < 2 || paused || prefersReducedMotion) return;
+    if (total < 2 || paused) return;
     const id = setTimeout(() => {
       setActive((prev) => (prev + 1) % total);
     }, SLIDE_DURATION_MS);
     return () => clearTimeout(id);
-  }, [active, total, paused, prefersReducedMotion]);
+  }, [active, total, paused]);
 
   const goTo = (index: number) => {
     setActive(((index % total) + total) % total);
@@ -506,15 +526,14 @@ export function WhyFinasto() {
         <Reveal className="px-0 py-12 text-center">
           <p className="flex items-center justify-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             <span aria-hidden="true" className="h-px w-8 bg-copper" />
-            Why Finasto
+            Why Finasto™
             <span aria-hidden="true" className="h-px w-8 bg-copper" />
           </p>
           <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep sm:text-[48px]">
-            Why Choose Finasto?
+            Why Choose Finasto™?
           </h2>
           <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70">
-            Discover what makes Finasto different and why it matters for your
-            journey.
+           A refined collection of beverages, thoughtfully selected for quality, inspired by nature, and made for modern living.
           </p>
         </Reveal>
 
@@ -523,12 +542,7 @@ export function WhyFinasto() {
           <div className="grid grid-cols-1 overflow-hidden rounded-3xl border border-copper/30 shadow-[0_20px_50px_-20px_rgba(50,30,24,0.25)] lg:grid-cols-2">
             {/* TEXT PANEL */}
             <div className="relative order-2 flex h-[480px] items-center overflow-hidden bg-green-bg px-6 py-10 sm:h-[440px] sm:px-12 lg:order-1 lg:h-[560px] lg:px-16">
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-2 top-2 select-none font-display text-[200px] leading-none text-green-deep/[0.06] sm:text-[260px]"
-              >
-                {String(active + 1).padStart(2, "0")}
-              </span>
+             
 
               <ul className="relative mx-auto grid w-full max-w-lg list-none p-0">
                 {whySlides.map((slide, i) => {
@@ -592,22 +606,25 @@ export function WhyFinasto() {
                         {slide.description}
                       </p>
                       <ul
-                        className={cn("mt-7 space-y-2", revealCls(on))}
+                        className={cn("mt-7 space-y-4", revealCls(on))}
                         style={revealDelay(on, 3)}
                       >
-                        {slide.details.map((d) => (
-                          <li
-                            key={d}
-                            className="flex items-start gap-2 font-sans text-[14px] text-warm-gray"
-                          >
-                            <Check
-                              className="mt-[3px] h-4 w-4 shrink-0 text-copper"
-                              strokeWidth={2}
-                              aria-hidden="true"
-                            />
-                            {d}
-                          </li>
-                        ))}
+                       {slide.details.map((d, k) => {
+  const Icon = SLIDE_ICONS[i]?.[k] ?? Check;
+  return (
+    <li
+      key={d}
+      className="flex items-start gap-3 font-sans text-[14px] text-warm-gray"
+    >
+      <Icon
+        className="mt-[2px] h-5 w-5 shrink-0 text-copper"
+        strokeWidth={1.5}
+        aria-hidden="true"
+      />
+      {d}
+    </li>
+  );
+})}
                       </ul>
                     </li>
                   );
@@ -652,10 +669,7 @@ export function WhyFinasto() {
                       </button>
                     ))}
                   </div>
-                  <span className="font-sans text-[12px] tracking-widest text-warm-gray">
-                    {String(active + 1).padStart(2, "0")} /{" "}
-                    {String(total).padStart(2, "0")}
-                  </span>
+                 
                 </div>
 
                 <div className="flex items-center gap-2">

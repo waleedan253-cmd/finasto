@@ -59,6 +59,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { philosophyContent, philosophyPromises } from "@/data/home";
+import { withTM } from "@/lib/brand";
 
 /** Swap these to match your ritual. Picked by step order (1, 2, 3). */
 const STEP_ICONS: LucideIcon[] = [Droplets, Sparkles, Sun];
@@ -95,7 +96,7 @@ export function ProductPhilosophy() {
               {eyebrow}
             </p>
             <h2 className="mt-6 max-w-[14ch] font-display text-[40px] leading-[1.08] text-green-deep sm:text-[52px]">
-              {heading}
+              {withTM(heading)}
             </h2>
             <p className="mt-6 max-w-[38ch] font-sans text-[16px] leading-[1.75] text-espresso/75">
               {intro}
@@ -213,7 +214,7 @@ export function ProductPhilosophy() {
               return (
                 <li key={promise.id} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
                   <Icon
-                    className="h-7 w-7 text-copper"
+                    className="h-7 w-7 text-copper "
                     strokeWidth={1.25}
                     aria-hidden="true"
                   />

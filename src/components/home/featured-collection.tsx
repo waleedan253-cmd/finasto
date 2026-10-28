@@ -8,7 +8,7 @@ const headingByMode = {
     label: "Featured Collection",
     heading: "Wellness in Every Blend",
     subheading:
-      "Two unique herbal tea blends, crafted to support your well-being, naturally sourced from Bali's finest botanicals.",
+      "Discover thoughtfully curated teas, coffees, and more, inspired by nature’s beauty and Bali’s rich heritage, crafted to elevate everyday moments.",
   },
   bestsellers: {
     label: "Best Sellers",
@@ -36,7 +36,7 @@ export async function FeaturedCollection() {
     collectionMode === "featured" && offers.length > 0 ? offers : allProducts;
 
   return (
-    <section className="dark relative overflow-hidden bg-cream-soft py-20 lg:py-28">
+    <section className=" relative overflow-hidden bg-cream-soft py-20 lg:py-28">
       {/* Soft botanical-green touch — decorative, not a full-section block */}
       <div
         aria-hidden="true"

@@ -2,6 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { Product, ProductState } from "@/data/products";
 import { convert } from "@/lib/currency";
 import { getRates } from "@/lib/rates"; // the file with getRates(); adjust the path
+import {
+  pickCheapestActiveVariant,
+  effectivePrice,
+  isOfferActive,
+} from "@/lib/variant-pricing";
 
 export async function getStorefrontProducts(): Promise<Product[]> {
   const supabase = await createClient();
@@ -10,7 +15,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
     .select(
       `id, name, category,featured, tagline, short_description, features, origin,
        tasting_note, accent_color, created_at,
-       product_variants ( price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
+       product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
        product_images ( url, is_primary ),
        product_country_prices ( price, sale_price, active, countries ( currency_code ) )`,
     )
@@ -24,24 +29,16 @@ export async function getStorefrontProducts(): Promise<Product[]> {
   console.log("[storefront] rate currencies:", Object.keys(rates));
 
   return data.map((p: any): Product => {
+    const now = Date.now();
     const variants = (p.product_variants ?? []).filter(
       (v: any) => v.status === "active",
     );
-    // An offer only counts inside its start/end window.
-    const now = Date.now();
-    const offerActive = (v: any) =>
-      v.sale_price != null &&
-      !!v.sale_starts_at &&
-      !!v.sale_ends_at &&
-      Date.parse(v.sale_starts_at) <= now &&
-      now < Date.parse(v.sale_ends_at);
-    const eff = (v: any) => (offerActive(v) ? v.sale_price : v.price);
-    const cheapest = variants.length
-      ? variants.reduce((a: any, b: any) => (eff(b) < eff(a) ? b : a))
-      : null;
-    const basePrice = cheapest ? eff(cheapest) : 0;
+    const cheapest = pickCheapestActiveVariant(p.product_variants ?? [], now);
+    const basePrice = cheapest ? effectivePrice(cheapest, now) : 0;
     const compareAt: number | undefined =
-      cheapest && offerActive(cheapest) ? cheapest.price : undefined;
+      cheapest && isOfferActive(cheapest, now)
+        ? Number(cheapest.price)
+        : undefined;
     const hasSale = compareAt !== undefined;
     const totalStock = variants.reduce((s: number, v: any) => s + v.stock, 0);
     const isNew = Date.now() - new Date(p.created_at).getTime() < 30 * 86400000;
@@ -96,7 +93,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
       prices,
       compareAtPrice: compareAt,
       comparePrices: compareAt !== undefined ? comparePrices : undefined,
-      offerEndsAt: hasSale ? cheapest.sale_ends_at : undefined,
+      // offerEndsAt: hasSale ? cheapest.sale_ends_at : undefined,
       image: img?.url ?? "/product/placeholder.png",
       state,
       accentColor: p.accent_color,

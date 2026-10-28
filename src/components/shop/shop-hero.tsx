@@ -61,7 +61,7 @@ export function ShopHero() {
   return (
     <section className="relative isolate w-full overflow-hidden bg-[#0e0c09]">
       <Image
-        src="/shop/Rustic Coffee and Tea Plantation Still Life.png"
+        src="/shop/Coffee_and_Tea.png"
         alt=""
         fill
         priority
@@ -69,7 +69,7 @@ export function ShopHero() {
         className="object-cover object-center"
       />
       <BackgroundVideo
-        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792979062/Coffee_and_tea_video_background_20261026064137.mp4"
+        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792739907/1023_1_3.mp4"
         className="absolute inset-0 hidden h-full w-full object-cover object-center md:block motion-reduce:hidden"
       />
 

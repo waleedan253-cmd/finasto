@@ -19,13 +19,13 @@ export type TrustItem = {
 export const trustItems: TrustItem[] = [
   {
     id: "natural",
-    title: "100% Natural Ingredients",
-    description: "Pure, safe, effective.",
+    title: "Botanical Ingredients",
+    description: "Carefully Selected Botanicals.",
   },
   {
     id: "origin",
-    title: "Authentic  Origin",
-    description: "From the rich volcanic soil.",
+    title: "Bali Essence",
+    description: "Bali’s Finest Premium Tea.",
   },
   {
     id: "payment",
@@ -41,9 +41,9 @@ export const trustItems: TrustItem[] = [
 
 export const storyContent = {
   eyebrow: "Our Story",
-  heading: ["Rooted in Bali.", "Made for Your Wellness."],
+  heading: ["Indonesian Heritage.", "A Refined Taste of Nature."],
   paragraph:
-    "Finasto is more than just a tea brand — it's a journey of nature, culture and care. Inspired by Bali's rich botanical heritage, we bring you pure, natural blends for a healthier, more balanced life.",
+    "Finasto™ is more than a beverage brand. It reflects a journey shaped by nature, culture, and a deep appreciation for quality. Rooted in Indonesian heritage, we bring together thoughtfully selected teas, coffees, and other beverages to make everyday moments more special.",
   cta: { label: "Learn More", href: "/our-story" },
 };
 
@@ -62,13 +62,13 @@ export const whySlides: WhySlide[] = [
   {
     id: "origin",
     eyebrow: "Origin",
-    heading: "Grown in Volcanic Soil",
+    heading: "Bali Heritage and Quality Excellence",
     description:
-      "Our botanicals come from Bali's terraced highlands, where mineral-rich volcanic soil, cool altitude air and tropical rainfall give every leaf its depth of character. We work with small-scale growers who tend each terrace by hand, season after season.",
+      "Finasto™ brings together thoughtfully selected beverages, a commitment to quality, and an appreciation for nature’s finest inspirations. Our growing collection reflects diverse origins and a refined approach to everyday enjoyment.",
     details: [
-      "Sourced from Bali's terraced highlands",
-      "Mineral-rich volcanic soil",
-      "Harvested in small, seasonal lots",
+      "Thoughtfully Selected Ingredients",
+      "Diverse Product Origins",
+      "Commitment to Quality",
     ],
     image: "/why/why.png",
     imageAlt:
@@ -77,13 +77,13 @@ export const whySlides: WhySlide[] = [
   {
     id: "craft",
     eyebrow: "Craft",
-    heading: "Hand-Selected Leaves",
+    heading: "Thoughtfully Curated Beverages",
     description:
-      "Every batch is hand-sorted before blending, so only whole, intact leaves reach your cup. The result is a cleaner infusion, a fuller aroma and a taste that stays true from the first steep to the last.",
+      "At Finasto™, we believe that everyday moments deserve something special. Our collection brings together carefully selected teas, coffees, and other beverages, chosen with care and a focus on quality, simplicity, and timeless elegance.",
     details: [
-      "Sorted by hand before every blend",
-      "Whole leaf only, no dust or fannings",
-      "Blended in small, controlled batches",
+      "A Distinctive Collection",
+      "Carefully Selected Ingredients",
+      "Elegance in Everyday Moments",
     ],
     image: "/why/Artisanal Tea Leaf Sorting.png",
     imageAlt:
@@ -91,14 +91,14 @@ export const whySlides: WhySlide[] = [
   },
   {
     id: "purity",
-    eyebrow: "Purity",
-    heading: "Nothing Added, Nothing Hidden",
+    eyebrow: "TRANSPARENCY",
+    heading: "Honesty in Every Detail",
     description:
-      "Our blends are 100% natural botanicals: clean ingredients you can recognize, steeped the way nature intended. Every pack lists exactly what is inside, with nothing to decode and nothing to hide.",
+      "Transparency and simplicity are at the heart of our approach. We provide clear and accurate information about our ingredients and products, with care and attention to detail, helping you make informed choices with confidence.",
     details: [
-      "100% natural botanicals",
-      "No artificial flavors, colorants or fillers",
-      "Full ingredient list on every pack",
+      "Ingredient Transparency",
+      "Clear Product Information",
+      "Detailed Product Labels",
     ],
     image: "/why/Sunlit Herbal Tea and Botanicals.png",
     imageAlt:
@@ -124,23 +124,23 @@ export const whySlides: WhySlide[] = [
 export const philosophyPromises = [
   {
     id: "natural",
-    title: "Natural ingredients",
-    description: "Plant-based formulas with nothing you can't pronounce.",
+    title: "Nature’s Finest Essence",
+    description: "A refined collection of teas, coffees, and other beverages, where nature meets exceptional quality.",
   },
   {
     id: "tested",
-    title: "Dermatologist tested",
-    description: "Checked for safety on sensitive skin before it reaches you.",
+    title: "A Signature of Fine Taste",
+    description: "Discover distinctive teas, coffees, and more, selected to bring character and refinement to every cup.",
   },
   {
     id: "handmade",
-    title: "Made in small batches",
-    description: "Every batch is prepared by hand and checked before it ships.",
+    title: "Quality You Can Trust",
+    description: "Every detail reflects our commitment to quality, consistency, and thoughtful selection.",
   },
   {
     id: "delivery",
-    title: "Home  delivery",
-    description: "Tracked shipping on every order, packed to arrive fresh.",
+    title: "The Art of Every Moment",
+    description: "Let every cup become a moment of calm, crafted to be savoured and remembered for years to come.",
   },
 ];
 
@@ -154,25 +154,25 @@ export const philosophyContent = {
   eyebrow: "Product Philosophy",
   heading: "The Finasto Ritual",
   intro:
-    "Good tea isn't rushed. Here's how we'd suggest taking a few minutes with yours.",
+    "Every cup deserves a moment of its own. Discover a simple ritual designed to help you slow down and savour the experience.",
   steps: [
     {
       id: "steep",
-      title: "Steep",
+      title: " Prepare",
       description:
-        "Pour hot water over the leaves and let them unfurl for 3–5 minutes, releasing their full botanical character.",
+        "Prepare your chosen beverage with care, following the recommended instructions for the perfect cup.",
     },
     {
       id: "pause",
       title: "Pause",
       description:
-        "Set the cup down before the first sip. Let the steam settle — this is the moment the ritual asks you to slow down.",
+        "Take a moment to slow down, cherish the warmth, and reconnect with yourself.",
     },
     {
       id: "savor",
       title: "Savor",
       description:
-        "Taste each note as it changes, from the first warmth to the lingering botanical finish.",
+        "Enjoy every sip and appreciate the distinctive aroma, character, and taste of your chosen blend.",
     },
   ] as RitualStep[],
 };

@@ -184,6 +184,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { footerColumns, socialLinks } from "@/data/site";
+import { withTM } from "@/lib/brand";
 
 const socialIcons = {
   instagram: InstagramIcon,
@@ -253,10 +254,10 @@ export function SiteFooter() {
             {footerColumns.map((column) => (
               <div
                 key={column.title}
-                className={column.title === "About Finasto" ? "lg:ml-12" : ""}
+                className={column.title === "About Finasto™" ? "lg:ml-12" : ""}
               >
                 <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-copper dark:text-copper-light">
-                  {column.title}
+                  {withTM(column.title)}
                 </h3>
                 <ul className="mt-4 flex flex-col gap-3">
                   {column.links.map((link) => (
