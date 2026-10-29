@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -64,6 +64,15 @@ export function AdminLoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
+  // Safety net: always remove the intro overlay once the animation is over
+  useEffect(() => {
+    const t = setTimeout(
+      () => setIntro(false),
+      (SPLIT_AT + SPLIT_DURATION) * 1000 + 300,
+    );
+    return () => clearTimeout(t);
+  }, []);
+
   async function onSubmit(values: Values) {
     setServerError(null);
     try {
@@ -79,7 +88,7 @@ export function AdminLoginForm() {
   }
 
   const busy = isSubmitting || redirecting;
-  const startDelay = reduce ? 0 : CONTENT_DELAY;
+  const startDelay = CONTENT_DELAY; // intro always plays, so content waits for it
 
   const stack = {
     hidden: {},
@@ -109,7 +118,7 @@ export function AdminLoginForm() {
       className="relative isolate min-h-dvh overflow-hidden bg-[#0b0806]"
     >
       {/* ───────── INTRO: FLOWER BLOOM, THEN SPLIT LEFT / RIGHT ───────── */}
-      {intro && !reduce && (
+      {intro && (
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
@@ -328,7 +337,7 @@ export function AdminLoginForm() {
               variants={fromLeft}
               className="mt-6 max-w-[340px] font-sans text-[16px] leading-relaxed text-white/65"
             >
-              Affiliates, Stockiest, Products, stock and pricing, all in one place.
+              Products, stock and pricing, all in one place.
             </motion.p>
 
             <motion.ul variants={fromLeft} className="mt-8 flex flex-col gap-3">
