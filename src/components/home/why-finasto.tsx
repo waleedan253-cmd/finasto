@@ -526,7 +526,7 @@ export function WhyFinasto() {
         <Reveal className="px-0 py-12 text-center">
           <p className="flex items-center justify-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
             <span aria-hidden="true" className="h-px w-8 bg-copper" />
-            Why Finasto™
+           THE FINASTO™ STANDARD
             <span aria-hidden="true" className="h-px w-8 bg-copper" />
           </p>
           <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep sm:text-[48px]">
@@ -672,7 +672,7 @@ export function WhyFinasto() {
                  
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => goTo(active - 1)}
@@ -689,7 +689,7 @@ export function WhyFinasto() {
                   >
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
 

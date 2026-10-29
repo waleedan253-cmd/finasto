@@ -54,13 +54,13 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Image */}
       <Link
         href={`/shop/${product.slug}`}
-        className="relative mx-auto block aspect-square w-full max-w-[300px] shrink-0 sm:mx-0 sm:w-[45%] sm:max-w-none"
+        className="relative mx-auto block aspect-square w-full max-w-[380px] shrink-0 sm:mx-0 sm:w-[55%] sm:max-w-none"
       >
         <Image
           src={product.image}
           alt={`${product.name} — ${product.category} pouch`}
           fill
-          sizes="(min-width: 640px) 30vw, 60vw"
+          sizes="(min-width: 640px) 40vw, 80vw"
           className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition duration-700 group-hover:-rotate-2 group-hover:scale-105"
         />
       </Link>

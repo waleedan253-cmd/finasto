@@ -10,7 +10,7 @@ import { BackgroundVideo } from "./BackgroundVideo";
  */
 export function BrandStory() {
   return (
-    <section className=" dark relative isolate min-h-[520px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
+    <section className="bg-pattern dark relative isolate min-h-[520px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
       {/* Landscape background */}
       <Image
         src="/story/golden-dawn-bali-rice-terraces.png"
@@ -28,7 +28,7 @@ export function BrandStory() {
 
      
       {/* Copy */}
-      <div className="relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
+      <div className=" relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
         <div
       aria-hidden="true"
       className="pointer-events-none absolute -inset-x-5 -inset-y-8 -z-10 bg-gradient-to-r from-cream/90 via-cream/65 to-transparent blur-2xl sm:-inset-x-8"

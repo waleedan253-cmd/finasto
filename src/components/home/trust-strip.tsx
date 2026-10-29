@@ -85,7 +85,7 @@ export function TrustStrip() {
   return (
     <section
       aria-label="Why shop with Finasto"
-      className=" dark relative z-10 overflow-hidden bg-gradient-to-br from-green-deep via-green to-green-deep dark:from-green-deep dark:via-cream dark:to-cream-soft"
+      className=" bg-pattern dark relative z-10 overflow-hidden bg-gradient-to-br from-green-deep via-green to-green-deep dark:from-green-deep dark:via-cream dark:to-cream-soft"
     >
       {/* Copper hairlines (top and bottom) */}
       <span

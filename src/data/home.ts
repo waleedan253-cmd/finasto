@@ -129,7 +129,7 @@ export const philosophyPromises = [
   },
   {
     id: "tested",
-    title: "A Signature of Fine Taste",
+    title: "Beyond Ordinary Taste",
     description: "Discover distinctive teas, coffees, and more, selected to bring character and refinement to every cup.",
   },
   {

@@ -78,7 +78,7 @@ export function ProductPhilosophy() {
   const last = steps.length - 1;
 
   return (
-    <section className="dark relative border-t border-copper/30 bg-cream py-24 lg:py-32">
+    <section className=" bg-pattern dark relative border-t border-copper/30 bg-cream py-24 lg:py-32">
        <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-24 -top-24 h-[360px] w-[360px] rounded-full bg-green/10 blur-3xl"

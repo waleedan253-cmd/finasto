@@ -97,7 +97,7 @@ const authLoading = useAuthLoading();
   onClick={onClose}
   aria-hidden="true"
 />
-          <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className=" pointer-events-none fixed inset-0 z-[60] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -125,7 +125,7 @@ const authLoading = useAuthLoading();
                   "--color-border-strong": "#d8ccbe",
                 } as React.CSSProperties
               }
-              className="pointer-events-auto relative grid w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft shadow-2xl lg:max-w-[880px] lg:grid-cols-[1.05fr_1fr]"
+              className=" bg-pattern pointer-events-auto relative grid w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft shadow-2xl lg:max-w-[880px] lg:grid-cols-[1.05fr_1fr]"
             >
              
              

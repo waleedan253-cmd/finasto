@@ -1,0 +1,48 @@
+/* Global background pattern: light-green plus signs behind every section.
+   Imported once from globals.css. Nothing to add to individual sections.
+
+   How it works:
+   - body::before is a fixed layer behind all content (z-index: -1).
+   - The plus sign is an SVG used as a MASK, so its color comes from the
+     CSS variable --pattern-color (an SVG data URI cannot read variables).
+   - pointer-events: none means it never blocks clicks.
+   - body keeps its own cream background; that background is painted on
+     the page canvas, so this layer sits above it and below the content. */
+
+:root {
+  --pattern-color: rgba(99, 118, 47, 0.103); /* light green on cream */
+  --pattern-size: 30px; /* distance between plus signs */
+  --pattern-plus: 10px; /* size of one plus sign */
+}
+
+.dark {
+  --pattern-color: rgba(143, 203, 120, 0.1); /* soft green on dark */
+}
+
+.bg-pattern {
+  position: relative;
+  isolation: isolate;
+}
+
+.bg-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--pattern-color);
+
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Cpath d='M15 10v10M10 15h10' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Cpath d='M15 10v10M10 15h10' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: var(--pattern-size) var(--pattern-size);
+  mask-size: var(--pattern-size) var(--pattern-size);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+}
+
+/* Users who ask for higher contrast get a clean background. */
+@media (prefers-contrast: more) {
+  body::before {
+    display: none;
+  }
+}

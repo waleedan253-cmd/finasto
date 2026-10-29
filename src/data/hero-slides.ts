@@ -13,11 +13,11 @@ export type HeroSlide = {
   body: string;
   features: HeroFeature[];
   cta: { label: string; href: string };
-  video: string; // Cloudinary "upload" URL, transformations are added in code
-  videoLabel: string; // accessible description of the (decorative) video
+  image: string; // path inside /public
+  imageAlt: string; // accessible description of the image
 };
 
-export const HERO_SLIDE_DURATION = 6000; // ms per slide, 24s full loop
+export const HERO_SLIDE_DURATION = 3000; // ms per slide, 24s full loop
 
 export const heroSlides: HeroSlide[] = [
   {
@@ -31,8 +31,8 @@ export const heroSlides: HeroSlide[] = [
       { icon: "sprout", label: "Agroecology" },
     ],
     cta: { label: "Shop Bali-Grown Teas", href: "/shop" },
-    video: "https://res.cloudinary.com/v3yvl8gm/video/upload/v1792740039/1023_1_1.mp4",
-    videoLabel: "Farmers hand-picking tea leaves on a Bali hillside at sunrise",
+    image: "/hero/bali-tea-harvest.jpg",
+    imageAlt: "Farmers hand-picking tea leaves on a Bali hillside at sunrise",
   },
   
   {
@@ -47,8 +47,8 @@ export const heroSlides: HeroSlide[] = [
       { icon: "award", label: "Premium Quality" },
     ],
     cta: { label: "Shop Premium Teas", href: "/shop" },
-    video: "https://res.cloudinary.com/v3yvl8gm/video/upload/v1792739921/1023_1.mp4",
-    videoLabel: "Worker sorting fresh tea leaves on bamboo trays",
+    image: "/hero/fresh-leaves.jpg",
+    imageAlt: "Worker sorting fresh tea leaves on bamboo trays",
   },
   {
     id: "morning-leaves",
@@ -62,8 +62,8 @@ export const heroSlides: HeroSlide[] = [
       { icon: "award", label: "Premium Quality" },
     ],
     cta: { label: "Shop Small-Batch Teas", href: "/shop" },
-    video: "https://res.cloudinary.com/v3yvl8gm/video/upload/v1792739901/1023_1_2.mp4",
-    videoLabel: "Artisan turning tea leaves by hand on bamboo trays in morning sun",
+    image: "/hero/morning-leaves.jpg",
+    imageAlt: "Artisan turning tea leaves by hand on bamboo trays in morning sun",
   },
   {
     id: "bali-heart",
@@ -77,7 +77,7 @@ export const heroSlides: HeroSlide[] = [
       { icon: "sprout", label: "Sustainable Future" },
     ],
     cta: { label: "Explore Our Products", href: "/shop" },
-    video: "https://res.cloudinary.com/v3yvl8gm/video/upload/v1792739907/1023_1_3.mp4",
-    videoLabel: "Finasto Bali coffee and tea with steaming cups on a wooden table",
+    image: "/hero/bali-heart.jpg",
+    imageAlt: "Finasto Bali coffee and tea with steaming cups on a wooden table",
   },
 ];

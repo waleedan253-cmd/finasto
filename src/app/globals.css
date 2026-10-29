@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "flag-icons/css/flag-icons.min.css";
+@import "./background-pattern.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {

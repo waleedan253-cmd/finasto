@@ -220,7 +220,7 @@ export function SiteFooter() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent from-20% via-cream/90 via-55% to-cream dark:via-espresso-deep/90 dark:to-espresso-deep" />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-5 pb-10 pt-52 sm:px-8 sm:pt-60 lg:pt-72">
+      <div className="mx-auto max-w-[1440px] px-5 pb-10 pt-52 sm:px-8 sm:pt-25 lg:pt-54">
         <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
           {/* Logo + tagline */}
           <div className="flex flex-col gap-6">
@@ -256,7 +256,7 @@ export function SiteFooter() {
                 key={column.title}
                 className={column.title === "About Finasto™" ? "lg:ml-12" : ""}
               >
-                <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-copper dark:text-copper-light">
+                <h3 className="font-sans text-[13px]  font-bold uppercase tracking-[0.1em] text-green dark:text-copper-light">
                   {withTM(column.title)}
                 </h3>
                 <ul className="mt-4 flex flex-col gap-3">
@@ -277,7 +277,7 @@ export function SiteFooter() {
 
           {/* Social */}
           <div>
-            <h3 className="font-sans text-[13px] font-medium uppercase tracking-[0.1em] text-copper dark:text-copper-light">
+            <h3 className="font-sans text-[13px] font-bold  uppercase tracking-[0.1em] text-green dark:text-copper-light">
               Follow Us
             </h3>
             <div className="mt-4 flex items-center gap-3">
