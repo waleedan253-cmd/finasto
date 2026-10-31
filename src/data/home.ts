@@ -44,7 +44,7 @@ export const storyContent = {
   heading: ["Indonesian Heritage.", "A Refined Taste of Nature."],
   paragraph:
     "Finasto™ is more than a beverage brand. It reflects a journey shaped by nature, culture, and a deep appreciation for quality. Rooted in Indonesian heritage, we bring together thoughtfully selected teas, coffees, and other beverages to make everyday moments more special.",
-  cta: { label: "Learn More", href: "/our-story" },
+  cta: { label: "Learn More", href: "/brand" },
 };
 
 export type WhySlide = {

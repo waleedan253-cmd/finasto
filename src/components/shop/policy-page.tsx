@@ -30,7 +30,7 @@ export function PolicyPage({
   children: ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-[1000px] px-5 py-8 sm:px-8 lg:py-12">
+    <div className="bg-pattern mx-auto max-w-[1000px] px-5 py-8 sm:px-8 lg:py-12">
       <nav aria-label="Breadcrumb">
         <ol className="flex flex-wrap items-center gap-1.5 font-sans text-[13px] text-warm-gray">
           <li>

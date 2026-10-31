@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function ShopPage() {
   const products = await getStorefrontProducts();
   return (
-    <main className="flex-1 bg-cream-soft">
+    <main className="flex-1 bg-pattern">
       <AnnouncementBar />
       <SiteHeader />
       <ShopHero />

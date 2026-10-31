@@ -66,7 +66,7 @@ export function HeroSection() {
     <section
       aria-roledescription="carousel"
       aria-label="Finasto Bali highlights"
-            className="bg-pattern bg-pattern-top overflow-hidden [--pattern-color:rgba(62,118,47,0.22)]"
+      className="relative isolate overflow-hidden bg-cream"
      
     >
       {/* IMAGE LAYER: full-bleed, sits behind the copy */}
@@ -86,11 +86,7 @@ export function HeroSection() {
           />
         ))}
 
-        {/* Readability fade: cream on the left (desktop) / bottom (mobile) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-cream via-cream/85 via-45% to-transparent to-75% lg:hidden" />
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-cream from-[28%] via-cream/70 via-[42%] to-transparent to-[62%] lg:block" />
-        {/* Soft top fade so the header/nav stays legible */}
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-cream/80 to-transparent" />
+      
       </div>
 
       {/* COPY LAYER */}
@@ -113,17 +109,26 @@ export function HeroSection() {
                     : "pointer-events-none translate-y-3 opacity-0"
                 }`}
               >
-                <p className="mb-3 font-sans text-[13px] uppercase tracking-[0.22em] text-copper">
-                  {s.eyebrow}
-                </p>
+    <p
+  className="mb-3 inline-block rounded-full px-4 py-1.5 font-sans text-[13px] uppercase tracking-[0.22em] backdrop-blur-sm"
+  style={{ backgroundColor: s.theme.button, color: "#ffffff" }}
+>
+  {s.eyebrow}
+</p>
 
-                <Heading className="font-display text-[36px] leading-[1.08] text-green-deep sm:text-[46px] md:text-[54px] lg:text-[62px] xl:text-[70px]">
+                <Heading
+  className="font-display text-[36px] leading-[1.08] sm:text-[46px] md:text-[54px] lg:text-[62px] xl:text-[70px]"
+  style={{ color: s.theme.heading }}
+>
                   {s.headline[0]}
                   <br />
                   {s.headline[1]}
                 </Heading>
 
-                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-warm-gray">
+                <p
+  className="mt-4 max-w-md text-[15px] leading-relaxed"
+  style={{ color: s.theme.body }}
+>
                   {s.body}
                 </p>
 
@@ -139,10 +144,14 @@ export function HeroSection() {
                       >
                         <Icon
                           aria-hidden="true"
-                          className="h-6 w-6 text-green-deep"
+                          className="h-6 w-6"
+style={{ color: s.theme.heading }}
                           strokeWidth={1.25}
                         />
-                        <span className="font-sans text-[9.5px] font-medium uppercase leading-snug tracking-[0.16em] text-espresso sm:text-[10px]">
+                        <span
+  className="font-sans text-[9.5px] font-medium uppercase leading-snug tracking-[0.16em] sm:text-[10px]"
+  style={{ color: s.theme.body }}
+>
                           {f.label}
                         </span>
                       </li>
@@ -153,8 +162,12 @@ export function HeroSection() {
                 <Link
                   href={s.cta.href}
                   tabIndex={isActive ? 0 : -1}
-                  className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-green-deep px-6 font-sans text-[14px] font-medium text-cream-soft transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
-                >
+                  className="mt-7 inline-flex h-12 items-center gap-2 rounded-full px-6 font-sans text-[14px] font-medium text-white transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
+style={{
+  backgroundColor: heroSlides[active].theme.button,
+  ...(i === active && !halted ? { animationDuration: `${HERO_SLIDE_DURATION}ms` } : {}),
+}}
+>                
                   {s.cta.label}
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
@@ -182,14 +195,15 @@ export function HeroSection() {
               <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-full bg-espresso/20">
                                 <span
                                    key={`${i}-${active}-${halted}`}
-                  className={`block h-full origin-left rounded-full bg-copper ${
+                  className={`block h-full origin-left rounded-full  ${
                     i < active ? "w-full" : "w-0"
                   } ${i === active && !halted ? "hero-progress" : ""}`}
-                  style={
-                    i === active && !halted
-                      ? { animationDuration: `${HERO_SLIDE_DURATION}ms` }
-                      : undefined
-                  }
+                  style={{
+            backgroundColor: heroSlides[active].theme.button,
+            ...(i === active && !halted
+              ? { animationDuration: `${HERO_SLIDE_DURATION}ms` }
+              : {}),
+          }}
                 />
               </span>
             </button>

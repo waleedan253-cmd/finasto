@@ -1,159 +1,120 @@
-// import Image from "next/image";
-// import Link from "next/link";
-// import { BackgroundVideo } from "./BackgroundVideo";
+"use client";
 
-// export function ShopHero() {
-//   return (
-//     <section className="relative isolate w-full overflow-hidden">
-//       <div className="relative min-h-[360px]">
-//         {/* Fallback image (also the poster until the video is ready) */}
-//         <Image
-//           src="/shop/Rustic Coffee and Tea Plantation Still Life.png"
-//           alt=""
-//           fill
-//           priority
-//           sizes="100vw"
-//           className="object-cover object-center"
-//         />
-
-//         <BackgroundVideo
-//           src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792979062/Coffee_and_tea_video_background_20261026064137.mp4"
-//           className="absolute inset-0 h-full w-full object-cover object-center"
-//         />
-
-//         {/* Scrim: guarantees text contrast on any frame */}
-//         <div
-//           aria-hidden="true"
-//           className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10"
-//         />
-
-//         {/* Content */}
-//         <div className="relative z-10 mx-auto flex min-h-[360px] max-w-7xl flex-col justify-center px-5 py-10 sm:px-8 lg:px-16">
-//           <nav aria-label="Breadcrumb" className="font-sans text-xs text-[#ffffff]/70">
-//             <Link href="/" className="hover:text-[#ffffff]">Home</Link>
-//             <span className="mx-2">/</span>
-//             <span className="text-[#ffffff]">Shop</span>
-//           </nav>
-
-//           <p className="mt-5 flex items-center gap-3 font-sans text-xs font-medium uppercase tracking-[0.22em] text-copper">
-//             <span aria-hidden="true" className="h-px w-8 bg-copper" />
-//             Premium Coffee &amp; Tea
-//           </p>
-
-//           <h1 className="mt-3 font-display text-4xl leading-[1.05] text-[#ffffff] md:text-6xl">
-//             Our Shop
-//             <span className="sr-only"> – Premium Bali Coffee &amp; Tea</span>
-//           </h1>
-
-//           <p className="mt-4 max-w-md font-sans text-sm leading-6  text-[#ffffff]/85 md:text-base md:leading-7">
-//         Explore our collection of premium coffee and tea, thoughtfully curated to bring exceptional flavor and a touch of indulgence to every day.
-//           </p>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
 import Image from "next/image";
 import Link from "next/link";
-import { BackgroundVideo } from "./BackgroundVideo";
+import { useCallback, useEffect, useState } from "react";
+import { HERO_SLIDE_DURATION, heroSlides } from "@/data/hero-banners";
 
 export function ShopHero() {
+  const [active, setActive] = useState(0);
+  const [tabHidden, setTabHidden] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
+  const total = heroSlides.length;
+  const halted = tabHidden || !introDone;
+
+  // Pause when the tab is hidden.
+  useEffect(() => {
+    const onVis = () => setTabHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  // Wait for the gate intro to finish before the slides start moving.
+  useEffect(() => {
+    if ((window as unknown as { __finastoIntroDone?: boolean }).__finastoIntroDone) {
+      setIntroDone(true);
+      return;
+    }
+    const onDone = () => setIntroDone(true);
+    window.addEventListener("finasto-intro-done", onDone);
+    const fallback = setTimeout(onDone, 4500); // start anyway if no intro is mounted
+    return () => {
+      window.removeEventListener("finasto-intro-done", onDone);
+      clearTimeout(fallback);
+    };
+  }, []);
+
+  // Slide timer: restarts on every slide change or resume.
+  useEffect(() => {
+    if (halted) return;
+    const t = setTimeout(() => setActive((i) => (i + 1) % total), HERO_SLIDE_DURATION);
+    return () => clearTimeout(t);
+  }, [active, total, halted]);
+
+  const go = useCallback((i: number) => setActive(i), []);
+
   return (
-    <section className="relative isolate w-full overflow-hidden bg-[#0e0c09]">
-      <Image
-        src="/shop/Coffee_and_Tea.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-center"
-      />
-      <BackgroundVideo
-        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792739907/1023_1_3.mp4"
-        className="absolute inset-0 hidden h-full w-full object-cover object-center md:block motion-reduce:hidden"
-      />
+    <section
+      aria-roledescription="carousel"
+      aria-label="Finasto Bali botanical teas"
+      className="relative isolate w-full border-b border-border-strong bg-cream"
+    >
+      <h1 className="sr-only">Finasto Bali botanical teas</h1>
 
-      {/* Scrim: strong on the text side, open on the product side */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent"
-      />
-
-      <div className="relative z-10 mx-auto grid min-h-[560px] max-w-7xl items-center gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-16">
-        {/* Copy */}
-        <div>
-          <nav aria-label="Breadcrumb" className="font-sans text-xs text-white/70">
-            <Link href="/" className="hover:text-white">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white">Shop</span>
-          </nav>
-
-          <p className="mt-6 flex items-center gap-3 font-sans text-xs font-medium uppercase tracking-[0.22em] text-copper">
-            <span aria-hidden="true" className="h-px w-8 bg-copper" />
-             FINASTO Botanical Teas
-          </p>
-
-          <h1 className="mt-4 font-display text-4xl leading-[1.05] text-white md:text-6xl">
-            Signature of Nature,
-            <br />
-            in every cup.
-            <span className="sr-only"> – Premium Bali Coffee &amp; Tea</span>
-          </h1>
-
-          <p className="mt-5 max-w-md font-sans text-sm leading-6 text-white/85 md:text-base md:leading-7">
-     Crafted in Indonesia from island botanicals. Uplifting by morning, calming by night.
-          </p>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="shop"
-              className="rounded-full bg-copper px-6 py-3 font-sans text-sm font-medium text-white transition hover:brightness-110"
+      {/* Inset frame: margins on the left and right, crops a little off the top and bottom of each banner. */}
+      <div className="mx-auto max-w-[1440px] px-4 pb-4 pt-3 sm:px-8 sm:pb-6 sm:pt-5 lg:px-14">
+      <div className="relative aspect-[3/2] w-full overflow-hidden rounded-xl sm:aspect-[2/1] sm:rounded-2xl lg:aspect-[11/5] lg:max-h-[calc(100svh-130px)]">
+        {heroSlides.map((s, i) => {
+          const isActive = i === active;
+          return (
+            <div
+              key={s.id}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${i + 1} of ${total}`}
+              aria-hidden={!isActive}
+              className={`absolute inset-0 transition-opacity duration-[800ms] ease-out ${
+                isActive ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
             >
-              Shop the Collection ↓
-            </Link>
-            {/* <Link
-              href="#discovery-duo"
-              className="rounded-full border border-white/40 px-6 py-3 font-sans text-sm font-medium text-white backdrop-blur transition hover:bg-white/10"
-            >
-              Get the Discovery Duo
-            </Link> */}
-          </div>
+              {/* The Shop Now button is inside the image, so the whole banner links to the shop. */}
+              <Link href={s.href} tabIndex={isActive ? 0 : -1} className="absolute inset-0 block">
+                <Image
+                  src={s.image}
+                  alt={s.imageAlt}
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  quality={85}
+                  className="object-cover object-[15%_center] sm:object-center"
+                />
+              </Link>
+            </div>
+          );
+        })}
 
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-sans text-xs text-white/70">
-            <li>Crafted in Indod</li>
-            <li>10 sachets per box</li>
-            <li>25 sachets per box</li>
-    
-          </ul>
+        {/* PROGRESS: frosted pill so it stays visible on every image */}
+        <div
+          role="tablist"
+          aria-label="Choose slide"
+          className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 rounded-full bg-white/60 px-3 backdrop-blur-sm sm:bottom-5"
+        >
+          {heroSlides.map((s, i) => (
+            <button
+              key={s.id}
+              role="tab"
+              type="button"
+              aria-selected={i === active}
+              aria-label={`Show slide ${i + 1}`}
+              onClick={() => go(i)}
+              className="group relative h-6 w-10 sm:w-14"
+            >
+              <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-full bg-black/20">
+                <span
+                  key={`${i}-${active}-${halted}`}
+                  className={`block h-full origin-left rounded-full ${
+                    i < active ? "w-full" : "w-0"
+                  } ${i === active && !halted ? "hero-progress" : ""}`}
+                  style={{
+                    backgroundColor: heroSlides[active].accent,
+                    ...(i === active && !halted ? { animationDuration: `${HERO_SLIDE_DURATION}ms` } : {}),
+                  }}
+                />
+              </span>
+            </button>
+          ))}
         </div>
-
-        {/* Product pair */}
-        {/* <div className="relative mx-auto h-[340px] w-full max-w-[460px] sm:h-[440px] lg:h-[520px]">
-          <div
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-copper/25 blur-3xl"
-          />
-          <Image
-            src="/shop/BlueMoon Botanical Tea Packaging.png"
-            alt="FINASTO BlueMoon Botanical Infusion, 10 sachets"
-            width={560}
-            height={560}
-            priority
-            className="absolute left-0 top-6 w-[58%] -rotate-6 drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition duration-500 hover:-translate-y-2 hover:-rotate-3"
-          />
-          <Image
-            src="/shop/Flovera Botanical Tea Box.png"
-            alt="FINASTO Flovera Botanical Tea, Green Jasmine and Floral Blend, 10 sachets"
-            width={560}
-            height={560}
-            priority
-            className="absolute bottom-0 right-0 w-[58%] rotate-6 drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition duration-500 hover:-translate-y-2 hover:rotate-3"
-          />
-        </div> */}
+      </div>
       </div>
     </section>
   );

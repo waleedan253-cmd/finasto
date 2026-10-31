@@ -52,7 +52,7 @@ export default function ShippingPage() {
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-copper/10 text-copper">
               <Icon className="h-5 w-5" strokeWidth={1.7} aria-hidden="true" />
             </span>
-            <h2 className="mt-4 font-sans text-[15px] font-semibold text-espresso">
+            <h2 className="mt-4 font-sans  text-[15px] font-semibold text-espresso">
               {title}
             </h2>
             <p className="mt-1 font-sans text-[13px] leading-relaxed text-warm-gray">
