@@ -65,13 +65,37 @@
 // }
 "use client";
 
-import { Check, Leaf, MapPin, Truck } from "lucide-react";
+import type { SVGProps } from "react";
+import { Check, Leaf, Truck } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { trustItems } from "@/data/home";
 
+// Balinese split temple gate (candi bentar)
+function BaliGate({
+  strokeWidth = 1.6,
+  ...props
+}: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M3 21V16h2v-3h2v-3h3v11" />
+      <path d="M21 21V16h-2v-3h-2v-3h-3v11" />
+      <path d="M8.5 10V7.5M15.5 10V7.5M2 21h20" />
+    </svg>
+  );
+}
+
 const icons = {
   natural: Leaf,
-  origin: MapPin,
+  origin: BaliGate,
   payment: Check,
   delivery: Truck,
 } as const;

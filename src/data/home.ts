@@ -62,7 +62,7 @@ export const whySlides: WhySlide[] = [
   {
     id: "origin",
     eyebrow: "Origin",
-    heading: "Bali Heritage and Quality Excellence",
+    heading: "Bali Heritage & Excellence",
     description:
       "Finasto™ brings together thoughtfully selected beverages, a commitment to quality, and an appreciation for nature’s finest inspirations. Our growing collection reflects diverse origins and a refined approach to everyday enjoyment.",
     details: [

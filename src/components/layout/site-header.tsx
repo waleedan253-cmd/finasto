@@ -88,10 +88,16 @@ const router = useRouter();
     <>
       <header
         className={cn(
-          "sticky top-0 z-40 w-full border-b border-border bg-cream/95 backdrop-blur-sm transition-shadow duration-300",
-          isCompact && "shadow-[0_1px_0_0_rgba(50,30,24,0.06)]",
+          "bg-pattern !sticky top-0 z-40 w-full border-b border-copper/20 bg-cream/80 backdrop-blur-xl backdrop-saturate-150 transition-[box-shadow,background-color] duration-300",
+          "bg-[radial-gradient(ellipse_40%_120%_at_0%_0%,rgba(134,239,172,0.18),transparent_70%),radial-gradient(ellipse_40%_120%_at_100%_0%,rgba(125,211,252,0.16),transparent_70%)]",
+          isCompact &&
+            "bg-cream/90 shadow-[0_10px_30px_-12px_rgba(35,77,42,0.25)]",
         )}
       >
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-copper/60 to-transparent"
+        />
         <div
           className={cn(
             "mx-auto flex max-w-[1440px] items-center justify-between px-5 transition-[height] duration-300 ease-out sm:px-8",
@@ -138,7 +144,7 @@ const router = useRouter();
                     className={cn(
                       "relative flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] font-medium tracking-[0.01em] text-espresso/85 transition-colors duration-300 hover:text-espresso after:absolute after:-bottom-1 after:left-4 after:right-4 after:h-[2px] after:origin-left after:scale-x-0 after:rounded-full after:bg-copper after:transition-transform after:duration-500 after:ease-out group-hover:after:scale-x-100 group-focus-within:after:scale-x-100",
                       isActive(pathname, item.href) &&
-                        "bg-green font-semibold text-cream after:hidden",
+                        "bg-green-deep font-semibold text-cream shadow-[0_6px_16px_-6px_rgba(35,77,42,0.55)] after:hidden",
                     )}
                   >
                     {item.label}
@@ -149,7 +155,7 @@ const router = useRouter();
 
                   {item.children && (
                     <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2 opacity-0 transition-opacity duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                      <ul className="w-52 overflow-hidden rounded-xl border border-border bg-cream py-1 shadow-lg">
+                      <ul className="w-52 overflow-hidden rounded-xl border border-copper/25 bg-cream/95 py-1 shadow-[0_20px_40px_-15px_rgba(35,77,42,0.35)] backdrop-blur-xl">
                         {item.children.map((child) => (
                           <li key={child.href}>
                             <Link
@@ -177,7 +183,7 @@ const router = useRouter();
                 onClick={() => setIsMarketOpen((prev) => !prev)}
                 aria-haspopup="listbox"
                 aria-expanded={isMarketOpen}
-                className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-sans text-[13px] text-espresso/80 transition-colors hover:border-copper hover:text-espresso"
+                className="flex items-center gap-1.5 rounded-full border border-copper/30 bg-white/50 px-3 py-1.5 font-sans text-[13px] text-espresso/80 backdrop-blur transition-colors hover:border-copper hover:bg-white/80 hover:text-espresso"
                 aria-label={`Market: ${selectedMarket.countryLabel}, currency ${selectedMarket.currencyCode}`}
                 style={{
                   cursor: "pointer",
@@ -196,7 +202,7 @@ const router = useRouter();
               {isMarketOpen && (
                 <ul
                   role="listbox"
-                  className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-xl border border-border bg-cream py-1 shadow-lg"
+                  className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-xl border border-copper/25 bg-cream/95 py-1 shadow-[0_20px_40px_-15px_rgba(35,77,42,0.35)] backdrop-blur-xl"
                 >
                   {availableMarkets.map((market) => {
                                        const isSelected =

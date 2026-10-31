@@ -64,7 +64,7 @@
 // //           <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep   sm:text-[48px]">
 // //             Why Choose Finasto?
 // //           </h2>
-// //           <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70">>
+// //           <p className="mt-5 max-w-2xl font-sans text-[16px] leading-[1.8] text-warm-gray sm:text-[17px]">>
 // //             Discover what makes Finasto different and why it matters for your
 // //             journey.
 // //           </p>
@@ -254,10 +254,10 @@
 //             Why Finasto
 //             <span aria-hidden="true" className="h-px w-8 bg-copper" />
 //           </p>
-//           <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep sm:text-[48px]">
+//           <h2 className="mt-5 font-display text-[40px] font-medium leading-[1.05] tracking-[-0.015em] text-green-deep sm:text-[54px] lg:text-[62px]">
 //             Why Choose Finasto?
 //           </h2>
-//           <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70">
+//           <p className="mt-5 max-w-2xl font-sans text-[16px] leading-[1.8] text-warm-gray sm:text-[17px]">
 //             Discover what makes Finasto different and why it matters for your
 //             journey.
 //           </p>
@@ -484,6 +484,14 @@ const SLIDE_ICONS: LucideIcon[][] = [
   [Package, Handshake, Award], // card 3
 ];
 
+// Soft green + blue glows (mirrored from Featured Collection) on cream-soft
+// Warm sand base with copper light, different from Featured Collection's mint + sky
+const sectionBg = [
+  "radial-gradient(ellipse 60% 45% at 50% 0%, rgba(224,165,109,0.22) 0%, transparent 70%)",
+  "radial-gradient(ellipse 45% 35% at 100% 100%, rgba(201,130,69,0.14) 0%, transparent 70%)",
+  "linear-gradient(180deg, color-mix(in srgb, var(--color-copper) 9%, var(--color-cream-soft)) 0%, var(--color-cream-soft) 100%)",
+].join(", ");
+
 const revealCls = (on: boolean) =>
   cn(
     "transition-[opacity,transform] duration-700 ease-out",
@@ -513,7 +521,8 @@ export function WhyFinasto() {
 
   return (
     <section
-      className="relative w-full overflow-hidden border-t border-copper/30 bg-gradient-to-b from-cream to-cream-soft"
+      className="bg-pattern relative w-full overflow-hidden py-8 lg:py-12"
+      style={{ background: sectionBg }}
       aria-roledescription="carousel"
       aria-label="Why Finasto"
       onMouseEnter={() => setPaused(true)}
@@ -521,18 +530,29 @@ export function WhyFinasto() {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="relative mx-auto max-w-[1440px] px-5 pb-14 sm:px-8">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-copper/15 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-40 -left-24 h-[380px] w-[380px] rounded-full bg-green-deep/10 blur-3xl"
+      />
+      <div className="relative mx-auto max-w-[1300px] px-5 sm:px-8">
         {/* Heading */}
-        <Reveal className="px-0 py-12 text-center">
-          <p className="flex items-center justify-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
-            <span aria-hidden="true" className="h-px w-8 bg-copper" />
+        <Reveal className="px-0 pb-10 pt-12 lg:pb-12">
+          <p className="flex items-center gap-4 font-sans text-[12px] font-medium uppercase tracking-[0.28em] text-copper">
+            <span
+              aria-hidden="true"
+              className="h-px w-10 bg-gradient-to-r from-copper to-copper/20"
+            />
            THE FINASTO™ STANDARD
             <span aria-hidden="true" className="h-px w-8 bg-copper" />
           </p>
-          <h2 className="mt-2 font-display text-[36px] leading-tight text-green-deep sm:text-[48px]">
+          <h2 className="mt-5 font-display text-[40px] font-medium leading-[1.05] tracking-[-0.015em] text-green-deep sm:text-[54px] lg:text-[62px]">
             Why Choose Finasto™?
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl font-sans text-[15px] leading-relaxed text-espresso-deep/70">
+          <p className="mt-5 max-w-2xl font-sans text-[16px] leading-[1.8] text-warm-gray sm:text-[17px]">
            A refined collection of beverages, thoughtfully selected for quality, inspired by nature, and made for modern living.
           </p>
         </Reveal>

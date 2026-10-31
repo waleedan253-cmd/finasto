@@ -31,7 +31,7 @@ export const heroSlides: HeroSlide[] = [
       { icon: "sprout", label: "Agroecology" },
     ],
     cta: { label: "Shop Bali-Grown Teas", href: "/shop" },
-    image: "/hero/bali-tea-harvest.jpg",
+    image: "/hero/bue-moon.jpeg",
     imageAlt: "Farmers hand-picking tea leaves on a Bali hillside at sunrise",
   },
   
@@ -47,7 +47,7 @@ export const heroSlides: HeroSlide[] = [
       { icon: "award", label: "Premium Quality" },
     ],
     cta: { label: "Shop Premium Teas", href: "/shop" },
-    image: "/hero/fresh-leaves.jpg",
+    image: "/hero/flovera.jpeg",
     imageAlt: "Worker sorting fresh tea leaves on bamboo trays",
   },
   {

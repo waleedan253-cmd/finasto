@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
 import { Leaf, Coffee, Sprout } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
@@ -21,6 +22,29 @@ const featureIcons = [Leaf, Coffee, Sprout];
 
 export function ProductCard({ product }: { product: Product }) {
   const router = useRouter();
+  const tiltRef = useRef<HTMLAnchorElement>(null);
+
+  function handleEnter() {
+    tiltRef.current?.style.setProperty("--s", "1.15");
+  }
+
+  function handleMove(e: MouseEvent<HTMLAnchorElement>) {
+    const el = tiltRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.setProperty("--ry", `${x * 30}deg`);
+    el.style.setProperty("--rx", `${-y * 30}deg`);
+  }
+
+  function handleLeave() {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.setProperty("--rx", "0deg");
+    el.style.setProperty("--ry", "0deg");
+    el.style.setProperty("--s", "1");
+  }
   const isOutOfStock = product.state === "out-of-stock";
   const cardBg = `linear-gradient(135deg, color-mix(in srgb, ${product.accentColor} 45%, black), color-mix(in srgb, ${product.accentColor} 75%, black) 50%, ${product.accentColor})`;
   const glowColor = `${product.accentColor}55`;
@@ -53,15 +77,19 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Image */}
       <Link
+        ref={tiltRef}
         href={`/shop/${product.slug}`}
-        className="relative mx-auto block aspect-square w-full max-w-[380px] shrink-0 sm:mx-0 sm:w-[55%] sm:max-w-none"
+        onMouseEnter={handleEnter}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="relative z-10 mx-auto block aspect-square w-full max-w-[380px] shrink-0 [perspective:1000px] sm:mx-0 sm:w-[55%] sm:max-w-none"
       >
         <Image
           src={product.image}
           alt={`${product.name} — ${product.category} pouch`}
           fill
           sizes="(min-width: 640px) 40vw, 80vw"
-          className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition duration-700 group-hover:-rotate-2 group-hover:scale-105"
+          className="object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.55)] transition-[transform,filter] duration-200 ease-out will-change-transform [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))_scale(var(--s,1))] hover:drop-shadow-[0_50px_60px_rgba(0,0,0,0.65)]"
         />
       </Link>
 
