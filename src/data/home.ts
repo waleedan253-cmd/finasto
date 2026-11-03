@@ -85,7 +85,7 @@ export const whySlides: WhySlide[] = [
       "Carefully Selected Ingredients",
       "Elegance in Everyday Moments",
     ],
-    image: "/why/Thought.jpeg",
+    image: "/why/t.jpeg",
     imageAlt:
       "Hands sorting loose tea leaves into a wooden bowl beside a cast-iron teapot and brewed tea",
   },
