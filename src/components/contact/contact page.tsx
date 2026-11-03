@@ -230,7 +230,7 @@ export function ContactPage() {
       {/* ───────── HERO: image bg, info left, form right ───────── */}
       <section className="relative isolate overflow-hidden">
         <Image
-          src="/hero/contact.png"
+          src="/why/bali.jpeg"
           alt=""
           fill
           priority
@@ -246,9 +246,14 @@ export function ContactPage() {
           className="pointer-events-none absolute -bottom-40 right-[-8%] -z-10 h-[460px] w-[460px] rounded-full bg-copper/25 blur-[130px]"
         />
 
-        <div className="mx-auto grid max-w-[1200px] items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:py-16 lg:min-h-[calc(100vh-80px)]">
+        <div className="mx-auto grid max-w-[1300px] items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:py-16 lg:min-h-[calc(100vh-80px)]">
           {/* LEFT: heading + contact cards */}
-          <div>
+           <ContactForm />
+        
+
+          {/* RIGHT: form */}
+          <div className="mx-auto w-full max-w-[600px] lg:ml-auto">
+             <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-copper-light/30 bg-copper/10 px-4 py-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.22em] text-copper-light">
               <MessageSquareText className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
               {c.hero.eyebrow}
@@ -288,10 +293,6 @@ export function ContactPage() {
               ))}
             </aside>
           </div>
-
-          {/* RIGHT: form */}
-          <div className="mx-auto w-full max-w-[600px] lg:ml-auto">
-            <ContactForm />
           </div>
         </div>
       </section>
@@ -318,9 +319,9 @@ export function ContactPage() {
           {c.faq.map((item) => (
             <details
               key={item.q}
-              className="group rounded-2xl border border-border bg-white px-6 py-5 shadow-[0_10px_30px_-22px_rgba(50,30,24,0.3)] transition-colors open:border-copper/40"
+              className="group rounded-2xl border border-border bg-green  px-6 py-5 shadow-[0_10px_30px_-22px_rgba(50,30,24,0.3)] transition-colors open:border-copper/40"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-[19px] leading-snug text-green-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-[19px] leading-snug text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 [&::-webkit-details-marker]:hidden">
                 {item.q}
                 <ChevronDown
                   className="h-5 w-5 shrink-0 text-copper transition-transform duration-300 group-open:rotate-180"
@@ -328,7 +329,7 @@ export function ContactPage() {
                   aria-hidden="true"
                 />
               </summary>
-              <p className="mt-3 font-sans text-[15px] leading-[1.75] text-warm-gray">
+              <p className="mt-3 font-sans text-[15px] leading-[1.75] text-cream/40">
                 {item.a}
               </p>
             </details>

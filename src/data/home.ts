@@ -20,12 +20,12 @@ export const trustItems: TrustItem[] = [
   {
     id: "natural",
     title: "Botanical Ingredients",
-    description: "Carefully Selected Botanicals.",
+    description: "Carefully selected botanicals.",
   },
   {
     id: "origin",
     title: "Bali Essence",
-    description: "Bali’s Finest Premium Tea.",
+    description: "Bali’s finest premium tea.",
   },
   {
     id: "payment",
@@ -70,7 +70,7 @@ export const whySlides: WhySlide[] = [
       "Diverse Product Origins",
       "Commitment to Quality",
     ],
-    image: "/why/why.png",
+    image: "/why/bali heritage.png",
     imageAlt:
       "Bali volcano overlooking terraced rice fields with a mound of dark volcanic soil and frangipani flowers",
   },
@@ -85,7 +85,7 @@ export const whySlides: WhySlide[] = [
       "Carefully Selected Ingredients",
       "Elegance in Everyday Moments",
     ],
-    image: "/why/Artisanal Tea Leaf Sorting.png",
+    image: "/why/Thought.jpeg",
     imageAlt:
       "Hands sorting loose tea leaves into a wooden bowl beside a cast-iron teapot and brewed tea",
   },
@@ -100,7 +100,7 @@ export const whySlides: WhySlide[] = [
       "Clear Product Information",
       "Detailed Product Labels",
     ],
-    image: "/why/Sunlit Herbal Tea and Botanicals.png",
+    image: "/why/Honesty.png",
     imageAlt:
       "A clear water droplet beside a mountain spring and fresh tea leaf, symbolizing natural purity",
   },

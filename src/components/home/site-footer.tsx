@@ -204,7 +204,7 @@ const socialIcons = {
  */
 export function SiteFooter() {
   return (
-    <footer className="site-footer relative isolate overflow-hidden border-t-2 border-copper/60 bg-cream text-espresso/80 dark:bg-espresso-deep dark:text-cream/80">
+    <footer className="site-footer relative isolate overflow-hidden border-t-2 border-copper/60  text-espresso/80 dark:bg-espresso-deep dark:text-cream/80">
       {/* Background art + contrast veil */}
            <div aria-hidden="true" className="relative w-full">
         <Image
@@ -215,7 +215,7 @@ export function SiteFooter() {
           sizes="100vw"
           className="h-auto max-h-[220px] w-full object-cover object-center sm:max-h-[260px] dark:opacity-40"
         />
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream dark:to-espresso-deep" />
+        {/* <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream dark:to-espresso-deep" /> */}
       </div>
 
       <div className="mx-auto max-w-[1440px] px-5 pb-6 pt-5 sm:px-8">

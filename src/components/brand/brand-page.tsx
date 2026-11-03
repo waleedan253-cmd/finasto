@@ -130,30 +130,25 @@ export function BrandPage() {
 
       {/* ───────── HERO ───────── */}
       <section className="relative isolate overflow-hidden bg-gradient-to-br from-green-deep via-[#17391f] to-espresso-deep px-5 pb-12 pt-10 text-center sm:px-8 sm:pb-16 sm:pt-14">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-32 -top-32 -z-10 h-[420px] w-[420px] rounded-full bg-green/40 blur-[110px]"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-40 right-[-8%] -z-10 h-[460px] w-[460px] rounded-full bg-copper/25 blur-[130px]"
-        />
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 1440 620"
-          preserveAspectRatio="xMidYMid slice"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full"
-        >
-          <path d="M-40 60 C120 20 300 70 380 230 C220 280 40 240 -40 60Z" fill="#2f6a3a" opacity="0.26" />
-          <path d="M1440 80 C1300 130 1240 270 1280 420 C1420 370 1480 230 1440 80Z" fill="#0c2615" opacity="0.5" />
-          <path d="M700 -20 C650 80 720 190 860 240 C910 130 840 20 700 -20Z" fill="#2f6a3a" opacity="0.18" />
-          <path d="M-120 480 C240 410 480 550 860 440 S1380 330 1600 410" fill="none" stroke="#8cc79a" strokeOpacity="0.18" />
-          <path d="M-120 530 C260 470 520 600 900 490 S1400 390 1600 460" fill="none" stroke="#e0a56d" strokeOpacity="0.16" />
-        </svg>
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_75%)]"
-        />
+     
+                <Image
+                  src="/brand/brand hero.jpeg"
+                  alt=""
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="-z-20 object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-10 bg-gradient-to-br from-green/20 via-[#17391f]/80 to-espresso-deep/90"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -bottom-40 right-[-8%] -z-10 h-[460px] w-[460px] rounded-full bg-copper/15 blur-[130px]"
+                />
+        
+        
 
         <motion.div
           initial={{ opacity: reduce ? 1 : 0, y: reduce ? 0 : 20 }}
@@ -185,11 +180,11 @@ export function BrandPage() {
         id="brand"
         className="scroll-mt-16 px-5 py-20 sm:px-8 sm:py-28"
       >
-        <div className="mx-auto grid max-w-[1100px] items-start gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-          <Reveal className="mx-auto w-full max-w-[400px] lg:sticky lg:top-28">
-  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-copper/30 shadow-[0_30px_50px_-15px_rgba(35,77,42,0.35)]">
+        <div className="mx-auto grid max-w-[13000px] items-start gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+          <Reveal className="mx-auto w-full max-w-[550px] lg:sticky lg:top-28">
+  <div className="relative aspect-[4/5] w-full  overflow-hidden rounded-3xl border border-copper/30 shadow-[0_30px_50px_-15px_rgba(35,77,42,0.35)]">
     <Image
-      src="/brand/Golden Morning Coffee and Tea Sanctuary.png"
+      src="/brand/brands.jpeg"
       alt="Golden morning light over a Finasto coffee and tea sanctuary"
       fill
       sizes="(min-width: 1024px) 400px, 100vw"
@@ -248,11 +243,11 @@ export function BrandPage() {
               <h2 className="mt-4 font-display text-[34px] leading-[1.1] text-green-deep sm:text-[44px]">
                 {c.story.title}
               </h2>
-              <div className="mt-8 inline-flex items-end gap-4 rounded-2xl border border-copper/25 bg-white px-6 py-5 shadow-[0_18px_40px_-24px_rgba(35,77,42,0.45)]">
-                <span className="font-display text-[64px] leading-none text-green-deep">
+              <div className="mt-8 inline-flex items-end gap-4 rounded-2xl border border-copper/75 bg-pattern px-6 py-5 shadow-[0_18px_40px_-24px_rgba(35,77,42,0.45)]">
+                <span className="font-display text-[64px] leading-none text-">
                   {c.story.stat.value}
                 </span>
-                <span className="pb-2 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-warm-gray">
+                <span className="pb-2 font-sans text-[12px] font-medium uppercase tracking-[0.18em] text-green">
                   {c.story.stat.label}
                 </span>
               </div>
@@ -264,8 +259,10 @@ export function BrandPage() {
                   <span
                     aria-hidden="true"
                     className="absolute -left-[calc(2rem+14.5px)] top-0 flex h-7 w-7 items-center justify-center rounded-full border border-copper/50 bg-cream font-sans text-[11px] font-semibold text-copper sm:-left-[calc(2.5rem+14.5px)]"
-                  >
-                                        <span className="h-2.5 w-2.5 rounded-full bg-copper" />
+                  ><span className="relative flex h-2.5 w-2.5">
+  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-copper opacity-75" />
+  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-copper shadow-[0_0_8px_rgba(184,115,51,0.8)]" />
+</span>
                   </span>
                   <Reveal>
                     <p className="font-sans text-[16px] leading-[1.85] text-espresso/80 md:text-[17px]">
@@ -282,9 +279,7 @@ export function BrandPage() {
               aria-hidden="true"
               className="mx-auto mb-8 block h-px w-24 bg-gradient-to-r from-transparent via-copper to-transparent"
             />
-            <p className="mx-auto max-w-[760px] font-display text-[28px] leading-tight text-green-deep sm:text-[38px] md:text-[46px]">
-              {c.story.closing}
-            </p>
+           
           </Reveal>
         </div>
       </section>
@@ -296,13 +291,13 @@ export function BrandPage() {
       >
         <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
           <Reveal>
-            <article className="relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-green via-[#1f3917e5] to-espresso-deep p-8 text-white shadow-[0_30px_70px_-30px_rgba(35,77,42,0.7)] sm:p-12">
+            <article className="relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-green via-[#173919d2] to-green p-8 text-white shadow-[0_30px_70px_-30px_rgba(35,77,42,0.7)] sm:p-12">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-copper/25 blur-[70px]"
               />
-              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper-light/40 bg-white/10">
-                <Eye className="h-6 w-6 text-copper-light" strokeWidth={1.5} aria-hidden="true" />
+              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper-light/40 bg-cream">
+                <Eye className="h-6 w-6 text-green" strokeWidth={1.5} aria-hidden="true" />
               </span>
               <div className="relative mt-7">
                 <Eyebrow >{c.vision.eyebrow}</Eyebrow>
@@ -314,13 +309,18 @@ export function BrandPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <article className="relative h-full overflow-hidden rounded-[28px] border border-copper/25 bg-white p-8 shadow-[0_30px_70px_-34px_rgba(50,30,24,0.4)] sm:p-12">
-              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-green-bg">
+            <article className="relative h-full overflow-hidden rounded-[28px] border border-copper/25 bg-pattern p-8 shadow-[0_30px_70px_-34px_rgba(50,30,24,0.4)] sm:p-12">
+             <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded bg-green/25 blur-[70px]"
+              />
+              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-white">
                 <Target className="h-6 w-6 text-green-deep" strokeWidth={1.5} aria-hidden="true" />
               </span>
-              <div className="relative mt-7">
+              <div className="relative mt-7 ">
+               
                 <Eyebrow>{c.mission.eyebrow}</Eyebrow>
-                <p className="mt-5 font-sans text-[16px] leading-[1.85] text-espresso/80 md:text-[17px]">
+                <p className=" mt-5 font-sans text-[16px] leading-[1.85] text-espresso/80 md:text-[17px]">
                   {c.mission.text}
                 </p>
               </div>

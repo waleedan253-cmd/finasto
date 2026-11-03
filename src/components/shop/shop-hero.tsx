@@ -52,7 +52,7 @@ export function ShopHero() {
       <h1 className="sr-only">Finasto Bali botanical teas</h1>
 
       {/* Inset frame: margins on the left and right, crops a little off the top and bottom of each banner. */}
-      <div className="mx-auto max-w-[1440px] px-4 pb-4 pt-3 sm:px-8 sm:pb-6 sm:pt-5 lg:px-14">
+      <div className="mx-auto max-w-[1440px] px-6 pb-4 pt-3 sm:px-10 sm:pb-6 sm:pt-5 lg:px-20">
       <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl sm:aspect-[5/2] sm:rounded-2xl lg:aspect-[3/1] lg:max-h-[calc(100svh-180px)]">
         {heroSlides.map((s, i) => {
           const isActive = i === active;

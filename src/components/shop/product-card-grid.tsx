@@ -75,7 +75,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
             : `Add ${product.name} to wishlist`
         }
         className={cn(
-          "absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-all hover:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+          "absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-green/90 shadow-sm backdrop-blur transition-all hover:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100",
           wishlisted
             ? "text-copper md:translate-y-0 md:opacity-100"
             : "text-espresso hover:text-copper md:translate-y-1 md:opacity-0",

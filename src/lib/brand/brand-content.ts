@@ -37,7 +37,7 @@ export const brandContent = {
       "That long-held vision has now taken shape in FINASTO™. As our brand begins a new chapter, it carries years of thought, dedication, and a desire to create something meaningful. Working with trusted production partners, we are building a distinctive collection that reflects our values and the standards we believe in.",
       "Every cup of FINASTO™ represents more than tea or coffee. It brings together nature’s remarkable botanical diversity and a vision shaped by years of thought, dedication, and careful consideration. Through every cup, we hope to bring people closer to the natural world and share the idea that has been at the heart of FINASTO™ for so many years.",
     ],
-    closing: "FINASTO™: A Vision Years in Making.",
+    
   },
 
   vision: {
@@ -75,7 +75,7 @@ export const brandContent = {
   },
 
   cta: {
-    label: "Discover the Collection",
+    label: "Discover the Collections",
     href: "/shop",
   },
 } as const;
