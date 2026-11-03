@@ -84,7 +84,7 @@
 //           </div>
 //         </div>
 
-//         <div className="mt-12 flex flex-col-reverse items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
+//         <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
 //           <p className="font-sans text-[12px] text-cream/60">
 //             © {new Date().getFullYear()} Finasto. All rights reserved.
 //           </p>
@@ -206,22 +206,20 @@ export function SiteFooter() {
   return (
     <footer className="site-footer relative isolate overflow-hidden border-t-2 border-copper/60 bg-cream text-espresso/80 dark:bg-espresso-deep dark:text-cream/80">
       {/* Background art + contrast veil */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 -z-10 h-[340px] sm:inset-0 sm:h-auto"
-      >
+           <div aria-hidden="true" className="relative w-full">
         <Image
           src="/brand/Bali and India Travel Carnival Collage.png"
           alt=""
-          fill
+          width={600}
+          height={600}
           sizes="100vw"
-          className="object-cover object-center sm:object-top dark:opacity-40"
+          className="h-auto max-h-[220px] w-full object-cover object-center sm:max-h-[260px] dark:opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent from-20% via-cream/90 via-55% to-cream dark:via-espresso-deep/90 dark:to-espresso-deep" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-cream dark:to-espresso-deep" />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-5 pb-10 pt-52 sm:px-8 sm:pt-25 lg:pt-54">
-        <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+      <div className="mx-auto max-w-[1440px] px-5 pb-6 pt-5 sm:px-8">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           {/* Logo + tagline */}
           <div className="flex flex-col gap-6">
             <Link href="/" className="flex items-center" aria-label="Finasto home">
@@ -300,7 +298,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col-reverse items-center justify-between gap-4 border-t border-copper/30 pt-6 sm:flex-row dark:border-white/10">
+        <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 border-t border-copper/30 pt-6 sm:flex-row dark:border-white/10">
           <p className="font-sans text-[12px] text-espresso/70 dark:text-cream/60">
             © {new Date().getFullYear()} Finasto. All rights reserved.
           </p>

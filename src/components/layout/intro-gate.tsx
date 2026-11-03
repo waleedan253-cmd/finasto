@@ -588,6 +588,7 @@ export default function IntroGate() {
     const raf = requestAnimationFrame(() => setLogoIn(true));
     const openTimer = setTimeout(() => setPhase("opening"), HOLD_MS);
     const doneTimer = setTimeout(() => {
+      document.body.style.overflow = prevOverflow;
       setPhase("done");
       markDone();
       try {

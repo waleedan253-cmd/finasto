@@ -25,7 +25,7 @@ export default async function ProductPage({
   if (!product) notFound();
 
   return (
-    <main className="flex-1 bg-cream-soft">
+    <main className="flex-1 bg-pattern">
       <AnnouncementBar />
       <SiteHeader />
       <ProductDetail product={product} />

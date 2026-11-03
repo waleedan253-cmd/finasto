@@ -18,7 +18,7 @@ import {
   brandContent as c,
   brandNav,
 } from "@/lib/brand/brand-content";
-import { BotanicalArt } from "./botanical-art";
+import Image from "next/image";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -129,7 +129,7 @@ export function BrandPage() {
       <style>{`@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}`}</style>
 
       {/* ───────── HERO ───────── */}
-      <section className="relative isolate overflow-hidden bg-gradient-to-br from-green-deep via-[#17391f] to-espresso-deep px-5 pb-24 pt-20 text-center sm:px-8 sm:pb-32 sm:pt-28">
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-green-deep via-[#17391f] to-espresso-deep px-5 pb-12 pt-10 text-center sm:px-8 sm:pb-16 sm:pt-14">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-32 -top-32 -z-10 h-[420px] w-[420px] rounded-full bg-green/40 blur-[110px]"
@@ -165,14 +165,14 @@ export function BrandPage() {
             <Globe2 className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
             {c.hero.eyebrow}
           </p>
-          <h1 className="mt-7 bg-gradient-to-b from-white via-cream to-copper-light bg-clip-text font-display text-[56px] leading-[0.95] tracking-tight text-transparent sm:text-[88px] md:text-[108px]">
+          <h1 className="mt-5 bg-gradient-to-b from-white via-cream to-copper-light bg-clip-text font-display text-[44px] leading-[0.95] tracking-tight text-transparent sm:text-[64px] md:text-[80px]">
             {BRAND_NAME}
           </h1>
           <span
             aria-hidden="true"
-            className="mx-auto mt-7 block h-[2px] w-16 rounded-full bg-gradient-to-r from-copper-light to-copper"
+            className="mx-auto mt-5 block h-[2px] w-16 rounded-full bg-gradient-to-r from-copper-light to-copper"
           />
-          <p className="mx-auto mt-7 max-w-[480px] font-sans text-[16px] leading-relaxed text-white/70 md:text-[18px]">
+          <p className="mx-auto mt-5 max-w-[480px] font-sans text-[16px] leading-relaxed text-white/70 md:text-[18px]">
             {c.hero.tagline}
           </p>
         </motion.div>
@@ -187,8 +187,20 @@ export function BrandPage() {
       >
         <div className="mx-auto grid max-w-[1100px] items-start gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <Reveal className="mx-auto w-full max-w-[400px] lg:sticky lg:top-28">
-            <BotanicalArt className="h-auto w-full drop-shadow-[0_30px_50px_rgba(35,77,42,0.25)]" />
-          </Reveal>
+  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-copper/30 shadow-[0_30px_50px_-15px_rgba(35,77,42,0.35)]">
+    <Image
+      src="/brand/Golden Morning Coffee and Tea Sanctuary.png"
+      alt="Golden morning light over a Finasto coffee and tea sanctuary"
+      fill
+      sizes="(min-width: 1024px) 400px, 100vw"
+      className="object-cover object-center"
+    />
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/20"
+    />
+  </div>
+</Reveal>
 
           <div className="flex flex-col gap-6">
             <Reveal>
@@ -253,7 +265,7 @@ export function BrandPage() {
                     aria-hidden="true"
                     className="absolute -left-[calc(2rem+14.5px)] top-0 flex h-7 w-7 items-center justify-center rounded-full border border-copper/50 bg-cream font-sans text-[11px] font-semibold text-copper sm:-left-[calc(2.5rem+14.5px)]"
                   >
-                    {String(i + 1).padStart(2, "0")}
+                                        <span className="h-2.5 w-2.5 rounded-full bg-copper" />
                   </span>
                   <Reveal>
                     <p className="font-sans text-[16px] leading-[1.85] text-espresso/80 md:text-[17px]">
@@ -284,7 +296,7 @@ export function BrandPage() {
       >
         <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
           <Reveal>
-            <article className="relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-green via-[#17391f] to-espresso-deep p-8 text-white shadow-[0_30px_70px_-30px_rgba(35,77,42,0.7)] sm:p-12">
+            <article className="relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-green via-[#1f3917e5] to-espresso-deep p-8 text-white shadow-[0_30px_70px_-30px_rgba(35,77,42,0.7)] sm:p-12">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-copper/25 blur-[70px]"
@@ -372,7 +384,7 @@ export function BrandPage() {
           <Reveal className="mt-14 text-center">
             <Link
               href={c.cta.href}
-              className="group relative inline-flex h-[54px] items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-b from-copper-light to-copper px-8 font-sans text-[15px] font-semibold text-espresso-deep shadow-[0_14px_36px_-10px_rgba(201,130,69,0.7),inset_0_1px_0_0_rgba(255,255,255,0.45)] transition-all hover:brightness-105 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+              className="group relative inline-flex h-[54px] items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-b from-[#F9D976] via-[#E8B84A] to-[#C9952E] px-8 font-sans text-[15px] font-semibold text-[#3B2915] shadow-[0_14px_36px_-10px_rgba(212,175,55,0.55),inset_0_1px_0_0_rgba(255,255,255,0.55)] transition-all hover:brightness-110 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C66A]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
               <span
                 aria-hidden="true"

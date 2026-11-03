@@ -84,13 +84,14 @@ export function HeroSection() {
               i === active ? "opacity-100" : "opacity-0"
             }`}
           />
-        ))}
+              ))}
 
-      
+        {/* Mobile readability fade: light wash behind the copy, hidden on desktop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#f7f1e7] via-[#f7f1e7]/85 via-45% to-transparent to-75% lg:hidden" />
       </div>
 
-      {/* COPY LAYER */}
-      <div className="relative z-10 mx-auto flex min-h-[640px] w-full max-w-[1440px] flex-col justify-end px-4 pb-24 pt-[300px] sm:px-6 sm:pt-[340px] md:px-8 lg:min-h-[min(820px,calc(100svh-80px))] lg:justify-center lg:pb-28 lg:pt-24">
+      {/* COPY LAYER */} 
+      <div className="relative z-10 mx-auto flex min-h-[640px] w-full max-w-[1440px] flex-col justify-end px-4 pb-20 pt-[300px] sm:px-6 sm:pt-[300px] md:px-8 lg:min-h-[min(660px,calc(100svh-80px))] lg:justify-center lg:pb-20 lg:pt-20">
         <div className="grid max-w-xl">
           {heroSlides.map((s, i) => {
             const isActive = i === active;
@@ -162,13 +163,17 @@ style={{ color: s.theme.heading }}
                 <Link
                   href={s.cta.href}
                   tabIndex={isActive ? 0 : -1}
-                  className="mt-7 inline-flex h-12 items-center gap-2 rounded-full px-6 font-sans text-[14px] font-medium text-white transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
+                  className="group relative mt-7 inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-6 font-sans text-[14px] font-medium text-white shadow-lg transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
 style={{
   backgroundColor: heroSlides[active].theme.button,
   ...(i === active && !halted ? { animationDuration: `${HERO_SLIDE_DURATION}ms` } : {}),
 }}
 >                
-                  {s.cta.label}
+                  <span
+  aria-hidden="true"
+  className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[400%]"
+/>
+<span className="relative">{s.cta.label}</span>
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
               </div>

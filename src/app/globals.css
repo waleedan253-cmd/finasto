@@ -160,6 +160,7 @@ html {
   background: transparent;
 }
 
+
 /* Soft copper glow, bottom-right corner, dark mode only */
 @keyframes finasto-glow-drift {
   from {

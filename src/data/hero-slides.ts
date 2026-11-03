@@ -21,6 +21,21 @@ export type HeroSlide = {
 export const HERO_SLIDE_DURATION = 3000; // ms per slide, 24s full loop
 
 export const heroSlides: HeroSlide[] = [
+   {
+  id: "golden-hour",
+  eyebrow: "Classic  Tea",
+  headline: ["A Standard Beyond the Ordinary.", ""],
+  body: "Discover  FINASTO™_ A Throughtfully Curated Collection of teas inspired by nature and quality.",
+  features: [
+    { icon: "hand", label: "Hand Crafted" },
+    { icon: "package", label: "Small Batch" },
+    { icon: "award", label: "Premium Quality" },
+  ],
+  cta: { label: "Shop Now Teas", href: "/shop" },
+  image: "/hero/brand.jpeg", // file must exist in public/hero/
+  imageAlt: "A Standard Beyond the Ordinary",
+  theme: { eyebrow: "#ffff", heading: "#7A3E00", body: "#1F1B16", button: "#7A3E00" },
+},
   {
     id: "harvest",
     eyebrow: "Floral Tropical Infusion",
@@ -53,6 +68,7 @@ export const heroSlides: HeroSlide[] = [
     imageAlt: "Worker sorting fresh tea leaves on bamboo trays",
     theme: { eyebrow: "#ffff", heading: "#0F2A6B", body: "#1F1B16", button: "#0B2E73" },
   },
+ 
   // {
   //   id: "morning-leaves",
   //   eyebrow: "Tradition in every step",
@@ -68,19 +84,5 @@ export const heroSlides: HeroSlide[] = [
   //   image: "/hero/morning-leaves.jpg",
   //   imageAlt: "Artisan turning tea leaves by hand on bamboo trays in morning sun",
   // },
-  // {
-  //   id: "bali-heart",
-  //   eyebrow: "Premium coffee & tea",
-  //   headline: ["From Bali’s Heart", "to Your Cup"],
-  //   body: "Pure, authentic and full of character — our coffee and tea bring the essence of Bali’s rich land, traditional craftsmanship and natural goodness to the world.",
-  //   features: [
-  //     { icon: "leaf", label: "Premium Quality" },
-  //     { icon: "globe", label: "Global Reach" },
-  //     { icon: "handshake", label: "Fair Trade" },
-  //     { icon: "sprout", label: "Sustainable Future" },
-  //   ],
-  //   cta: { label: "Explore Our Products", href: "/shop" },
-  //   image: "/hero/bali-heart.jpg",
-  //   imageAlt: "Finasto Bali coffee and tea with steaming cups on a wooden table",
-  // },
+ 
 ];

@@ -187,6 +187,7 @@ const router = useRouter();
                 aria-label={`Market: ${selectedMarket.countryLabel}, currency ${selectedMarket.currencyCode}`}
                 style={{
                   cursor: "pointer",
+                  color:"#7A3E00"
                 }}
               >
                                 <MarketIcon code={selectedMarket.countryCode} />
@@ -268,8 +269,9 @@ const router = useRouter();
                 style={{
                   cursor: "pointer",
                 }}
-                className="h-[19px] w-[19px]"
+                className="h-[19px] w-[19px] text-copper"
                 strokeWidth={1.6}
+                
               />
             </IconButton>
             <button
@@ -285,7 +287,7 @@ const router = useRouter();
             >
               <ShoppingBag
                 key={count}
-                className="h-[19px] w-[19px] animate-[finasto-bag-bump_350ms_ease-out]"
+                className="h-[19px] w-[19px] animate-[finasto-bag-bump_350ms_ease-out] text-green"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />

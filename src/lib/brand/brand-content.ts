@@ -57,25 +57,25 @@ export const brandContent = {
     principles: [
       {
         title: "Careful selection",
-        text: "From herbs and botanicals to the finest details of our brand.",
+        text: "Thoughtfully selected botanicals with exceptional attention to detail.",
       },
       {
         title: "Consistency",
-        text: "High standards, maintained in every decision.",
+        text: "Maintaining refined standards across every product and experience.",
       },
       {
         title: "Care",
-        text: "Attention to detail in all that we develop.",
+        text: "Every detail reflects our dedication to thoughtful quality and craftsmanship.",
       },
       {
         title: "Integrity",
-        text: "A brand recognised for refinement and lasting quality.",
+        text: "Guided by honesty, authenticity and timeless values of excellence.",
       },
     ],
   },
 
   cta: {
-    label: "Explore the collection",
+    label: "Discover the Collection",
     href: "/shop",
   },
 } as const;
