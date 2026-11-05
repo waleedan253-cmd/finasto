@@ -4,7 +4,7 @@
 // name is looked up from it. Shared by the Settings form and PhoneInput.
 // Client-only file: import it from client components, not server ones.
 
-import { Select } from "antd";
+import { Select, type SelectProps } from "antd";
 import { getCountries, type CountryCode } from "libphonenumber-js";
 import { Flag } from "@/components/ui/flag";
 
@@ -28,6 +28,9 @@ type Props = {
   placeholder?: string;
   disabled?: boolean;
   allowClear?: boolean;
+  size?: SelectProps["size"];
+  className?: string;
+  status?: SelectProps["status"];
 };
 
 export function CountrySelect({
@@ -36,6 +39,9 @@ export function CountrySelect({
   placeholder = "Select your country",
   disabled,
   allowClear,
+  size,
+  className,
+  status,
 }: Props) {
   return (
     <Select<string>
@@ -56,6 +62,9 @@ export function CountrySelect({
           </span>
         ),
       }))}
+      size={size}
+      className={className}
+      status={status}
       style={{ width: "100%" }}
     />
   );

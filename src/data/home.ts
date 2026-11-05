@@ -100,7 +100,7 @@ export const whySlides: WhySlide[] = [
       "Clear Product Information",
       "Detailed Product Labels",
     ],
-    image: "/why/Honesty.png",
+    image: "/why/ingrediants.jpeg",
     imageAlt:
       "A clear water droplet beside a mountain spring and fresh tea leaf, symbolizing natural purity",
   },

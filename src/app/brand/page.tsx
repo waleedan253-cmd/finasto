@@ -16,8 +16,11 @@ export default function Page() {
     <>
       <AnnouncementBar />
       <SiteHeader />
-      <BrandPage />
+   <main className="flex-1 bg-pattern">
+
+       <BrandPage />
        <SiteFooter />
+   </main>
     </>
   );
   

@@ -47,9 +47,16 @@ export function ShopHero() {
     <section
       aria-roledescription="carousel"
       aria-label="Finasto Bali botanical teas"
-      className=" w-full border-b border-border-strong bg-pattern"
+      className="w-full overflow-hidden border-b border-border-strong bg-pattern bg-[radial-gradient(ellipse_at_50%_0%,#fffdf6_0%,#fbf8f3_55%,#f3ead6_100%)] [--pattern-color:rgba(99,118,47,0.07)] dark:bg-none dark:[--pattern-color:rgba(143,203,120,0.08)]"
     >
       <h1 className="sr-only">Finasto Bali botanical teas</h1>
+
+      {/* Decorative light: green on the left, copper on the right */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -left-32 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-green/10 blur-[110px]" />
+        <div className="absolute -right-32 top-1/3 h-[380px] w-[380px] rounded-full bg-copper/20 blur-[110px]" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-copper/30 to-transparent" />
+      </div>
 
       {/* Inset frame: margins on the left and right, crops a little off the top and bottom of each banner. */}
       <div className="mx-auto max-w-[1440px] px-6 pb-4 pt-3 sm:px-10 sm:pb-6 sm:pt-5 lg:px-20">

@@ -11,6 +11,7 @@
 // via confirm_order_payment() (admin-only) — never set here.
 
 import { randomUUID } from "node:crypto";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrencyContext } from "@/lib/rates";
@@ -32,11 +33,54 @@ const cartLineSchema = z.object({
   quantity: z.number().int().positive().max(100),
 });
 
-const checkoutInputSchema = z.object({
-  customerName: z.string().trim().min(1).max(120),
-  customerEmail: z.string().trim().toLowerCase().email(),
-  lines: z.array(cartLineSchema).min(1, "Your cart is empty"),
-});
+// Countries where a postal code is part of every real address.
+// Others (e.g. some Gulf and African countries) may not have one.
+const POSTAL_REQUIRED = new Set([
+  "US", "CA", "GB", "AU", "NZ", "DE", "FR", "IT", "ES", "NL",
+  "IN", "PK", "ID", "MY", "TR", "SG", "JP", "BR", "MX",
+]);
+
+const checkoutInputSchema = z
+  .object({
+    customerName: z.string().trim().min(1).max(120),
+    customerEmail: z.string().trim().toLowerCase().email(),
+    customerPhone: z
+      .string()
+      .trim()
+      .refine((v) => isValidPhoneNumber(v), "Enter a valid phone number"),
+    shippingCountry: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z]{2}$/, "Select a country"),
+    shippingLine1: z
+      .string()
+      .trim()
+      .min(3, "Enter your street address")
+      .max(200),
+    shippingLine2: z.string().trim().max(200).optional(),
+    shippingCity: z.string().trim().min(1, "Enter your city").max(100),
+    shippingState: z.string().trim().max(100).optional(),
+    shippingPostalCode: z.string().trim().max(20).optional(),
+    lines: z.array(cartLineSchema).min(1, "Your cart is empty"),
+  })
+  .superRefine((v, ctx) => {
+    const postal = v.shippingPostalCode ?? "";
+    if (POSTAL_REQUIRED.has(v.shippingCountry) && postal === "") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["shippingPostalCode"],
+        message: "Enter your postal code",
+      });
+    }
+    if (postal !== "" && !/^[A-Za-z0-9][A-Za-z0-9 -]{0,18}[A-Za-z0-9]$/.test(postal)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["shippingPostalCode"],
+        message: "Enter a valid postal code",
+      });
+    }
+  });
 
 export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 
@@ -184,6 +228,13 @@ export async function createOrder(
     order_number: trackingCode,
     customer_name: data.customerName,
     customer_email: data.customerEmail,
+    customer_phone: data.customerPhone,
+    country: data.shippingCountry,
+    shipping_line1: data.shippingLine1,
+    shipping_line2: data.shippingLine2 || null,
+    shipping_city: data.shippingCity,
+    shipping_state: data.shippingState || null,
+    shipping_postal_code: data.shippingPostalCode || null,
     status: "pending",
     payment_status: "pending",
     source_type: sourceType,

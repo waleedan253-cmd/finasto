@@ -95,7 +95,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 type="button"
                 onClick={closeCart}
                 aria-label="Close bag"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-espresso/70 transition-colors hover:bg-espresso/5 hover:text-espresso"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-expresos/70 transition-colors hover:bg-copper/5 hover:text-espresso"
               >
                 <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               </button>
@@ -249,14 +249,14 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                   <Link
                     href="/checkout"
                     onClick={closeCart}
-                    className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[14px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light"
+                    className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-b from-green-deep to-green hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md font-sans text-[14px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light"
                   >
                     Checkout
                   </Link>
                   <button
                     type="button"
                     onClick={closeCart}
-                    className="mt-2 h-10 w-full font-sans text-[13px] text-espresso/70 transition-colors hover:text-espresso"
+                    className="mt-2 h-10 w-full font-sans text-[13px] text-espresso/70 transition-colors hover:text-espresso cursor-pointer "
                   >
                     Continue shopping
                   </button>

@@ -125,7 +125,7 @@ export function BrandPage() {
   const reduce = useReducedMotion();
 
   return (
-    <main className="flex-1 bg-pattern">
+    <main className="flex-1 ">
       <style>{`@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}`}</style>
 
       {/* ───────── HERO ───────── */}
@@ -243,7 +243,7 @@ export function BrandPage() {
               <h2 className="mt-4 font-display text-[34px] leading-[1.1] text-green-deep sm:text-[44px]">
                 {c.story.title}
               </h2>
-              <div className="mt-8 inline-flex items-end gap-4 rounded-2xl border border-copper/75 bg-pattern px-6 py-5 shadow-[0_18px_40px_-24px_rgba(35,77,42,0.45)]">
+              <div className="mt-8 inline-flex items-end gap-4 rounded-2xl border border-copper/75  px-6 py-5 shadow-[0_18px_40px_-24px_rgba(35,77,42,0.45)]">
                 <span className="font-display text-[64px] leading-none text-">
                   {c.story.stat.value}
                 </span>
@@ -286,8 +286,8 @@ export function BrandPage() {
 
       {/* ───────── VISION & MISSION ───────── */}
       <section
-        id="vision-mission"
-        className="scroll-mt-16 px-5 py-20 sm:px-8 sm:py-28"
+                id="vision-mission"
+        className="scroll-mt-16 px-5 pb-20 pt-0 sm:px-8 sm:pb-28 sm:pt-0"
       >
         <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
           <Reveal>

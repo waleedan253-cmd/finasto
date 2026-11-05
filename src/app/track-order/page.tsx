@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   title: "Track Your Order — Finasto",
   description:
     "Check the status of your Finasto order, anywhere in the world, using your email and tracking code.",
+  robots: { index: false, follow: false },
+  referrer: "no-referrer",
 };
 
 // Put your hero photo at /public/images/track-hero.jpg (min 1920x1080 recommended)

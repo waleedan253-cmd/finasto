@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
-import { FeaturedStrip } from "@/components/shop/FeaturedStrip";
+import { OffersCarousel } from "@/components/shop/offers-carousel";
 
 export const metadata: Metadata = {
   title: "Shop — Finasto Botanical Tea",
@@ -23,7 +23,7 @@ export default async function ShopPage() {
       <SiteHeader />
       <ShopHero />
       {/* <ShopIntro /> */}
-<FeaturedStrip products={products.filter((p) => p.featured)} />
+<OffersCarousel products={products.filter((p) => p.state === "offer")} />
       <Suspense fallback={null}>
         <ShopPageClient products={products} />
       </Suspense>

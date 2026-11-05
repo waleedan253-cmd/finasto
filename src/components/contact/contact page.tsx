@@ -207,7 +207,7 @@ export function ContactPage() {
       title: "Already ordered?",
       body: (
         <>
-          Check your order status any time with your tracking code on the{" "}
+          Check your order status  with your tracking code on the{" "}
           <Link
             href={c.trackOrderHref}
             className="text-white underline underline-offset-2 hover:text-copper-light"
@@ -226,11 +226,11 @@ export function ContactPage() {
   ];
 
   return (
-    <main className="flex-1 bg-pattern">
+    <main className="flex-1 ">
       {/* ───────── HERO: image bg, info left, form right ───────── */}
       <section className="relative isolate overflow-hidden">
         <Image
-          src="/why/bali.jpeg"
+          src="/hero/brand.jpeg"
           alt=""
           fill
           priority
@@ -239,7 +239,7 @@ export function ContactPage() {
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-br from-green-deep/90 via-[#17391f]/80 to-espresso-deep/90"
+          className="absolute inset-0 -z-10 bg-gradient-to-br from-green-deep/70 via-[#17391f]/80 to-espresso-deep/90"
         />
         <div
           aria-hidden="true"
@@ -248,11 +248,7 @@ export function ContactPage() {
 
         <div className="mx-auto grid max-w-[1300px] items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:py-16 lg:min-h-[calc(100vh-80px)]">
           {/* LEFT: heading + contact cards */}
-           <ContactForm />
-        
-
-          {/* RIGHT: form */}
-          <div className="mx-auto w-full max-w-[600px] lg:ml-auto">
+             <div className="mx-auto w-full max-w-[600px] lg:ml-auto">
              <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-copper-light/30 bg-copper/10 px-4 py-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.22em] text-copper-light">
               <MessageSquareText className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
@@ -276,10 +272,10 @@ export function ContactPage() {
               {cards.map(({ icon: Icon, title, body }) => (
                 <div
                   key={title}
-                  className="flex gap-4 rounded-[18px] border border-white/15 bg-white/10 p-4 backdrop-blur-md transition-all duration-300 hover:border-copper/50 hover:bg-white/15"
+                  className="flex gap-4 rounded-[18px] border border-white/15 bg-green/10 hover:bg-green-deep hover:text-cream p-4 backdrop-blur-md transition-all duration-300 hover:border-copper/50 hover:bg-white/15"
                 >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-copper/40 bg-green-bg">
-                    <Icon className="h-5 w-5 text-green-deep" strokeWidth={1.5} aria-hidden="true" />
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-copper/40 bg-green-bg  ">
+                    <Icon className="h-5 w-5 text-green-deep  " strokeWidth={1.5} aria-hidden="true"  />
                   </span>
                   <div>
                     <h2 className="font-sans text-[15px] font-medium text-white">
@@ -294,6 +290,11 @@ export function ContactPage() {
             </aside>
           </div>
           </div>
+      
+        
+
+          {/* RIGHT: form */}
+               <ContactForm />
         </div>
       </section>
 
@@ -315,13 +316,13 @@ export function ContactPage() {
           />
         </div>
 
-        <div className="mt-10 flex flex-col gap-3">
+        <div className="mt-10 flex flex-col gap-3 ">
           {c.faq.map((item) => (
             <details
               key={item.q}
-              className="group rounded-2xl border border-border bg-green  px-6 py-5 shadow-[0_10px_30px_-22px_rgba(50,30,24,0.3)] transition-colors open:border-copper/40"
+              className="group rounded-2xl border-white/15 bg-copper/60 hover:bg-green-deep hover:text-cream  px-6 py-5 shadow-[0_10px_30px_-22px_rgba(50,30,24,0.3)] transition-colors open:border-copper/40"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-[19px] leading-snug text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-[22px] leading-snug text-expresos focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 [&::-webkit-details-marker]:hidden">
                 {item.q}
                 <ChevronDown
                   className="h-5 w-5 shrink-0 text-copper transition-transform duration-300 group-open:rotate-180"
@@ -329,7 +330,7 @@ export function ContactPage() {
                   aria-hidden="true"
                 />
               </summary>
-              <p className="mt-3 font-sans text-[15px] leading-[1.75] text-cream/40">
+              <p className="mt-3 font-sans text-[15px] leading-[1.75] text-expresos/40">
                 {item.a}
               </p>
             </details>

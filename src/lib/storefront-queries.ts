@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Product, ProductState } from "@/data/products";
 import { convert } from "@/lib/currency";
@@ -8,7 +9,7 @@ import {
   isOfferActive,
 } from "@/lib/variant-pricing";
 
-export async function getStorefrontProducts(): Promise<Product[]> {
+async function fetchStorefrontProducts(): Promise<Product[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
@@ -26,7 +27,7 @@ export async function getStorefrontProducts(): Promise<Product[]> {
   if (!data) return [];
 
   const rates = await getRates();
-  console.log("[storefront] rate currencies:", Object.keys(rates));
+ 
 
   return data.map((p: any): Product => {
     const now = Date.now();
@@ -104,3 +105,6 @@ export async function getStorefrontProducts(): Promise<Product[]> {
     };
   });
 }
+
+// One query per request: the layout and the page share this result.
+export const getStorefrontProducts = cache(fetchStorefrontProducts);

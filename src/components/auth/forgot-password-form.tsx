@@ -35,10 +35,10 @@ export function ForgotPasswordForm({
   }
 
   return (
-    <div className="grid w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-cream-soft shadow-2xl lg:max-w-[880px] lg:grid-cols-[1.05fr_1fr]">
+    <div className="grid w-full max-w-[420px] overflow-hidden rounded-2xl border border-border-strong bg-pattern shadow-2xl lg:max-w-[880px] lg:grid-cols-[1.05fr_1fr]">
       {/* Left: form */}
-      <div className="p-8 sm:p-10 lg:py-12">
-        <div className="flex flex-col items-center text-center">
+      <div className="p-8 sm:p-10 lg:py-12 ">
+        <div className="flex flex-col items-center text-center ">
           <Link href="/">
             <Image
               src="/brand/finasto-logo.png"

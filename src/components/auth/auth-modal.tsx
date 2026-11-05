@@ -783,7 +783,7 @@ export function AuthModal({
           {/* ───────── BACKGROUND ───────── */}
           <div
             aria-hidden="true"
-            className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+            className="pointer-events-none fixed inset-0 -z-10 overflow-hidden  "
           >
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_20%,#fffdf6_0%,#fbf8f3_50%,#f3ead6_100%)]" />
             <div
@@ -796,7 +796,7 @@ export function AuthModal({
             <div className="absolute inset-0 opacity-[0.5] [background-image:linear-gradient(to_right,rgba(184,134,43,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(184,134,43,0.08)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(ellipse_at_30%_50%,black_10%,transparent_70%)]" />
           </div>
 
-          <div className="grid min-h-dvh lg:grid-cols-[1fr_1fr]">
+          <div className="grid min-h-dvh lg:grid-cols-[1fr_1fr] bg-pattern">
             {/* LEFT: form */}
             <section className="relative flex items-center justify-center px-5 py-[max(2.5rem,env(safe-area-inset-top))] pb-[max(2.5rem,env(safe-area-inset-bottom))] sm:px-10">
               <motion.div

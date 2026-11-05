@@ -75,7 +75,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
             : `Add ${product.name} to wishlist`
         }
         className={cn(
-          "absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-green/90 shadow-sm backdrop-blur transition-all hover:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+          "absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-all hover:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100",
           wishlisted
             ? "text-copper md:translate-y-0 md:opacity-100"
             : "text-espresso hover:text-copper md:translate-y-1 md:opacity-0",
@@ -180,7 +180,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
           type="button"
           onClick={() => addItem(product.id)}
           disabled={isOutOfStock}
-          className="mt-3 h-10 w-full rounded-full bg-gradient-to-b from-espresso to-espresso-deep font-sans text-[13px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso"
+          className="mt-3 h-10 w-full rounded-full bg-gradient-to-b from-green to-green font-sans text-[13px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso"
         >
           {isOutOfStock ? "Out of Stock" : "Add to Cart"}
         </button>

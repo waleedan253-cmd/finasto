@@ -12,6 +12,7 @@ import { CartDrawer } from "@/components/cart/cart-drawer";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
 import { AuthLoadingProvider } from "@/components/AuthLoadingProvider";
+import { ProductsProvider } from "@/components/providers/products-provider";
 const cormorant = localFont({
   variable: "--font-cormorant",
   display: "swap",
@@ -35,10 +36,12 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://your-domain.com"),
   title: "Finasto — Premium Bali Botanical Tea",
   description:
     "Finasto is a premium Bali-born botanical tea brand. Discover Velora and Blue Moon, thoughtfully presented for modern everyday rituals.",
 };
+// metadataBase: new URL("https://your-domain.com"),
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const products = await getStorefrontProducts();
@@ -56,10 +59,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               <IntroGate />
                             <AuthLoadingProvider>
                 <MarketProvider>
-                  <CartProvider>
-                    {children}
-                    <CartDrawer products={products} />
-                  </CartProvider>
+                  <ProductsProvider products={products}>
+                    <CartProvider>
+                      {children}
+                      <CartDrawer products={products} />
+                    </CartProvider>
+                  </ProductsProvider>
                 </MarketProvider>
               </AuthLoadingProvider>
               <ScrollToTop />

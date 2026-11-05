@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <AnnouncementBar />
       <SiteHeader />
-      <main className="flex-1 bg-cream">
+      <main className="flex-1 bg-pattern">
         <HeroSection />
         <TrustStrip />
         <FeaturedCollection />

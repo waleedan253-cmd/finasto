@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ContactPage } from "@/components/contact/contact page";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/home/site-footer";
 
 export const metadata: Metadata = {
   title: "Contact — Finasto",
@@ -14,7 +15,11 @@ export default function Page() {
     <>
       <AnnouncementBar />
       <SiteHeader />
-      <ContactPage />
+      <main className="flex-1 bg-pattern">
+        <ContactPage />
+      <SiteFooter/>
+      </main>
+     
     </>
   );
 }

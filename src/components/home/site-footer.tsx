@@ -204,9 +204,11 @@ const socialIcons = {
  */
 export function SiteFooter() {
   return (
-    <footer className="site-footer relative isolate overflow-hidden border-t-2 border-copper/60  text-espresso/80 dark:bg-espresso-deep dark:text-cream/80">
+    <footer className="site-footer relative isolate overflow-hidden border-t-2 border-copper/60  text-espresso/80 ">
+      
       {/* Background art + contrast veil */}
-           <div aria-hidden="true" className="relative w-full">
+           <div aria-hidden="true" className="relative w-full ">
+            
         <Image
           src="/brand/Bali and India Travel Carnival Collage.png"
           alt=""
@@ -240,7 +242,7 @@ export function SiteFooter() {
               />
             </Link>
             <p className="max-w-[260px] font-sans text-[14px] leading-relaxed text-espresso/70 dark:text-cream/60">
-              Premium  coffee and tea, grown with care and shared with the world.
+              Finasto™ Elevating Global Standards in Premium Tea and Coffee with Excellence.
             </p>
           </div>
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Leaf, Sprout, Sparkles } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Sparkles, Earth } from "lucide-react";
 import { collectionMode } from "@/data/products";
 import { getStorefrontProducts } from "@/lib/storefront-queries";
 import { ProductCard } from "@/components/home/product-card";
@@ -23,7 +23,7 @@ const headingByMode = {
 const highlights = [
   { icon: Leaf, text: "Naturally sourced" },
   { icon: Sprout, text: "Bali heritage" },
-  { icon: Sparkles, text: "Small-batch blends" },
+  { icon: Earth, text: "GLOBAL REACH" },
 ];
 
 const sectionBg = [
@@ -144,15 +144,12 @@ export async function FeaturedCollection() {
 
         {/* Bottom CTA */}
         <div className="mt-16 flex flex-col items-center gap-5">
-          <div
-            aria-hidden="true"
-            className="h-12 w-px bg-gradient-to-b from-copper/60 to-transparent"
-          />
+        
           <Link
             href="/shop"
             className="group inline-flex items-center gap-3 rounded-full bg-green-deep px-8 py-4 font-sans text-[14px] font-medium tracking-wide text-cream shadow-[0_12px_30px_-10px_rgba(35,77,42,0.6)] transition-all duration-300 hover:gap-4 hover:bg-espresso focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/70 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
           >
-            Explore the Full Collection
+           Discover the Collection
             <ArrowRight
               className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
               aria-hidden="true"

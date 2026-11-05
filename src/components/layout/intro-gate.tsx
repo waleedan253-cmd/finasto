@@ -571,16 +571,16 @@ export default function IntroGate() {
       window.dispatchEvent(new Event(INTRO_EVENT));
     };
     // Open any page with ?intro in the URL to force the intro to replay while testing
-    const force = new URLSearchParams(window.location.search).has("intro");
-    let seen = false;
-    try {
-      seen = !force && !!sessionStorage.getItem(SESSION_KEY);
-    } catch {}
-    if (seen) {
-      setPhase("done");
-      markDone();
-      return;
-    }
+    // const force = new URLSearchParams(window.location.search).has("intro");
+    // let seen = false;
+    // try {
+    //   seen = !force && !!sessionStorage.getItem(SESSION_KEY);
+    // } catch {}
+    // if (seen) {
+    //   setPhase("done");
+    //   markDone();
+    //   return;
+    // }
 
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -591,9 +591,9 @@ export default function IntroGate() {
       document.body.style.overflow = prevOverflow;
       setPhase("done");
       markDone();
-      try {
-        sessionStorage.setItem(SESSION_KEY, "1");
-      } catch {}
+      // try {
+      //   sessionStorage.setItem(SESSION_KEY, "1");
+      // } catch {}
     }, HOLD_MS + OPEN_MS);
 
     return () => {

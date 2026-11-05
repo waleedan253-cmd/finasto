@@ -525,10 +525,7 @@ export function WhyFinasto() {
       style={{ background: sectionBg }}
       aria-roledescription="carousel"
       aria-label="Why Finasto"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+     
     >
       <div
         aria-hidden="true"
