@@ -54,10 +54,20 @@ export const availableMarkets: Market[] = [
     countryLabel: "Malaysia",
     currencyCode: "MYR",
   },
-   {
+  {
     countryCode: "TR",
     countryLabel: "Turkey",
     currencyCode: "TRY",
+  },
+  {
+    countryCode: "PK",
+    countryLabel: "Pakistan",
+    currencyCode: "PKR",
+  },
+  {
+    countryCode: "PH",
+    countryLabel: "Philippines",
+    currencyCode: "PHP",
   },
   {
     countryCode: "US",
@@ -96,7 +106,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "About Finasto",
     links: [
-      { label: "Brand", href: "/brand" },
+      { label: "Our Story", href: "/brand" },
       { label: "Contact", href: "/contact" },
     ],
   },

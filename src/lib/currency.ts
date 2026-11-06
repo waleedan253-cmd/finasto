@@ -31,6 +31,8 @@ export const COUNTRY_CURRENCY: Record<string, string> = {
   ID: "IDR", // Indonesian Rupiah
   MY: "MYR", // Malaysian Ringgit
   TR: "TRY", // Turkish Lira
+  PK: "PKR", // Pakistani Rupee
+  PH: "PHP", // Philippine Peso
   US: "USD",
   GLOBAL: "USD",
 };
@@ -116,8 +118,8 @@ const SYMBOLS: Record<string, string> = {
   MYR: "RM",
   GBP: "£",
   PKR: "Rs",
+  PHP: "₱",
 };
-
 /** Formats with Intl, then swaps only the currency part for our symbol. */
 function formatCurrency(
   amount: number,

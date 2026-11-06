@@ -296,9 +296,13 @@ export function BrandPage() {
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-copper/25 blur-[70px]"
               />
-              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper-light/40 bg-cream">
-                <Eye className="h-6 w-6 text-green" strokeWidth={1.5} aria-hidden="true" />
-              </span>
+             <span className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-copper-light/40 bg-cream transition-colors duration-300 hover:border-copper">
+  <Eye
+    className="h-6 w-6 text-green transition-colors duration-300 group-hover:text-copper"
+    strokeWidth={1.5}
+    aria-hidden="true"
+  />
+</span>
               <div className="relative mt-7">
                 <Eyebrow >{c.vision.eyebrow}</Eyebrow>
                 <p className="mt-5 font-sans text-[16px] leading-[1.85] text-white/80 md:text-[17px]">
@@ -309,14 +313,18 @@ export function BrandPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <article className="relative h-full overflow-hidden rounded-[28px] border border-copper/25 bg-pattern p-8 shadow-[0_30px_70px_-34px_rgba(50,30,24,0.4)] sm:p-12">
+            <article className="relative h-full overflow-hidden rounded-[28px] border border-copper/25 bg-cream-soft p-8 shadow-[0_30px_70px_-34px_rgba(50,30,24,0.4)] sm:p-12">
              <div
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded bg-green/25 blur-[70px]"
               />
-              <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-white">
-                <Target className="h-6 w-6 text-green-deep" strokeWidth={1.5} aria-hidden="true" />
-              </span>
+             <span className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-white transition-colors duration-300 hover:border-copper">
+  <Target
+    className="h-6 w-6 text-green-deep transition-colors duration-300 group-hover:text-copper"
+    strokeWidth={1.5}
+    aria-hidden="true"
+  />
+</span>
               <div className="relative mt-7 ">
                
                 <Eyebrow>{c.mission.eyebrow}</Eyebrow>

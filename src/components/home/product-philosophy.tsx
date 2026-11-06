@@ -57,6 +57,7 @@ import {
   HandHeart,
   PackageCheck,
   type LucideIcon,
+  Coffee,
 } from "lucide-react";
 import { philosophyContent, philosophyPromises } from "@/data/home";
 import { withTM } from "@/lib/brand";
@@ -65,7 +66,7 @@ import { withTM } from "@/lib/brand";
 const STEP_ICONS: LucideIcon[] = [Droplets, Sparkles, Sun];
 
 /** Swap these to match your promises. Picked by order. */
-const PROMISE_ICONS: LucideIcon[] = [Leaf, FlaskConical, HandHeart, PackageCheck];
+const PROMISE_ICONS: LucideIcon[] = [Leaf, FlaskConical, HandHeart, Coffee];
 
 /**
  * Quiet cream section after two dark/photo-heavy ones.

@@ -45,7 +45,13 @@ const router = useRouter();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setIsCompact(window.scrollY > 24);
+    // Hysteresis: shrink after 80px, expand again only below 10px.
+    // The 70px gap is wider than the 20px height change (90 -> 70),
+    // so shrinking the header can never push scrollY back across the trigger.
+    const onScroll = () => {
+      const y = window.scrollY;
+      setIsCompact((prev) => (y > 80 ? true : y < 10 ? false : prev));
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

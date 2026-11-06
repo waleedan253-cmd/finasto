@@ -18,7 +18,7 @@ export type HeroSlide = {
   theme: { eyebrow: string; heading: string; body: string; button: string };
 };
 
-export const HERO_SLIDE_DURATION = 4000; // ms per slide, 24s full loop
+export const HERO_SLIDE_DURATION = 6000; // ms per slide, 24s full loop
 
 export const heroSlides: HeroSlide[] = [
    {

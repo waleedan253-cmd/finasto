@@ -2,7 +2,7 @@
 // Put the three images in /public/hero/ with these exact file names.
 // The headline, tagline and "Shop Now" button are already part of each image.
 
-export const HERO_SLIDE_DURATION = 5000; // ms per slide, long enough to read the image text
+export const HERO_SLIDE_DURATION = 6000; // ms per slide, long enough to read the image text
 
 export type HeroSlide = {
   id: string;

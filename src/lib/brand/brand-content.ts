@@ -18,7 +18,7 @@ export const brandContent = {
   intro: {
     eyebrow: BRAND_NAME,
     title: "Signature of Nature, Rooted in Indonesia",
-    pullQuote: "Nature remains at the heart of FINASTO™.",
+    pullQuote: "Nature remains at the heart of FINASTO™",
     paragraphs: [
       "FINASTO™ is a premium Indonesian tea and coffee brand built on an appreciation for nature, a commitment to quality, and a vision to create a distinctive collection for a global audience. Our approach is guided by thoughtful product selection, considered development, and attention to the details that shape our brand identity.",
       "Nature’s extraordinary botanical diversity offers a world of inspiration, from delicate flowers and distinctive herbs to the remarkable variety of plants found across the natural world. At FINASTO™, this richness informs our perspective and inspires our vision of bringing the botanical world closer to people through tea and coffee.",
