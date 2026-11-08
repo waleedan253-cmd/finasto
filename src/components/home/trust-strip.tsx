@@ -69,6 +69,7 @@ import type { SVGProps } from "react";
 import { Check, Leaf, Truck } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { trustItems } from "@/data/home";
+import { usePointerActive } from "../../app/hooks/usePointerActive";
 
 // Balinese split temple gate (candi bentar)
 function BaliGate({
@@ -104,6 +105,45 @@ const icons = {
  * Reads from `trustItems` (src/data/home.ts) — copy stays factual and
  * editable there rather than hardcoded per-icon in this component.
  */
+
+
+type TrustItemProps = {
+  item: (typeof trustItems)[number];
+  index: number;
+  reduce: boolean | null;
+};
+
+function TrustItem({ item, index, reduce }: TrustItemProps) {
+  const { bind } = usePointerActive();
+  const Icon = icons[item.id as keyof typeof icons] ?? Check;
+
+  return (
+    <motion.div
+      {...bind}
+      initial={reduce ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      className="glow-group flex items-start gap-4 lg:border-l lg:border-[#e8c06a]/25 lg:px-8 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
+    >
+      <div className="glow-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#e8c06a]/60 bg-gradient-to-b from-[#fbe7a6] via-[#e8c06a] to-[#b8862b]">
+        <Icon
+          className="glow-icon-svg h-[22px] w-[22px] text-[#2a1a08]"
+          strokeWidth={1.6}
+          aria-hidden="true"
+        />
+      </div>
+      <div>
+        <p className="font-sans text-[15px] font-semibold leading-snug tracking-wide text-white">
+          {item.title}
+        </p>
+        <p className="mt-1 font-sans text-[13px] leading-relaxed text-white/65">
+          {item.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 export function TrustStrip() {
   const reduce = useReducedMotion();
   return (
@@ -127,36 +167,9 @@ export function TrustStrip() {
       />
 
       <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-y-8 px-5 py-10 sm:grid-cols-2 sm:gap-x-8 sm:px-8 lg:grid-cols-4 lg:gap-0 lg:py-12">
-        {trustItems.map((item, index) => {
-          const Icon = icons[item.id as keyof typeof icons] ?? Check;
-          return (
-            <motion.div
-              key={item.id}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-              onViewportEnter={(entry) => entry?.target.classList.add("in-view")}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-              className="group flex items-start gap-4 lg:border-l lg:border-[#e8c06a]/25 lg:px-8 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
-            >
-              <div className="trust-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#e8c06a]/60 bg-gradient-to-b from-[#fbe7a6] via-[#e8c06a] to-[#b8862b] shadow-[0_4px_14px_rgba(0,0,0,0.35)]">
-                <Icon
-                  className="trust-icon-svg h-[22px] w-[22px] text-[#2a1a08]"
-                  strokeWidth={1.6}
-                  aria-hidden="true"
-                />
-              </div>
-              <div>
-                <p className="font-sans text-[15px] font-semibold leading-snug tracking-wide text-white">
-                  {item.title}
-                </p>
-                <p className="mt-1 font-sans text-[13px] leading-relaxed text-white/65">
-                  {item.description}
-                </p>
-              </div>
-            </motion.div>
-          );
-        })}
+       {trustItems.map((item, index) => (
+  <TrustItem key={item.id} item={item} index={index} reduce={reduce} />
+))}
       </div>
     </section>
   );
