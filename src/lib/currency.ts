@@ -30,9 +30,9 @@ export const currencyCodeSchema = z
 export const COUNTRY_CURRENCY: Record<string, string> = {
   ID: "IDR", // Indonesian Rupiah
   MY: "MYR", // Malaysian Ringgit
-  TR: "TRY", // Turkish Lira
+  // TR: "TRY", // Turkish Lira
+   PH: "PHP", // Philippine Peso
   PK: "PKR", // Pakistani Rupee
-  PH: "PHP", // Philippine Peso
   US: "USD",
   GLOBAL: "USD",
 };

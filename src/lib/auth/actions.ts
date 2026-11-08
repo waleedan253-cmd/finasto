@@ -23,7 +23,7 @@ function safeNext(next?: string): string | null {
 
 export async function signInAction(
   input: unknown,
-): Promise<{ error: string } | void> {
+): Promise<{ error: string } | { redirectTo: string }> {
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { error: GENERIC };
   const { email, password, next } = parsed.data;
@@ -41,21 +41,22 @@ export async function signInAction(
     return { error: GENERIC };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("status")
-    .eq("id", data.user.id)
-    .single();
-  if (profile?.status !== "active") {
-    await supabase.auth.signOut();
-    return { error: GENERIC };
-  }
+  // const { data: profile } = await supabase
+  //   .from("profiles")
+  //   .select("status")
+  //   .eq("id", data.user.id) 
+  //   .single();
+  // if (profile?.status !== "active") {
+  //   await supabase.auth.signOut(); j
+  //   return { error: GENERIC };
+  // }
 
-  const target = safeNext(next);
+  const target = safeNext(next); 
   // Only honour `next` if it belongs to this role's area
-  redirect(
-    target && target.startsWith(roleHome[role]) ? target : roleHome[role],
-  );
+  return {
+    redirectTo:
+      target && target.startsWith(roleHome[role]) ? target : roleHome[role],
+  };
 }
 
 export async function signOutAction() {

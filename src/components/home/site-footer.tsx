@@ -302,7 +302,7 @@ export function SiteFooter() {
 
         <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 border-t border-copper/30 pt-6 sm:flex-row dark:border-white/10">
           <p className="font-sans text-[12px] text-espresso/70 dark:text-cream/60">
-            © {new Date().getFullYear()} Finasto™. All Rights Reserved.
+            © {new Date().getFullYear()} Finasto.™ All Rights Reserved.
           </p>
           <div className="flex gap-5">
             <Link

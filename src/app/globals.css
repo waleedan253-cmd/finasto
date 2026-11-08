@@ -253,3 +253,8 @@ html {
   animation: finasto-marquee 28s linear infinite;
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+} 
