@@ -31,7 +31,7 @@ export function BrandStory() {
       <div className=" relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
         <div
       aria-hidden="true"
-      className="pointer-events-none absolute -inset-x-5 -inset-y-8 -z-10 bg-gradient-to-r from-cream/90 via-cream/65 to-transparent blur-2xl sm:-inset-x-8"
+      className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-cream/70 via-cream/40 to-transparent sm:-inset-x-8 sm:-inset-y-8 sm:bg-gradient-to-r sm:from-cream/90 sm:via-cream/65 sm:to-transparent sm:blur-2xl"
     />
         <div className="max-w-md">
           <p className="flex items-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">

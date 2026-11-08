@@ -3,6 +3,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
+import { IconBadge } from "@/components/ui/icon-badge";
+import { InteractiveCard } from "@/components/ui/interactive-card";
 import {
   ArrowRight,
   Eye,
@@ -296,13 +298,13 @@ export function BrandPage() {
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-copper/25 blur-[70px]"
               />
-             <span className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-copper-light/40 bg-cream transition-colors duration-300 hover:border-copper">
+          <IconBadge className="border-copper-light/40 bg-cream">
   <Eye
-    className="h-6 w-6 text-green transition-colors duration-300 group-hover:text-copper"
+    className="h-6 w-6 text-green transition-colors duration-300 group-data-[active=true]:text-copper"
     strokeWidth={1.5}
     aria-hidden="true"
   />
-</span>
+</IconBadge>
               <div className="relative mt-7">
                 <Eyebrow >{c.vision.eyebrow}</Eyebrow>
                 <p className="mt-5 font-sans text-[16px] leading-[1.85] text-white/80 md:text-[17px]">
@@ -318,13 +320,13 @@ export function BrandPage() {
                 aria-hidden="true"
                 className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded bg-green/25 blur-[70px]"
               />
-             <span className="group relative flex h-14 w-14 items-center justify-center rounded-full border border-copper/40 bg-white transition-colors duration-300 hover:border-copper">
+             <IconBadge className="border-copper/40 bg-white">
   <Target
-    className="h-6 w-6 text-green-deep transition-colors duration-300 group-hover:text-copper"
+    className="h-6 w-6 text-green-deep transition-colors duration-300 group-data-[active=true]:text-copper"
     strokeWidth={1.5}
     aria-hidden="true"
   />
-</span>
+</IconBadge>
               <div className="relative mt-7 ">
                
                 <Eyebrow>{c.mission.eyebrow}</Eyebrow>
@@ -372,7 +374,7 @@ export function BrandPage() {
               return (
                 <li key={p.title}>
                   <Reveal delay={i * 0.08} className="h-full">
-                    <div className="h-full rounded-[22px] bg-pattern dark bg-cream border border-border-strong bg-cream-soft p-6 transition-all duration-300 hover:-translate-y-1 hover:border-copper">
+                    <InteractiveCard className="h-full rounded-[22px] bg-pattern bg-cream-soft border border-border-strong p-6">
                       <span className="flex h-12 w-12 items-center justify-center rounded-full border border-copper/40 bg-green-bg">
                         <Icon className="h-5 w-5 text-green-deep" strokeWidth={1.5} aria-hidden="true" />
                       </span>
@@ -382,7 +384,7 @@ export function BrandPage() {
                       <p className="mt-2 font-sans text-[14px] leading-relaxed text-warm-gray">
                         {p.text}
                       </p>
-                    </div>
+                                     </InteractiveCard>
                   </Reveal>
                 </li>
               );
