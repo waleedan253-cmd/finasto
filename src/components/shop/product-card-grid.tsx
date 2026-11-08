@@ -8,7 +8,9 @@ import { useCart } from "@/components/providers/cart-provider";
 import { formatStoreDate } from "@/lib/store-time";
 import { Eye, Heart, Star } from "lucide-react";
 import { ProductQuickView } from "@/components/shop/product-quick-view";
+
 import { useState } from "react";
+import { usePointerActive } from "@/app/hooks/usePointerActive";
 const stateLabel: Record<Product["state"], string> = {
   new: "New",
   available: "Available",
@@ -34,6 +36,10 @@ export function ProductCardGrid({ product }: { product: Product }) {
   const isOutOfStock = product.state === "out-of-stock";
   const [wishlisted, setWishlisted] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
+  const { bind: cardBind } = usePointerActive();
+const { bind: heartBind } = usePointerActive();
+const { bind: eyeBind } = usePointerActive();
+const { bind: cartBind } = usePointerActive();
   const { market } = useMarket();
   const { addItem } = useCart();
 
@@ -43,7 +49,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
   const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
 
   return (
-    <article id="shop" className=" group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 hover:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:hover:border-copper/40">
+    <article {...cardBind} className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 data-[active=true]:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:data-[active=true]:border-copper/40">
       <Link
         href={`/shop/${product.slug}`}
         className="relative block aspect-square w-full overflow-hidden"
@@ -62,7 +68,7 @@ export function ProductCardGrid({ product }: { product: Product }) {
           alt={`${product.name} — ${product.category} pouch`}
           fill
           sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, 90vw"
-          className="object-contain p-6 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="object-contain p-6 transition-transform duration-500 ease-out group-data-[active=true]:scale-[1.04]"
         />
       </Link>
       <button
@@ -74,12 +80,13 @@ export function ProductCardGrid({ product }: { product: Product }) {
             ? `Remove ${product.name} from wishlist`
             : `Add ${product.name} to wishlist`
         }
-        className={cn(
-          "absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-all hover:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-hover:translate-y-0 md:group-hover:opacity-100",
-          wishlisted
-            ? "text-copper md:translate-y-0 md:opacity-100"
-            : "text-espresso hover:text-copper md:translate-y-1 md:opacity-0",
-        )}
+       {...heartBind}
+className={cn(
+  "absolute right-3 top-3 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-all data-[active=true]:bg-white focus-visible:translate-y-0 focus-visible:opacity-100 md:group-data-[active=true]:translate-y-0 md:group-data-[active=true]:opacity-100",
+  wishlisted
+    ? "text-copper md:translate-y-0 md:opacity-100"
+    : "text-espresso data-[active=true]:text-copper md:translate-y-1 md:opacity-0",
+)}
       >
         <Heart
           style={{
@@ -94,7 +101,8 @@ export function ProductCardGrid({ product }: { product: Product }) {
         type="button"
         onClick={() => setQuickOpen(true)}
         aria-label={`Quick view ${product.name}`}
-        className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/90 text-espresso shadow-sm backdrop-blur transition-all hover:bg-white hover:text-copper focus-visible:translate-y-0 focus-visible:opacity-100 md:translate-y-1 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+        {...eyeBind}
+className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white/90 text-espresso shadow-sm backdrop-blur transition-all data-[active=true]:bg-white data-[active=true]:text-copper focus-visible:translate-y-0 focus-visible:opacity-100 md:translate-y-1 md:opacity-0 md:group-data-[active=true]:translate-y-0 md:group-data-[active=true]:opacity-100"
       >
         <Eye className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
       </button>
@@ -174,14 +182,12 @@ export function ProductCardGrid({ product }: { product: Product }) {
         )}
 
         <button
-          style={{
-            cursor: "pointer",
-          }}
-          type="button"
-          onClick={() => addItem(product.id)}
-          disabled={isOutOfStock}
-          className="mt-3 h-10 w-full rounded-full bg-gradient-to-b from-green to-green font-sans text-[13px] font-medium text-cream shadow-sm transition-all hover:from-espresso-deep hover:to-espresso-deep hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso"
-        >
+  type="button"
+  {...cartBind}
+  onClick={() => addItem(product.id)}
+  disabled={isOutOfStock}
+  className="mt-3 h-10 w-full cursor-pointer rounded-full bg-gradient-to-b from-green to-green font-sans text-[13px] font-medium text-cream shadow-sm transition-all data-[active=true]:from-espresso-deep data-[active=true]:to-espresso-deep data-[active=true]:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:data-[active=true]:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso [-webkit-tap-highlight-color:transparent]"
+>
           {isOutOfStock ? "Out of Stock" : "Add to Cart"}
         </button>
       </div>

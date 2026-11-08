@@ -258,6 +258,50 @@ html {
     transform: translateX(100%);
   }
 } 
+/* Shimmer for small screens ONLY. Nothing here applies at 1024px and above. */
+@media (max-width: 1023.98px) {
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-shimmer > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-shimmer::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: -100%;
+    width: 50%;
+    transform: skewX(-12deg);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    pointer-events: none;
+    animation: btn-shimmer 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes btn-shimmer {
+  0%        { left: -100%; }
+  60%, 100% { left: 150%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-shimmer::after {
+    animation: none;
+  }
+}
+
+
+
 
 /* ===== Shared glow: mouse hover + finger touch (driven by usePointerActive) ===== */
 

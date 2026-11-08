@@ -12,6 +12,7 @@ export function BrandStory() {
   return (
     <section className="bg-pattern dark relative isolate min-h-[520px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
       {/* Landscape background */}
+      
       <Image
         src="/story/golden-dawn-bali-rice-terraces.png"
         alt="Terraced rice fields and a Balinese temple at sunrise, seen through tropical foliage"
@@ -21,17 +22,17 @@ export function BrandStory() {
       />
       {/* Darken for text contrast */}
          <BackgroundVideo
-        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1792832151/1024.mp4"
-        className="absolute inset-0 h-full w-full object-cover object-center dark:brightness-90"
+        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1794150326/1108_1.mp4"
+        className="absolute inset-0 h-full w-full object-cover object-center "
       />
           
 
      
       {/* Copy */}
-      <div className=" relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
+      <div className=" dark relative z-10 px-5 py-16 sm:px-8 md:px-12 md:py-24 lg:px-16">
         <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-cream/70 via-cream/40 to-transparent sm:-inset-x-8 sm:-inset-y-8 sm:bg-gradient-to-r sm:from-cream/90 sm:via-cream/65 sm:to-transparent sm:blur-2xl"
+      className="pointer-events-none absolute -inset-x-5 -inset-y-8 -z-10 bg-gradient-to-r from-cream/90 via-cream/65 to-transparent blur-2xl sm:-inset-x-8"
     />
         <div className="max-w-md">
           <p className="flex items-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">

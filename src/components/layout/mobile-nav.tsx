@@ -44,13 +44,10 @@ const pathname = usePathname();
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-      className={cn(
+   className={cn(
   "fixed inset-y-0 right-0 z-50 flex h-full w-[86%] max-w-[360px] flex-col lg:hidden",
-  "border-l border-copper/20 bg-cream/90",
-  "shadow-[-12px_0_40px_rgba(0,0,0,0.08)]",
-  "backdrop-blur-xl backdrop-saturate-150",
-  "bg-pattern[radial-gradient(ellipse_20%_30%_at_0%_0%,rgba(134,239,172,0.18),transparent_10%),radial-gradient(ellipse_20%_30%_at_100%_0%,rgba(125,211,252,0.16),transparent_10%)]",
-  "transition-transform duration-300 ease-in-out",
+  "border-l border-copper/20 bg-cream/95 shadow-xl backdrop-blur-xl backdrop-saturate-150",
+  "bg-[radial-gradient(ellipse_80%_30%_at_0%_0%,rgba(134,239,172,0.18),transparent_70%),radial-gradient(ellipse_80%_30%_at_100%_0%,rgba(125,211,252,0.16),transparent_70%)]",
 )}
             role="dialog"
             aria-modal="true"
@@ -212,10 +209,10 @@ const pathname = usePathname();
                   className="mb-3 flex min-h-[44px] w-full items-center gap-2 font-sans text-[15px] text-espresso"
                 >
                   <User
-                    className="h-[18px] w-[18px] text-copper"
+                    className="h-[18px] w-[18px] text-copper-deep"
                     strokeWidth={1.6}
                   />
-                  <span className="text-espresso/85">Sign in</span>
+                  <span className="text-espresso/85 cursor-pointer">Sign in</span>
                 </button>
               )}
             </div>

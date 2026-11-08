@@ -9,6 +9,7 @@ import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { useRouter } from "next/navigation";
 import { formatStoreDate } from "@/lib/store-time";
+import { usePointerActive } from "@/app/hooks/usePointerActive";
 
 const stateLabel: Record<Product["state"], string> = {
   new: "New",
@@ -23,6 +24,7 @@ const featureIcons = [Leaf, Coffee, Sprout];
 export function ProductCard({ product }: { product: Product }) {
   const router = useRouter();
   const tiltRef = useRef<HTMLAnchorElement>(null);
+  const { bind: btnBind } = usePointerActive();
 
   function handleEnter() {
     tiltRef.current?.style.setProperty("--s", "1.15");
@@ -154,13 +156,13 @@ export function ProductCard({ product }: { product: Product }) {
         )}
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:justify-between">
-          <button
-            style={{ cursor: "pointer" }}
-            type="button"
-            onClick={() => router.push("/shop")}
-            disabled={isOutOfStock}
-            className="inline-flex h-11 w-fit items-center gap-2 rounded-full bg-white px-6 font-sans text-[14px] font-medium text-espresso transition hover:gap-3 hover:bg-copper-light disabled:cursor-not-allowed disabled:bg-white/30 disabled:text-white/70"
-          >
+         <button
+  type="button"
+  {...btnBind}
+  onClick={() => router.push("/shop")}
+  disabled={isOutOfStock}
+  className="inline-flex h-11 w-fit cursor-pointer items-center gap-2 rounded-full bg-white px-6 font-sans text-[14px] font-medium text-espresso transition data-[active=true]:gap-3 data-[active=true]:bg-copper-light disabled:cursor-not-allowed disabled:bg-white/30 disabled:text-white/70 [-webkit-tap-highlight-color:transparent]"
+>
             {isOutOfStock ? "Out of Stock" : "Shop Now"}
             {!isOutOfStock && <span aria-hidden="true">→</span>}
           </button>

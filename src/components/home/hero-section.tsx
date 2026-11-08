@@ -23,6 +23,7 @@ import {
   heroSlides,
   type HeroFeature,
 } from "@/data/hero-slides";
+import { usePointerActive } from "@/app/hooks/usePointerActive";
 
 const ICONS: Record<HeroFeature["icon"], LucideIcon> = {
   leaf: Leaf,
@@ -36,7 +37,36 @@ const ICONS: Record<HeroFeature["icon"], LucideIcon> = {
   hand: HandHeart,
   package: Package,
 };
+function HeroCta({
+  href,
+  label,
+  color,
+  tabbable,
+}: {
+  href: string;
+  label: string;
+  color: string;
+  tabbable: boolean;
+}) {
+  const { bind } = usePointerActive();
 
+  return (
+    <Link
+      href={href}
+      tabIndex={tabbable ? 0 : -1}
+      {...bind}
+      className="group relative mt-7 inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-6 font-sans text-[14px] font-medium text-white shadow-lg transition-all data-[active=true]:gap-3 data-[active=true]:brightness-110 sm:mt-9 [-webkit-tap-highlight-color:transparent]"
+      style={{ backgroundColor: color }}
+    >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-out group-data-[active=true]:translate-x-[400%]"
+      />
+      <span className="relative">{label}</span>
+      <ArrowRight aria-hidden="true" className="h-4 w-4" />
+    </Link>
+  );
+}
 export function HeroSection() {
   const [active, setActive] = useState(0);
   const [tabHidden, setTabHidden] = useState(false);
@@ -160,22 +190,12 @@ style={{ color: s.theme.heading }}
                   })}
                 </ul>
 
-                <Link
-                  href={s.cta.href}
-                  tabIndex={isActive ? 0 : -1}
-                  className="group relative mt-7 inline-flex h-12 items-center gap-2 overflow-hidden rounded-full px-6 font-sans text-[14px] font-medium text-white shadow-lg transition-all hover:gap-3 hover:brightness-110 sm:mt-9"
-style={{
-  backgroundColor: heroSlides[active].theme.button,
-  ...(i === active && !halted ? { animationDuration: `${HERO_SLIDE_DURATION}ms` } : {}),
-}}
->                
-                  <span
-  aria-hidden="true"
-  className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[400%]"
+              <HeroCta
+  href={s.cta.href}
+  label={s.cta.label}
+  color={s.theme.button}
+  tabbable={isActive}
 />
-<span className="relative">{s.cta.label}</span>
-                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                </Link>
               </div>
             );
           })}
