@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  ClipboardCheck,
-  Globe2,
-  PackageSearch,
-  Truck,
-} from "lucide-react";
+import { Globe2 } from "lucide-react";
 import { TrackOrderClient } from "../../components/track-order/track-order-client";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
+import { StepsList } from "../../components/track-order/steps-list";
 
 export const metadata: Metadata = {
   title: "Track Your Order — Finasto",
@@ -22,23 +18,7 @@ export const metadata: Metadata = {
 // Put your hero photo at /public/images/track-hero.jpg (min 1920x1080 recommended)
 const HERO_IMAGE = "/images/track-hero.jpg";
 
-const steps = [
-  {
-    icon: PackageSearch,
-    title: "Enter your details",
-    text: "Enter your email and tracking code from your confirmation email.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "Track Your Order",
-    text: "Follow your order's journey from processing and dispatch to delivery.",
-  },
-  {
-    icon: Truck,
-    title: "Worldwide Delivery",
-    text: "From Indonesia to Your Doorstep Across the World.",
-  },
-] as const;
+
 
 export default async function TrackOrderPage({
   searchParams,
@@ -100,33 +80,7 @@ export default async function TrackOrderPage({
               How it works
             </h2>
 
-            <ol aria-labelledby="how-it-works" className="mt-4 space-y-3">
-              {steps.map(({ icon: Icon, title, text }, i) => (
-                <li
-                  key={title}
-                  className="group flex items-start gap-4 rounded-[18px] border border-white/15 bg-white/10 p-4 backdrop-blur-md transition-all duration-300 hover:border-copper/50 hover:bg-white/15"
-                >
-                  <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-copper/40 bg-green-bg transition-colors duration-300 group-hover:bg-green-deep">
-                    <Icon
-                      className="h-5 w-5 text-green-deep transition-colors duration-300 group-hover:text-white"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-copper font-sans text-[11px] font-semibold text-[#24110a]">
-                      {i + 1}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="font-sans text-[15px] font-medium text-white">
-                      {title}
-                    </h3>
-                    <p className="mt-1 font-sans text-[13px] leading-relaxed text-white/70">
-                      {text}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+          <StepsList />
           </div>
 
           {/* RIGHT: track form / result */}

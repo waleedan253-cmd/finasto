@@ -43,9 +43,13 @@ export const metadata: Metadata = {
 };
 // metadataBase: new URL("https://your-domain.com"),
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const products = await getStorefrontProducts();
-  return (
+  return ( 
     <html
       lang="en"
       suppressHydrationWarning
