@@ -77,7 +77,7 @@ export function AdminLoginForm() {
     setServerError(null);
     try {
       const result = await signInAction({ ...values, next: "/admin" });
-      if (result?.error) {
+           if (result && "error" in result) {
         setServerError(result.error);
         return;
       }
