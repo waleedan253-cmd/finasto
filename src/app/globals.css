@@ -258,3 +258,32 @@ html {
     transform: translateX(100%);
   }
 } 
+
+.trust-icon,
+.trust-icon-svg {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Desktop: hover */
+@media (hover: hover) {
+  .trust-item:hover .trust-icon {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(232, 192, 106, 0.45);
+  }
+  .trust-item:hover .trust-icon-svg {
+    transform: scale(1.1);
+  }
+}
+
+/* Touch: when scrolled into view, or on tap */
+@media (hover: none) {
+  .trust-item.in-view .trust-icon,
+  .trust-item:active .trust-icon {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(232, 192, 106, 0.45);
+  }
+  .trust-item.in-view .trust-icon-svg,
+  .trust-item:active .trust-icon-svg {
+    transform: scale(1.1);
+  }
+}

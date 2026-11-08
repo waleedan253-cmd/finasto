@@ -134,13 +134,14 @@ export function TrustStrip() {
               key={item.id}
               initial={reduce ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
+              onViewportEnter={(entry) => entry?.target.classList.add("in-view")}
               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               className="group flex items-start gap-4 lg:border-l lg:border-[#e8c06a]/25 lg:px-8 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#e8c06a]/60 bg-gradient-to-b from-[#fbe7a6] via-[#e8c06a] to-[#b8862b] shadow-[0_4px_14px_rgba(0,0,0,0.35)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_8px_22px_rgba(232,192,106,0.45)]">
+              <div className="trust-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#e8c06a]/60 bg-gradient-to-b from-[#fbe7a6] via-[#e8c06a] to-[#b8862b] shadow-[0_4px_14px_rgba(0,0,0,0.35)]">
                 <Icon
-                  className="h-[22px] w-[22px] text-[#2a1a08] transition-transform duration-300 group-hover:scale-110"
+                  className="trust-icon-svg h-[22px] w-[22px] text-[#2a1a08]"
                   strokeWidth={1.6}
                   aria-hidden="true"
                 />
