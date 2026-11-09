@@ -20,13 +20,13 @@ export const heroSlides: HeroSlide[] = [
     href: "/shop",
     accent: "#0f2a6b",
   },
-   {
-    id: "calm",
-    image: "/hero/Blue Moon Botanical Tea in a Moonlit Garden.png",
-    imageAlt: "Discover the Calm in Every Sip. Herbal goodness, refreshing taste. Shop now.",
-    href: "/shop",
-    accent: "#0f2a6b",
-  },
+  //  {
+  //   id: "calm",
+  //   image: "/hero/Blue Moon Botanical Tea in a Moonlit Garden.png",
+  //   imageAlt: "Discover the Calm in Every Sip. Herbal goodness, refreshing taste. Shop now.",
+  //   href: "/shop",
+  //   accent: "#0f2a6b",
+  // },
   {
     id: "floral",
     image: "/hero/Sip the Beauty of Nature.png",

@@ -1,6 +1,6 @@
 "use server";
 
-// The ONE action this section performs: updating order_status
+// Fulfillment status updates (status column) + manual payment confirmation (via RPC)
 // (processing/shipped/delivered/cancelled). This file never touches
 // payment_status, totals, or the affiliate/stockist snapshot — those
 // are locked at checkout (or later, at the payment webhook) and this
@@ -49,7 +49,7 @@ export async function updateOrderStatus(
 
   const { data: order, error: readError } = await supabase
     .from("orders")
-    .select("id, order_status")
+    .select("id, status, payment_status")
     .eq("id", orderId)
     .maybeSingle();
 
@@ -57,18 +57,27 @@ export async function updateOrderStatus(
     return { success: false, error: "Order not found." };
   }
 
-  const allowed = ALLOWED_TRANSITIONS[order.order_status] ?? [];
+  const allowed = ALLOWED_TRANSITIONS[order.status] ?? [];
   if (!allowed.includes(parsed.data)) {
     return {
       success: false,
-      error: `Can't move an order from "${order.order_status}" to "${parsed.data}".`,
+      error: `Can't move an order from "${order.status}" to "${parsed.data}".`,
     };
   }
 
-  const { error: updateError } = await supabase
+  if (parsed.data !== "cancelled" && order.payment_status !== "paid") {
+    return { success: false, error: "Confirm payment first." };
+  }
+  if (parsed.data === "cancelled" && order.payment_status === "paid") {
+    return { success: false, error: "Refund the order before cancelling." };
+  }
+
+  const { data: updated, error: updateError } = await supabase
     .from("orders")
-    .update({ order_status: parsed.data, updated_at: new Date().toISOString() })
-    .eq("id", orderId);
+    .update({ status: parsed.data }) // updated_at is stamped by the DB trigger
+    .eq("id", orderId)
+    .eq("status", order.status) // blocks double-click / two-admin races
+    .select("id");
 
   if (updateError) {
     return {
@@ -76,6 +85,22 @@ export async function updateOrderStatus(
       error: `Could not update status: ${updateError.message}`,
     };
   }
+  if (!updated?.length) {
+    return { success: false, error: "Order changed. Refresh and retry." };
+  }
+
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${orderId}`);
+  return { success: true, orderId };
+}
+export async function confirmPayment(orderId: string): Promise<ActionResult> {
+  await requireRole("admin");
+  const supabase = await createClient();
+
+  const { error } = await supabase.rpc("confirm_order_payment", {
+    p_order_id: orderId,
+  });
+  if (error) return { success: false, error: error.message };
 
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${orderId}`);

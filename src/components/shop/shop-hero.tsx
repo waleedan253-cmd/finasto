@@ -47,7 +47,7 @@ export function ShopHero() {
     <section
       aria-roledescription="carousel"
       aria-label="Finasto Bali botanical teas"
-      className="w-full overflow-hidden border-b border-border-strong bg-pattern bg-[radial-gradient(ellipse_at_50%_0%,#fffdf6_0%,#fbf8f3_55%,#f3ead6_100%)] [--pattern-color:rgba(99,118,47,0.07)] dark:bg-none dark:[--pattern-color:rgba(143,203,120,0.08)]"
+      className="relative w-full overflow-hidden border-b border-border-strong bg-pattern bg-[radial-gradient(ellipse_at_50%_0%,#fffdf6_0%,#fbf8f3_55%,#f3ead6_100%)] [--pattern-color:rgba(99,118,47,0.07)] dark:bg-none dark:[--pattern-color:rgba(143,203,120,0.08)]"
     >
       <h1 className="sr-only">Finasto Bali botanical teas</h1>
 
@@ -59,8 +59,7 @@ export function ShopHero() {
       </div>
 
       {/* Inset frame: margins on the left and right, crops a little off the top and bottom of each banner. */}
-      <div className="mx-auto max-w-[1440px] px-6 pb-4 pt-3 sm:px-10 sm:pb-6 sm:pt-5 lg:px-20">
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl sm:aspect-[5/2] sm:rounded-2xl lg:aspect-[3/1] lg:max-h-[calc(100svh-180px)]">
+      <div className="relative aspect-[16/9] w-full overflow-hidden sm:aspect-[5/2] lg:aspect-[3/1] lg:max-h-[calc(100svh-180px)]">
         {heroSlides.map((s, i) => {
           const isActive = i === active;
           return (
@@ -121,7 +120,6 @@ export function ShopHero() {
             </button>
           ))}
         </div>
-      </div>
       </div>
     </section>
   );

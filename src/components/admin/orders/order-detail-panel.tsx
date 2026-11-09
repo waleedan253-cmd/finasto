@@ -3,10 +3,10 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Breadcrumb, Select, Divider, Typography, message } from "antd";
+import { Breadcrumb, Button, Modal, Select, Divider, Typography, message } from "antd";
 import { Loader2, Mail, Store, User, Users } from "lucide-react";
 import type { OrderDetail, OrderStatus } from "@/lib/admin/order-queries";
-import { updateOrderStatus } from "@/lib/admin/order-actions";
+import { updateOrderStatus, confirmPayment } from "@/lib/admin/order-actions";
 import {
   OrderStatusBadge,
   PaymentStatusBadge,
@@ -43,8 +43,11 @@ export function OrderDetailPanel({ order }: { order: OrderDetail }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [messageApi, contextHolder] = message.useMessage();
-
-  const nextOptions = NEXT_OPTIONS[order.orderStatus];
+const isPaid = order.paymentStatus === "paid";
+// Unpaid: only Cancel. Paid: fulfillment steps only (refund before cancel).
+const nextOptions = NEXT_OPTIONS[order.orderStatus].filter((s) =>
+  s === "cancelled" ? !isPaid : isPaid,
+);
 
   function handleStatusChange(next: OrderStatus) {
     startTransition(async () => {
@@ -57,6 +60,31 @@ export function OrderDetailPanel({ order }: { order: OrderDetail }) {
       }
     });
   }
+  function requestStatusChange(next: OrderStatus) {
+  if (next === "shipped" || next === "cancelled") {
+    Modal.confirm({
+      title: `Mark as ${STATUS_LABELS[next]}?`,
+      content: "This cannot be undone.",
+      okText: "Yes, continue",
+      onOk: () => handleStatusChange(next),
+    });
+  } else handleStatusChange(next);
+}
+
+function handleConfirmPayment() {
+  Modal.confirm({
+    title: "Confirm payment received?",
+    content: "This cannot be undone.",
+    okText: "Confirm",
+    onOk: async () => {
+      const result = await confirmPayment(order.id);
+      if (result.success) {
+        messageApi.success("Payment confirmed");
+        router.refresh();
+      } else messageApi.error(result.error);
+    },
+  });
+}
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,11 +118,16 @@ export function OrderDetailPanel({ order }: { order: OrderDetail }) {
               <PaymentStatusBadge status={order.paymentStatus} />
             </div>
 
-            {nextOptions.length > 0 && (
-              <Select
+           {order.paymentStatus === "pending" && order.orderStatus !== "cancelled" && (
+  <Button type="primary" onClick={handleConfirmPayment}>
+    Confirm payment
+  </Button>
+)}
+{nextOptions.length > 0 && (
+              <Select 
                 value={undefined}
                 placeholder={isPending ? "Updating..." : "Update status"}
-                onChange={handleStatusChange}
+                onChange={requestStatusChange}
                 disabled={isPending}
                 suffixIcon={
                   isPending ? (

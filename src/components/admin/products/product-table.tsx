@@ -16,7 +16,12 @@ import {
   StopOutlined,
 } from "@ant-design/icons";
 import { Leaf } from "lucide-react";
-import { money, type RateMap } from "@/lib/currency";
+import {
+  money,
+  toBase,
+  formatMoneyFit,
+  type RateMap,
+} from "@/lib/currency";
 import type {
   ProductListItem,
   ProductStatus,
@@ -35,11 +40,24 @@ const dateFmt = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
 });
 
+// priceMin/priceMax are in the PRODUCT's own currency (item.currencyCode).
+// `currency` is the admin's chosen display currency.
 function priceLabel(item: ProductListItem, rates: RateMap, currency: string) {
-  const min = money(item.priceMin, currency, rates);
-  if (item.priceMin === item.priceMax) return min.text;
-  const max = money(item.priceMax, currency, rates);
-  return `${min.text} – ${max.text}`;
+  const show = (native: number): string => {
+    // Same currency: show the exact stored number, no conversion round trip.
+    if (item.currencyCode === currency) {
+      return formatMoneyFit(native, currency);
+    }
+    // Otherwise: product currency -> USD -> display currency.
+    const usd = toBase(native, item.currencyCode, rates);
+    // No usable rate: show the real price in its own currency, never a guess.
+    if (usd === null) return formatMoneyFit(native, item.currencyCode);
+    return money(usd, currency, rates).text;
+  };
+
+  const min = show(item.priceMin);
+  if (item.priceMin === item.priceMax) return min;
+  return `${min} – ${show(item.priceMax)}`;
 }
 
 function Thumbnail({ item, size }: { item: ProductListItem; size: number }) {

@@ -74,6 +74,41 @@ function Eyebrow({
   );
 }
 
+function Badge({
+  children,
+  dark = false,
+}: {
+  children: ReactNode;
+  dark?: boolean;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="relative inline-flex h-16 w-16 items-center justify-center">
+      <motion.span
+        aria-hidden="true"
+        className="absolute inset-0 rounded-full border border-dashed border-copper/60"
+        animate={reduce ? undefined : { rotate: 360 }}
+        transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.span
+        aria-hidden="true"
+        className="absolute inset-1 rounded-full bg-copper/20"
+        animate={reduce ? undefined : { scale: [1, 1.22, 1], opacity: [0.6, 0, 0.6] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <span
+        className={`relative flex h-12 w-12 items-center justify-center rounded-full shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] ${
+          dark
+            ? "bg-gradient-to-br from-cream to-copper-light/70"
+            : "bg-gradient-to-br from-white to-cream"
+        }`}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
 function SectionNav() {
   const [active, setActive] = useState<string>(brandNav[0].id);
 
@@ -159,12 +194,12 @@ export function BrandPage() {
           transition={{ duration: 0.9, ease: EASE }}
           className="mx-auto max-w-[820px]"
         >
-          <p className="inline-flex items-center gap-2 rounded-full border border-copper-light/30 bg-copper/10 px-4 py-1.5 font-sans text-[11px] font-medium uppercase tracking-[0.22em] text-copper-light">
-            <Globe2 className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
-            {c.hero.eyebrow}
-          </p>
+         <p className="inline-flex items-center gap-2 rounded-full border border-copper bg-copper/20 px-5 py-2 font-sans text-[12px] font-bold uppercase tracking-[0.24em] text-copper-light shadow-[0_0_20px_rgba(184,115,51,0.35)]">
+  <Globe2 className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+  {c.hero.eyebrow}
+</p>
           <h1 className="mt-5 bg-gradient-to-b from-white via-cream to-copper-light bg-clip-text font-display text-[44px] leading-[0.95] tracking-tight text-transparent sm:text-[64px] md:text-[80px]">
-            {BRAND_NAME}
+          {BRAND_NAME}
           </h1>
           <span
             aria-hidden="true"
@@ -288,54 +323,137 @@ export function BrandPage() {
       </section>
 
       {/* ───────── VISION & MISSION ───────── */}
+            {/* ───────── VISION & MISSION ───────── */}
       <section
-                id="vision-mission"
-        className="scroll-mt-16 px-5 pb-20 pt-0 sm:px-8 sm:pb-28 sm:pt-0"
+        id="vision-mission"
+        className="relative scroll-mt-16 overflow-hidden px-5 pb-20 pt-0 sm:px-8 sm:pb-28"
       >
-        <div className="mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_15%_20%,rgba(35,77,42,0.10),transparent_70%),radial-gradient(55%_45%_at_90%_80%,rgba(184,115,51,0.14),transparent_70%)]"
+        />
+
+        <div className="relative mx-auto grid max-w-[1100px] gap-6 md:grid-cols-2 md:gap-8">
+          {/* center diamond */}
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-gradient-to-br from-copper-light to-copper shadow-[0_0_24px_4px_rgba(184,115,51,0.55)] md:block"
+            animate={reduce ? undefined : { scale: [1, 1.35, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* VISION */}
           <Reveal>
-            <article className="relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-green via-[#173919d2] to-green p-8 text-white shadow-[0_30px_70px_-30px_rgba(35,77,42,0.7)] sm:p-12">
+            <motion.article
+              whileHover={reduce ? undefined : { y: -8 }}
+              transition={{ type: "spring", stiffness: 220, damping: 20 }}
+              className="group relative h-full overflow-hidden rounded-[28px] bg-gradient-to-br from-[#10260f] via-green to-[#1b4a24] p-8 text-white shadow-[0_40px_80px_-30px_rgba(16,38,15,0.85)] ring-1 ring-copper/30 sm:p-12"
+            >
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-copper/35 blur-[80px]"
+                animate={reduce ? undefined : { x: [0, -24, 0], y: [0, 18, 0] }}
+                transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-emerald-300/10 blur-[80px]"
+                animate={reduce ? undefined : { x: [0, 20, 0], y: [0, -16, 0] }}
+                transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+              />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-copper/25 blur-[70px]"
+                className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px]"
               />
-          <IconBadge className="border-copper-light/40 bg-cream">
-  <Eye
-    className="h-6 w-6 text-green transition-colors duration-300 group-data-[active=true]:text-copper"
-    strokeWidth={1.5}
-    aria-hidden="true"
-  />
-</IconBadge>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-all duration-[1400ms] ease-out group-hover:left-[130%] group-hover:opacity-100"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-2 right-6 select-none font-display text-[120px] font-light leading-none text-white/[0.05] sm:text-[160px]"
+              >
+                01
+              </span>
+
+              <Badge dark>
+                <Eye className="h-6 w-6 text-green" strokeWidth={1.5} aria-hidden="true" />
+              </Badge>
+
               <div className="relative mt-7">
-                <Eyebrow >{c.vision.eyebrow}</Eyebrow>
-                <p className="mt-5 font-sans text-[16px] leading-[1.85] text-white/80 md:text-[17px]">
+                <Eyebrow light>{c.vision.eyebrow}</Eyebrow>
+                <motion.span
+                  aria-hidden="true"
+                  className="mt-4 block h-[2px] w-24 origin-left bg-gradient-to-r from-copper-light via-copper to-transparent"
+                  initial={{ scaleX: reduce ? 1 : 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.1, ease: EASE, delay: 0.2 }}
+                />
+                <p className="mt-5 font-sans text-[16px] leading-[1.9] text-white/85 md:text-[17px]">
                   {c.vision.text}
                 </p>
               </div>
-            </article>
+            </motion.article>
           </Reveal>
 
-          <Reveal delay={0.1}>
-            <article className="relative h-full overflow-hidden rounded-[28px] border border-copper/25 bg-cream-soft p-8 shadow-[0_30px_70px_-34px_rgba(50,30,24,0.4)] sm:p-12">
-             <div
+          {/* MISSION */}
+          <Reveal delay={0.12}>
+            <motion.article
+              whileHover={reduce ? undefined : { y: -8 }}
+              transition={{ type: "spring", stiffness: 220, damping: 20 }}
+              className="group relative h-full overflow-hidden rounded-[28px] border border-copper/30 bg-gradient-to-br from-cream-soft via-white to-cream p-8 shadow-[0_40px_80px_-36px_rgba(50,30,24,0.45)] sm:p-12"
+            >
+              <motion.div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded bg-green/25 blur-[70px]"
+                className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-green/20 blur-[80px]"
+                animate={reduce ? undefined : { x: [0, -24, 0], y: [0, 18, 0] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
               />
-             <IconBadge className="border-copper/40 bg-white">
-  <Target
-    className="h-6 w-6 text-green-deep transition-colors duration-300 group-data-[active=true]:text-copper"
-    strokeWidth={1.5}
-    aria-hidden="true"
-  />
-</IconBadge>
-              <div className="relative mt-7 ">
-               
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-copper/20 blur-[80px]"
+                animate={reduce ? undefined : { x: [0, 20, 0], y: [0, -16, 0] }}
+                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(#6b4226_1px,transparent_1px)] [background-size:22px_22px]"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-copper/15 to-transparent opacity-0 transition-all duration-[1400ms] ease-out group-hover:left-[130%] group-hover:opacity-100"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-2 right-6 select-none font-display text-[120px] font-light leading-none text-copper/[0.08] sm:text-[160px]"
+              >
+                02
+              </span>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-0 h-16 w-16 rounded-tl-[28px] border-l-2 border-t-2 border-copper/60"
+              />
+
+              <Badge>
+                <Target className="h-6 w-6 text-green-deep" strokeWidth={1.5} aria-hidden="true" />
+              </Badge>
+
+              <div className="relative mt-7">
                 <Eyebrow>{c.mission.eyebrow}</Eyebrow>
-                <p className=" mt-5 font-sans text-[16px] leading-[1.85] text-espresso/80 md:text-[17px]">
+                <motion.span
+                  aria-hidden="true"
+                  className="mt-4 block h-[2px] w-24 origin-left bg-gradient-to-r from-green via-copper to-transparent"
+                  initial={{ scaleX: reduce ? 1 : 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.1, ease: EASE, delay: 0.35 }}
+                />
+                <p className="mt-5 font-sans text-[16px] leading-[1.9] text-espresso/80 md:text-[17px]">
                   {c.mission.text}
                 </p>
               </div>
-            </article>
+            </motion.article>
           </Reveal>
         </div>
       </section>

@@ -70,6 +70,7 @@ type FormValues = {
   origin: string;
   tastingNote: string;
   accentColor: string;
+  currencyCode: string;
   category: string;
   status: Status;
   featured: boolean;
@@ -196,6 +197,7 @@ function buildInput(state: {
     origin: trimOrNull(values.origin),
     tastingNote: trimOrNull(values.tastingNote),
     accentColor: values.accentColor,
+    currencyCode: values.currencyCode,
     category: trimOrNull(values.category),
     status: values.status,
     featured: !!values.featured,
@@ -249,6 +251,7 @@ const FORM_FIELDS: (keyof FormValues)[] = [
   "origin",
   "tastingNote",
   "accentColor",
+  "currencyCode",
   "category",
   "status",
   "featured",
@@ -302,6 +305,8 @@ export function ProductForm({
   const [offerOpen, setOfferOpen] = useState(false);
   const watchedName = Form.useWatch("name", form) ?? "";
   const watchedCategory = Form.useWatch("category", form) ?? null;
+  const watchedCurrency =
+    Form.useWatch("currencyCode", form) ?? product?.currencyCode ?? "USD";
 
   const offerVariants = variants.filter((v) => v.salePrice !== "");
   const offerStart = offerVariants.find((v) => v.saleStartsAt)?.saleStartsAt;
@@ -344,6 +349,7 @@ export function ProductForm({
     origin: product?.origin ?? "",
     tastingNote: product?.tastingNote ?? "",
     accentColor: product?.accentColor ?? "#2f855a",
+    currencyCode: product?.currencyCode ?? "USD",
     category: product?.category ?? "",
     status: product?.status ?? "draft",
     featured: product?.featured ?? false,
@@ -625,11 +631,37 @@ export function ProductForm({
                   </span>
                 }
               >
+                <Form.Item
+                  label="Pricing currency"
+                  name="currencyCode"
+                  rules={[{ required: true, message: "Choose a currency" }]}
+                  extra="Every pack and offer of this product is priced in this currency."
+                >
+                  <Select
+                    showSearch
+                    options={suggestions.currencies.map((c) => ({
+                      value: c,
+                      label: c,
+                    }))}
+                  />
+                </Form.Item>
+
+                {mode === "edit" &&
+                  watchedCurrency !== product?.currencyCode && (
+                    <Alert
+                      type="warning"
+                      showIcon
+                      className="mb-4"
+                      message="Changing the currency does not convert existing prices. A price of 5000 stays 5000, but now in the new currency. Re-enter every price and offer."
+                    />
+                  )}
+
                 <VariantRepeater
                   value={variants}
                   onChange={handleVariantsChange}
                   errors={variantErrors}
                   sizeSuggestions={suggestions.size}
+                  currency={watchedCurrency}
                 />
               </Card>
             </div>
@@ -825,6 +857,7 @@ export function ProductForm({
         imageUrl={primaryImageUrl}
         variants={variants}
         onApply={handleVariantsChange}
+        currency={watchedCurrency}
       />
     </Form>
   );

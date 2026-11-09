@@ -15,12 +15,13 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrencyContext } from "@/lib/rates";
-import { convert } from "@/lib/currency";
+import { convert, toBase } from "@/lib/currency";
 import { readReferralCode } from "@/lib/referral/referral-cookie";
 import { resolveReferral } from "@/lib/referral/referral-queries";
 import { generateTrackingCode } from "@/lib/checkout/tracking-code";
 import {
   pickCheapestActiveVariant,
+  effectivePrice,
   type RawVariant,
 } from "@/lib/products/effective-variant";
 
@@ -118,7 +119,7 @@ export async function createOrder(
   const { data: products, error: productsError } = await supabase
     .from("products")
     .select(
-      "id, name, status, product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, status )",
+      "id, name, status, currency_code, product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, status )",
     )
     .in("id", productIds);
 
@@ -137,6 +138,9 @@ export async function createOrder(
     variantName: string;
     quantity: number;
     unitPriceUsd: number;
+    unitPriceOriginal: number;
+    priceCurrency: string;
+    rateUsed: number;
   }[] = [];
 
   for (const line of data.lines) {
@@ -164,20 +168,30 @@ export async function createOrder(
       };
     }
 
+    // Prices are stored in the product's own currency. Convert to USD (the
+    // reference value) using live rates. No usable rate means no order:
+    // we never guess a price.
+    const priceCurrency: string = product.currency_code ?? "USD";
+    const unitPriceOriginal = effectivePrice(variant);
+    const unitPriceUsd = toBase(unitPriceOriginal, priceCurrency, rates);
+    if (unitPriceUsd === null) {
+      return {
+        success: false,
+        error: `The price for "${product.name}" is temporarily unavailable. Please try again shortly.`,
+      };
+    }
+
     resolvedLines.push({
       variantId: variant.id,
       productId: product.id,
       productName: product.name,
       variantName: variant.name,
       quantity: line.quantity,
-      unitPriceUsd:
-        variant.sale_price != null &&
-        variant.sale_starts_at &&
-        variant.sale_ends_at &&
-        Date.parse(variant.sale_starts_at) <= Date.now() &&
-        Date.now() < Date.parse(variant.sale_ends_at)
-          ? Number(variant.sale_price)
-          : Number(variant.price),
+      unitPriceUsd,
+      unitPriceOriginal,
+      priceCurrency,
+      rateUsed:
+        priceCurrency === "USD" ? 1 : (rates[priceCurrency]?.rateToBase ?? 1),
     });
   }
 
@@ -191,6 +205,15 @@ export async function createOrder(
     0,
   );
   const converted = convert(totalBaseUsd, currency, rates);
+  if (converted.fallback) {
+    // The customer's currency rate is stale. Charging in USD while they saw
+    // another currency would be a surprise, so ask them to retry.
+    return {
+      success: false,
+      error:
+        "Prices in your currency are being updated. Please refresh the page and try again.",
+    };
+  }
   // Matches lib/currency.ts's rateToBase direction (USD per 1 unit of
   // the currency); USD itself always has an implicit rate of 1.
   const exchangeRate =
@@ -263,6 +286,9 @@ export async function createOrder(
       variant_name: l.variantName,
       quantity: l.quantity,
       unit_price: l.unitPriceUsd,
+      original_unit_price: l.unitPriceOriginal,
+      price_currency: l.priceCurrency,
+      rate_used: l.rateUsed,
       line_total: l.unitPriceUsd * l.quantity,
     })),
   );

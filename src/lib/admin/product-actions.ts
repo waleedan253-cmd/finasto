@@ -23,6 +23,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server"; // adjust to your server client helper
+import { getRates } from "@/lib/rates";
+import { isRateUsable, currencyCodeSchema } from "@/lib/currency";
 
 /* ------------------------------------------------------------------ */
 /* Validation                                                          */
@@ -98,6 +100,7 @@ const productInputSchema = z.object({
   origin: z.string().trim().max(60).nullable(),
   tastingNote: z.string().trim().max(120).nullable(),
   accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  currencyCode: currencyCodeSchema,
   metaTitle: z.string().trim().max(70).nullable(),
   metaDescription: z.string().trim().max(160).nullable(),
   variants: z.array(variantSchema).min(1, "Add at least one variant"),
@@ -121,13 +124,23 @@ const FK_VIOLATION = "23503";
 // SKU format: PREFIX-PRODUCT-SIZE, e.g. FIN-VEL-250G
 const SKU_PREFIX = "FIN";
 
+
+
 function skuPart(s: string, max: number): string {
   return s
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, "")
     .slice(0, max);
 }
-
+// Rejects a currency that has no fresh exchange rate. USD always passes.
+// getRates() returns {} when the table can't be read, so a database
+// problem blocks the save instead of storing a price that can't convert.
+async function currencyError(code: string): Promise<string | null> {
+  const rates = await getRates();
+  return isRateUsable(code, rates)
+    ? null
+    : `No current exchange rate for ${code}. Choose another currency or try again later.`;
+}
 /* ------------------------------------------------------------------ */
 /* Create                                                               */
 /* ------------------------------------------------------------------ */
@@ -150,6 +163,15 @@ export async function createProduct(
   }
   const data = parsed.data;
 
+  const rateProblem = await currencyError(data.currencyCode);
+  if (rateProblem) {
+    return {
+      success: false,
+      error: rateProblem,
+      fieldErrors: { currencyCode: [rateProblem] },
+    };
+  }
+
   const supabase = await createClient();
 
   const { data: product, error: productError } = await supabase
@@ -166,6 +188,7 @@ export async function createProduct(
       origin: data.origin,
       tasting_note: data.tastingNote,
       accent_color: data.accentColor,
+      currency_code: data.currencyCode,
       meta_title: data.metaTitle,
       meta_description: data.metaDescription,
     })
@@ -224,6 +247,15 @@ export async function updateProduct(
   }
   const data = parsed.data;
 
+  const rateProblem = await currencyError(data.currencyCode);
+  if (rateProblem) {
+    return {
+      success: false,
+      error: rateProblem,
+      fieldErrors: { currencyCode: [rateProblem] },
+    };
+  }
+
   const supabase = await createClient();
 
   const { error: productError } = await supabase
@@ -240,6 +272,7 @@ export async function updateProduct(
       origin: data.origin,
       tasting_note: data.tastingNote,
       accent_color: data.accentColor,
+      currency_code: data.currencyCode,
       meta_title: data.metaTitle,
       meta_description: data.metaDescription,
       updated_at: new Date().toISOString(),

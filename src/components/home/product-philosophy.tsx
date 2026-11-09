@@ -79,158 +79,160 @@ export function ProductPhilosophy() {
   const last = steps.length - 1;
 
   return (
-    <section className=" bg-pattern dark relative border-t border-copper/30 bg-cream py-24 lg:py-32">
-       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-24 -top-24 h-[360px] w-[360px] rounded-full bg-green/10 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-16 h-[300px] w-[300px] rounded-full bg-copper/10 blur-3xl"
-      />
-      <div className="mx-auto max-w-[1180px] px-5 sm:px-8">
-        {/* Part 1: statement + stepper */}
-        <div className="grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-24">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="flex items-center gap-3 font-sans text-[12px] uppercase tracking-[0.22em] text-copper">
-              <span aria-hidden="true" className="h-px w-10 bg-copper-light" />
-              {eyebrow}
-            </p>
-            <h2 className="mt-6 max-w-[14ch] font-display text-[40px] leading-[1.08] text-green-deep sm:text-[52px]">
-              {withTM(heading)}
-            </h2>
-            <p className="mt-6 max-w-[38ch] font-sans text-[16px] leading-[1.75] text-espresso/75">
-              {intro}
-            </p>
-            <p
-              className="mt-10 font-display text-[15px] italic text-warm-gray"
-              aria-live="polite"
-            >
-              Step {active + 1} of {steps.length}
-            </p>
-          </div>
+   <section className="bg-pattern dark relative overflow-x-clip border-t border-copper/30 bg-green-bg py-24 lg:py-32">
+  {/* Glow blobs (sit under the content, over the pattern; translucent so the pattern still shows) */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute -left-24 -top-24 h-[320px] w-[320px] rounded-full bg-green/20 blur-3xl motion-safe:animate-pulse"
+  />
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute -bottom-32 -right-16 h-[280px] w-[200px] rounded-full bg-copper/25 blur-3xl motion-safe:animate-pulse [animation-delay:1.5s]"
+  />
 
-          <ol className="relative">
-            {steps.map((step, i) => {
-              const Icon = STEP_ICONS[i % STEP_ICONS.length];
-              const isActive = i === active;
-              const isDone = i < active;
-              const panelId = `philosophy-panel-${step.id}`;
-              const buttonId = `philosophy-tab-${step.id}`;
+  <div className="relative z-10 mx-auto max-w-[1180px] px-5 sm:px-8">
+    {/* Part 1: statement + stepper */}
+    <div className="grid gap-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-24">
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <p className="flex items-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper">
+          <span aria-hidden="true" className="h-px w-10 bg-copper" />
+          {eyebrow}
+        </p>
+        <h2 className="mt-6 max-w-[14ch] font-display text-[40px] leading-[1.08] text-green-deep sm:text-[52px]">
+          {withTM(heading)}
+        </h2>
+        <p className="mt-6 max-w-[38ch] font-sans text-[16px] leading-[1.75] text-espresso/90">
+          {intro}
+        </p>
+        <p
+          className="mt-10 font-display text-[15px] italic text-espresso/70"
+          aria-live="polite"
+        >
+          Step {active + 1} of {steps.length}
+        </p>
+      </div>
 
-              return (
-                <li key={step.id} className="relative pb-10 last:pb-0">
-                  {i < last && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute bottom-0 left-7 top-16 w-px -translate-x-1/2 bg-border-strong"
-                    >
-                      <span
-                        className={`absolute inset-x-0 top-0 block w-px bg-copper transition-[height] duration-700 ease-out motion-reduce:transition-none ${
-                          isDone ? "h-full" : "h-0"
-                        }`}
-                      />
-                    </span>
-                  )}
+      <ol className="relative">
+        {steps.map((step, i) => {
+          const Icon = STEP_ICONS[i % STEP_ICONS.length];
+          const isActive = i === active;
+          const isDone = i < active;
+          const panelId = `philosophy-panel-${step.id}`;
+          const buttonId = `philosophy-tab-${step.id}`;
 
-                  <button
-                    type="button"
-                    id={buttonId}
-                    aria-expanded={isActive}
-                    aria-controls={panelId}
-                    onClick={() => setActive(i)}
-                    className="group flex w-full items-center gap-6 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
-                style={{
-                  cursor:"pointer"
-                }}
+          return (
+            <li key={step.id} className="relative pb-10 last:pb-0">
+              {i < last && (
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-7 top-16 w-px -translate-x-1/2 bg-border-strong"
                 >
-                    <span
-                      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition-colors duration-500 motion-reduce:transition-none ${
-                        isActive
-                          ? "border-green-deep bg-green-deep text-cream shadow-[0_8px_22px_rgba(50,30,24,0.18)]"
-                          : isDone
-                            ? "border-copper bg-green-bg text-green-deep"
-                            : "border-copper/40 bg-cream text-green-deep/60 group-hover:border-copper"
-                      }`}
-                    >
-                      <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden="true" />
-                    </span>
+                  <span
+                    className={`absolute inset-x-0 top-0 block w-px bg-copper transition-[height] duration-700 ease-out motion-reduce:transition-none ${
+                      isDone ? "h-full" : "h-0"
+                    }`}
+                  />
+                </span>
+              )}
 
-                    <span className="flex items-baseline gap-3">
-                      <span className="font-display text-[15px] italic text-copper">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span
-                        className={`font-display text-[26px] leading-tight transition-colors duration-500 motion-reduce:transition-none sm:text-[30px] ${
-                          isActive
-                            ? "text-green-deep"
-                            : "text-green-deep/50 group-hover:text-green-deep/80"
-                        }`}
-                      >
-                        {step.title}
-                      </span>
-                    </span>
-                  </button>
+              <button
+                type="button"
+                id={buttonId}
+                aria-expanded={isActive}
+                aria-controls={panelId}
+                onClick={() => setActive(i)}
+                className="group flex w-full items-center gap-6 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
+                style={{
+                  cursor: "pointer",
+                }}
+              >
+                <span
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition-all duration-500 motion-reduce:transition-none ${
+                    isActive
+                      ? "border-copper bg-copper text-cream shadow-[0_0_0_6px_rgba(184,115,51,0.2),0_10px_30px_rgba(184,115,51,0.4)]"
+                      : isDone
+                        ? "border-copper bg-copper/15 text-copper"
+                        : "border-copper/40 bg-cream text-green-deep/80 group-hover:border-copper"
+                  }`}
+                >
+                  <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden="true" />
+                </span>
 
-                  <div
-                    id={panelId}
-                    role="region"
-                    aria-labelledby={buttonId}
-                    className={`grid pl-[80px] transition-[grid-template-rows,opacity] duration-500 ease-out motion-reduce:transition-none ${
+                <span className="flex items-baseline gap-3">
+                  <span className="font-display text-[15px] italic text-copper">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={`font-display text-[26px] leading-tight transition-colors duration-500 motion-reduce:transition-none sm:text-[30px] ${
                       isActive
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
+                        ? "text-copper"
+                        : "text-green-deep/70 group-hover:text-green-deep"
                     }`}
                   >
-                    <div className="overflow-hidden">
-                      <p className="max-w-[46ch] pt-4 font-sans text-[15px] leading-[1.8] text-warm-gray">
-                        {step.description}
-                      </p>
-                      {i < last && (
-                        <button
-                          type="button"
-                          onClick={() => setActive(i + 1)}
-                          tabIndex={isActive ? 0 : -1}
-                          className="mt-5 inline-flex items-center gap-2 border-b border-copper/60 pb-0.5 font-sans text-[13px] text-copper transition-colors hover:border-copper hover:text-green-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
-                        style={{
-                  cursor:"pointer"
-                }}
-                        >
-                          Next step
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
+                    {step.title}
+                  </span>
+                </span>
+              </button>
 
-        {/* Part 2: promises row */}
-        <div className="mt-20 border-t border-copper/30 pt-14 lg:mt-28 lg:pt-16">
-          <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-border-strong">
-            {philosophyPromises.map((promise, i) => {
-              const Icon = PROMISE_ICONS[i % PROMISE_ICONS.length];
-              return (
-                <li key={promise.id} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
-                  <Icon
-                    className="h-7 w-7 text-copper "
-                    strokeWidth={1.25}
-                    aria-hidden="true"
-                  />
-                  <h3 className="mt-5 font-display text-[22px] leading-snug text-green-deep">
-                    {promise.title}
-                  </h3>
-                  <p className="mt-2 max-w-[30ch] font-sans text-[14px] leading-[1.75] text-warm-gray">
-                    {promise.description}
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={buttonId}
+                className={`grid pl-[80px] transition-[grid-template-rows,opacity,transform] duration-500 ease-out motion-reduce:transition-none ${
+                  isActive
+                    ? "grid-rows-[1fr] translate-y-0 opacity-100"
+                    : "grid-rows-[0fr] -translate-y-2 opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="max-w-[46ch] pt-4 font-sans text-[15px] leading-[1.8] text-espresso/80">
+                    {step.description}
                   </p>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-    </section>
+                  {i < last && (
+                    <button
+                      type="button"
+                      onClick={() => setActive(i + 1)}
+                      tabIndex={isActive ? 0 : -1}
+                      className="mt-5 inline-flex items-center gap-2 border-b border-copper/60 pb-0.5 font-sans text-[13px] text-copper transition-colors hover:border-copper hover:text-green-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper focus-visible:ring-offset-4 focus-visible:ring-offset-cream"
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      Next step
+                    </button>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+
+    {/* Part 2: promises row */}
+    <div className="mt-20 border-t border-copper/30 pt-14 lg:mt-28 lg:pt-16">
+      <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-border-strong">
+        {philosophyPromises.map((promise, i) => {
+          const Icon = PROMISE_ICONS[i % PROMISE_ICONS.length];
+          return (
+            <li key={promise.id} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
+              <Icon
+                className="h-7 w-7 text-copper drop-shadow-[0_0_8px_rgba(184,115,51,0.35)]"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <h3 className="mt-5 font-display text-[22px] leading-snug text-green-deep">
+                {promise.title}
+              </h3>
+              <p className="mt-2 max-w-[30ch] font-sans text-[14px] leading-[1.75] text-espresso/80">
+                {promise.description}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+</section>
   );
 }

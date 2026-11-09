@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Product, ProductState } from "@/data/products";
-import { convert } from "@/lib/currency";
+import { convert, toBase, roundMoney } from "@/lib/currency";
 import { getRates } from "@/lib/rates"; // the file with getRates(); adjust the path
 import {
   pickCheapestActiveVariant,
@@ -14,7 +14,7 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select(
-      `id, name, category,featured, tagline, short_description, features, origin,
+      `id, name, category,featured, currency_code, tagline, short_description, features, origin,
        tasting_note, accent_color, created_at,
        product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
        product_images ( url, is_primary ),
@@ -29,16 +29,31 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
   const rates = await getRates();
  
 
-  return data.map((p: any): Product => {
+  return data.flatMap((p: any): Product[] => {
     const now = Date.now();
     const variants = (p.product_variants ?? []).filter(
       (v: any) => v.status === "active",
     );
     const cheapest = pickCheapestActiveVariant(p.product_variants ?? [], now);
-    const basePrice = cheapest ? effectivePrice(cheapest, now) : 0;
-    const compareAt: number | undefined =
+    // Prices are stored in the product's own currency. Everything below
+    // (prices map, state, checkout comparison) works in USD, so convert once here.
+    const priceCurrency: string = p.currency_code ?? "USD";
+    const nativePrice = cheapest ? effectivePrice(cheapest, now) : 0;
+    const nativeCompareAt: number | undefined =
       cheapest && isOfferActive(cheapest, now)
         ? Number(cheapest.price)
+        : undefined;
+
+    const usd = toBase(nativePrice, priceCurrency, rates);
+    if (usd === null) {
+      // No usable rate: hide the product rather than show a wrong price.
+      console.error("[storefront] no usable rate for", priceCurrency, p.name);
+      return [];
+    }
+    const basePrice = roundMoney(usd, "USD");
+    const compareAt: number | undefined =
+      nativeCompareAt !== undefined
+        ? roundMoney(toBase(nativeCompareAt, priceCurrency, rates) ?? 0, "USD")
         : undefined;
     const hasSale = compareAt !== undefined;
     const totalStock = variants.reduce((s: number, v: any) => s + v.stock, 0);
@@ -51,6 +66,8 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
     else if (isNew) state = "new";
 
     const prices: Record<string, number> = { USD: basePrice };
+    // Exact admin-entered price, no USD round trip (5000 PKR stays 5000 PKR).
+    prices[priceCurrency] = nativePrice;
     for (const cp of p.product_country_prices ?? []) {
       const code = cp.countries?.currency_code;
       if (cp.active && code) prices[code] = cp.sale_price ?? cp.price;
@@ -62,16 +79,18 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
       if (prices[code] === undefined) {
         const c = convert(basePrice, code, rates);
         if (!c.fallback) prices[code] = c.amount;
-        else console.log("[storefront] rate unusable:", code, rates[code]);
+      
       }
     }
-    console.log("[storefront] prices:", p.name, prices);
+   
 
     // Regular price in every currency, for the strikethrough.
     const comparePrices: Record<string, number> = {};
     if (compareAt !== undefined) {
       comparePrices.USD = compareAt;
+      comparePrices[priceCurrency] = nativeCompareAt!;
       for (const code of Object.keys(rates)) {
+        if (comparePrices[code] !== undefined) continue;
         const c = convert(compareAt, code, rates);
         if (!c.fallback) comparePrices[code] = c.amount;
       }
@@ -81,7 +100,7 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
       p.product_images?.find((i: any) => i.is_primary) ?? p.product_images?.[0];
     const weight = variants.find((v: any) => v.weight != null)?.weight;
 
-    return {
+    return [{
       id: p.id,
       featured: p.featured,
       slug: p.id,
@@ -102,7 +121,7 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
       weight: weight != null ? `${weight}g` : undefined,
       origin: p.origin ?? "",
       tastingNote: p.tasting_note ?? undefined,
-    };
+    }];
   });
 }
 

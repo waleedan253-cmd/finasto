@@ -12,6 +12,8 @@
 
 import { requireRole } from "@/lib/auth/server";
 import { createClient } from "@/lib/supabase/server";
+import { getRates } from "@/lib/rates";
+import { BASE_CURRENCY, isRateUsable } from "@/lib/currency";
 
 const MISSING_CODES = new Set(["PGRST205", "42P01"]);
 
@@ -38,10 +40,11 @@ export type ProductListItem = {
   category: string | null;
   status: ProductStatus;
   featured: boolean;
+    currencyCode: string; // currency priceMin/priceMax are stored in
   thumbnailUrl: string | null;
   skus: string[]; // one per pack, sorted
   // Lowest and highest price across this product's variants, in USD
-  // (the base currency). Equal when there is only one variant/price.
+   // (in currencyCode, NOT always USD). Equal when there is only one price.
   priceMin: number;
   priceMax: number;
   totalStock: number;
@@ -90,6 +93,7 @@ export type ProductDetail = {
   origin: string | null;
   tastingNote: string | null;
   accentColor: string;
+  currencyCode: string;
   category: string | null;
   status: ProductStatus;
   featured: boolean;
@@ -134,7 +138,7 @@ export async function listProducts(params: {
     .from("products")
     .select(
       `
-      id, name,  category, status, featured, updated_at,
+      id, name,  category, status, featured, currency_code, updated_at,
       product_images ( url, is_primary ),
       product_variants ( sku, price, sale_price, stock, status )
     `,
@@ -179,6 +183,7 @@ export async function listProducts(params: {
       category: row.category,
       status: row.status,
       featured: !!row.featured,
+      currencyCode: row.currency_code ?? "USD",
       thumbnailUrl: primaryImage,
       skus: variants
         .map((v) => String(v.sku ?? ""))
@@ -211,6 +216,7 @@ export async function getProductById(
       `
             id, name, description, category, status, featured,
       short_description, tagline, features, origin, tasting_note, accent_color,
+      currency_code,
       meta_title, meta_description, created_at, updated_at,
       product_images ( id, url, alt, storage_path, is_primary ),
       product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
@@ -239,6 +245,7 @@ export async function getProductById(
     origin: data.origin ?? null,
     tastingNote: data.tasting_note ?? null,
     accentColor: data.accent_color ?? "#2f855a",
+    currencyCode: data.currency_code ?? "USD",
     category: data.category,
     status: data.status,
     featured: !!data.featured,
@@ -312,6 +319,7 @@ export type FieldSuggestions = {
   tastingNote: string[];
   category: string[];
   size: string[];
+  currencies: string[];
 };
 
 export async function getFieldSuggestions(): Promise<FieldSuggestions> {
@@ -329,12 +337,22 @@ export async function getFieldSuggestions(): Promise<FieldSuggestions> {
     ).sort((a, b) => a.localeCompare(b));
 
   const rows = data ?? [];
+  // Only currencies with a fresh rate are offered, so the admin can't pick
+  // one the server would refuse to save. USD is always available.
+  const rates = await getRates();
+  const currencies = [
+    BASE_CURRENCY,
+    ...Object.keys(rates)
+      .filter((c) => isRateUsable(c, rates))
+      .sort(),
+  ];
   return {
     tagline: uniq(rows.flatMap((r) => r.tagline ?? [])),
     features: uniq(rows.flatMap((r) => r.features ?? [])),
     origin: uniq(rows.map((r) => r.origin)),
     tastingNote: uniq(rows.map((r) => r.tasting_note)),
     category: uniq(rows.map((r) => r.category)),
+    currencies,
     size: uniq(
       rows.flatMap((r: any) =>
         (r.product_variants ?? []).map((v: any) => v.name),
@@ -356,6 +374,7 @@ export type StorefrontProductRow = {
   origin: string | null;
   tastingNote: string | null;
   accentColor: string;
+  currencyCode: string;
   imageUrl: string;
   createdAt: string;
   variants: {
@@ -376,7 +395,7 @@ export async function getStorefrontProducts(): Promise<StorefrontProductRow[]> {
     .select(
       `
       id, name, category, short_description, tagline, features, origin,
-      tasting_note, accent_color, created_at,
+      tasting_note, accent_color, currency_code, created_at,
       product_images ( url, is_primary ),
       product_variants ( price, sale_price, stock, weight ),
       product_country_prices ( active, price, countries ( currency_code ) )
@@ -403,6 +422,7 @@ export async function getStorefrontProducts(): Promise<StorefrontProductRow[]> {
       origin: row.origin ?? null,
       tastingNote: row.tasting_note ?? null,
       accentColor: row.accent_color ?? "#2f855a",
+      currencyCode: row.currency_code ?? "USD",
       imageUrl: images.find((i) => i.is_primary)?.url ?? images[0]?.url ?? "",
       createdAt: row.created_at,
       variants: (row.product_variants ?? []).map((v) => ({

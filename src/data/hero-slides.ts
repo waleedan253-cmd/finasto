@@ -38,9 +38,9 @@ export const heroSlides: HeroSlide[] = [
 },
   {
     id: "harvest",
-    eyebrow: "FLORAL TEA COLLECTION",
-    headline: ["Floral Elegance in Every Sip. ", ""],
-    body: "An elegant floral infusion with delicate botanical healthful notes, a refreshing tropical character and a beautifully smooth finish.",
+    eyebrow: "FLOVERA TEA COLLECTION",
+    headline: ["Flovera Elegance in Every Sip. ", ""],
+    body: "An elegant Flovera infusion with delicate botanical healthful notes, a refreshing tropical character and a beautifully smooth finish.",
     features: [
       { icon: "leaf", label: "Delicate Floral " },
       { icon: "sun", label: "Tropical Character" },

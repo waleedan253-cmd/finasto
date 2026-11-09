@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useState, useTransition } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, Hash, Loader2, Lock, Mail, PackageSearch, Search } from "lucide-react";
 import { lookupOrderStatusAction } from "../../lib/track-order/track-order-actions";
@@ -22,6 +22,14 @@ export function TrackOrderClient({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderStatusResult | null>(null);
+
+// Prefill came from the URL; remove it so the email + code don't stay
+// in the address bar or browser history.
+useEffect(() => {
+  if (window.location.search) {
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+}, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -54,7 +62,7 @@ export function TrackOrderClient({
           style={{ cursor: "pointer" }}
           type="button"
           onClick={() => setOrder(null)}
-          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-border-strong bg-pattern px-5 py-2.5 font-sans text-[13px] font-medium text-espresso shadow-[0_6px_18px_-10px_rgba(50,30,24,0.35)] transition-all hover:-translate-y-0.5 hover:border-copper/50 hover:text-green-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50"
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-border-strong bg-white px-5 py-2.5 font-sans text-[13px] font-medium text-espresso shadow-[0_6px_18px_-10px_rgba(50,30,24,0.35)] transition-all hover:-translate-y-0.5 hover:border-copper/50 hover:text-green-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
           Track another order
@@ -124,7 +132,7 @@ export function TrackOrderClient({
           mono
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          placeholder="FIN-20261103-A7K2"
+          placeholder="FIN-20261103-A7K2M9QX"
           hint="Find your tracking code in your order confirmation email."
         />
       </div>

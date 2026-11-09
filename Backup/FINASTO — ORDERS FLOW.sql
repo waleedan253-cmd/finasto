@@ -70,7 +70,7 @@ alter table public.orders add constraint orders_order_number_key unique (order_n
 
 alter table public.orders drop constraint if exists orders_status_check;
 alter table public.orders add constraint orders_status_check
-  check (status = any (array['pending','paid','shipped','delivered','cancelled']));
+  check (status = any (array['pending','processing','paid','shipped','delivered','cancelled']));
 
 alter table public.orders drop constraint if exists orders_source_type_check;
 alter table public.orders add constraint orders_source_type_check
@@ -491,7 +491,7 @@ begin
     new.paid_at := coalesce(new.paid_at, now());
   end if;
 
-  if old.shipped_at is not null and new.status in ('pending', 'paid') then
+  if old.shipped_at is not null and new.status in ('pending', 'processing', 'paid') then
     raise exception 'A shipped order cannot go back to "%"', new.status;
   end if;
 
@@ -638,7 +638,8 @@ commit;
 
 
 
-
+alter table public.order_settings
+  add column if not exists min_payout_usd numeric(12,2) not null default 50;
 create or replace function public.get_min_payout_usd()
 returns numeric
 language sql
@@ -651,3 +652,21 @@ $$;
 
 revoke all on function public.get_min_payout_usd() from public, anon;
 grant execute on function public.get_min_payout_usd() to authenticated;
+
+select column_name from information_schema.columns
+where table_schema = 'public' and table_name = 'orders'
+  and column_name like 'shipping%' or column_name = 'customer_phone';
+  -- 1) allow 'processing'
+alter table public.orders drop constraint if exists orders_status_check;
+alter table public.orders add constraint orders_status_check
+  check (status = any (array['pending','processing','paid','shipped','delivered','cancelled']));
+
+-- 2) paste your WHOLE existing stamp_order_lifecycle() function here,
+--    with only the one line from Edit 2 changed, then run it.
+--    (The trigger stays attached; create or replace swaps the body.)
+
+-- 3) payout setting column
+alter table public.order_settings
+  add column if not exists min_payout_usd numeric(12,2) not null default 50;
+
+notify pgrst, 'reload schema';

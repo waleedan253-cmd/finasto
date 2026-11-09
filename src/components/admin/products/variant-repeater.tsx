@@ -12,6 +12,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { formatMoney } from "@/lib/currency";
 
 // Repeatable variant rows (e.g. "100g", "250g") for the product form,
 // shown as one compact editable table: one row per variant, every field
@@ -78,11 +79,13 @@ export function VariantRepeater({
   onChange,
   errors,
   sizeSuggestions = [],
+  currency = "USD",
 }: {
   value: VariantDraft[];
   onChange: (next: VariantDraft[]) => void;
   errors?: Record<number, FieldErrors>;
   sizeSuggestions?: string[];
+  currency?: string;
 }) {
   function update(index: number, patch: Partial<VariantDraft>) {
     onChange(value.map((v, i) => (i === index ? { ...v, ...patch } : v)));
@@ -133,7 +136,7 @@ export function VariantRepeater({
     //     ),
     // },
     {
-      title: "Price (USD)",
+      title: `Price (${currency})`,
       dataIndex: "price",
       width: 120,
       render: (_, r) => (
@@ -159,7 +162,7 @@ export function VariantRepeater({
       render: (_, r) =>
         r.salePrice !== "" ? (
           <span className="text-[13px] font-medium text-[#389e0d]">
-            ${r.salePrice}
+            {formatMoney(Number(r.salePrice), currency)}
           </span>
         ) : (
           <span className="text-[12px] text-neutral-400">No offer</span>

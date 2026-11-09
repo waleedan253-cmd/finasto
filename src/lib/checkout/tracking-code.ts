@@ -3,19 +3,19 @@
 // 4 random base32-ish chars for uniqueness). Collision-checked against
 // the database before being returned — astronomically unlikely to ever
 // loop more than once, but checked rather than assumed.
-
+import { randomInt } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 
 // Excludes ambiguous characters (0/O, 1/I/L) so a customer reading this
 // aloud to support, or typing it on a phone keyboard, can't misread it.
 const SAFE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-const SUFFIX_LENGTH = 4;
+const SUFFIX_LENGTH = 8;
 const MAX_ATTEMPTS = 5;
 
 function randomSuffix(): string {
   let out = "";
   for (let i = 0; i < SUFFIX_LENGTH; i++) {
-    out += SAFE_CHARS[Math.floor(Math.random() * SAFE_CHARS.length)];
+    out += SAFE_CHARS[randomInt(SAFE_CHARS.length)];
   }
   return out;
 }

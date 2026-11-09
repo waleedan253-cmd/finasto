@@ -21,3 +21,7 @@ alter table public.orders add constraint orders_shipping_lengths
   );
 
 notify pgrst, 'reload schema';
+
+select column_name from information_schema.columns
+where table_schema = 'public' and table_name = 'orders'
+  and column_name like 'shipping%' or column_name = 'customer_phone';

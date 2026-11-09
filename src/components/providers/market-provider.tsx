@@ -45,6 +45,11 @@ export function MarketProvider({ children }: { children: ReactNode }) {
           writeCurrencyCookie(found.currencyCode);
           router.refresh();
         }
+      } else if (!document.cookie.includes(`${CURRENCY_COOKIE}=`)) {
+        // First visit: the shop shows the default market's currency, so the
+        // server must use the same one, or checkout would charge in USD.
+        writeCurrencyCookie(defaultMarket.currencyCode);
+        router.refresh();
       }
     } catch {
       // storage blocked (private mode): keep the default market

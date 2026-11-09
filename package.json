@@ -16,6 +16,8 @@
     "@marsidev/react-turnstile": "^1.6.3",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.41.0",
     "antd": "^6.6.6",
     "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.1",

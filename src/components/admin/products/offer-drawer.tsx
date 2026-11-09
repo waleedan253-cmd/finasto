@@ -20,6 +20,7 @@ import {
   storeWallClockToIso,
 } from "@/lib/store-time";
 import type { VariantDraft } from "./variant-repeater";
+import { formatMoney } from "@/lib/currency";
 
 // Right-side drawer for setting a scheduled offer on a product.
 //
@@ -37,6 +38,7 @@ export function OfferDrawer({
   imageUrl,
   variants,
   onApply,
+  currency = "USD",
 }: {
   open: boolean;
   onClose: () => void;
@@ -45,6 +47,7 @@ export function OfferDrawer({
   imageUrl: string | null;
   variants: VariantDraft[];
   onApply: (next: VariantDraft[]) => void;
+  currency?: string;
 }) {
   const [prices, setPrices] = useState<string[]>([]);
   const [range, setRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
@@ -150,12 +153,12 @@ export function OfferDrawer({
       render: (name: string) => name || <em className="text-neutral-400">—</em>,
     },
     {
-      title: "Regular (USD)",
+      title: `Regular (${currency})`,
       dataIndex: "regular",
       width: 110,
       render: (regular: string) =>
         regular !== "" ? (
-          `$${regular}`
+          formatMoney(Number(regular), currency)
         ) : (
           <span className="text-neutral-400">—</span>
         ),
@@ -278,7 +281,7 @@ export function OfferDrawer({
           />
           <p className="mt-2 text-[12px] text-neutral-500">
             Leave a pack empty to keep its regular price. Offer prices are in
-            USD and are converted for each market automatically.
+            {currency} and are converted for each market automatically.
           </p>
         </div>
 
