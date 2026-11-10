@@ -164,9 +164,9 @@ export function ContactForm() {
           </Field>
         </div>
 
-        <Field label="Topic *" error={errors.topic?.message}>
+        <Field label="Subject *" error={errors.topic?.message}>
           {(id, describedBy) => (
-            <div className="relative">
+            <div className="relative"> 
               <select 
                 id={id}
                 aria-describedby={describedBy}
@@ -232,8 +232,7 @@ export function ContactForm() {
               {...register("consent")}
             />
             <span className="font-sans text-[13px] leading-relaxed text-espresso/80">
-              I agree that Finasto may use my details to reply to this message.
-              See our{" "}
+             I agree to FINASTO™ processing my personal information in accordance with its Privacy Policy.{" "}
               <Link
                 href={contactContent.privacyHref}
                 className="text-green-deep underline underline-offset-2 hover:text-copper"

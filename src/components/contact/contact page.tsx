@@ -1,10 +1,10 @@
 "use client";
-import type { ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePointerActive } from "@/app/hooks/usePointerActive";
 import {
-  ChevronDown,
+  Plus,
   Globe2,
   Mail,
   MessageSquareText,
@@ -45,26 +45,89 @@ function ContactCard({
   );
 }
 
-function FaqItem({ item }: { item: (typeof c.faq)[number] }) {
-  const { bind } = usePointerActive();
+function FaqItem({
+  item,
+  index,
+}: {
+  item: (typeof c.faq)[number];
+  index: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const buttonId = `${id}-button`;
+  const panelId = `${id}-panel`;
 
   return (
-    <details
-      {...bind}
-      className="group rounded-2xl border border-white/15 bg-copper/60 px-6 py-5 shadow-[0_10px_30px_-22px_rgba(50,30,24,0.3)] transition-colors open:border-copper/40 data-[active=true]:bg-green-deep [-webkit-tap-highlight-color:transparent]"
+    <div
+      className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ${
+        open
+          ? "border-copper/50 bg-gradient-to-br from-[#10260f] via-green to-[#1b4a24] shadow-[0_24px_50px_-24px_rgba(16,38,15,0.8)]"
+          : "border-border-strong bg-white shadow-[0_8px_24px_-20px_rgba(50,30,24,0.35)] md:hover:-translate-y-0.5 md:hover:border-green/50"
+      }`}
     >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-[22px] leading-snug text-espresso transition-colors group-data-[active=true]:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 [&::-webkit-details-marker]:hidden">
-        {item.q}
-        <ChevronDown
-          className="h-5 w-5 shrink-0 text-copper transition-transform duration-300 group-open:rotate-180"
-          strokeWidth={1.6}
+      {/* dots, only on the open (green) card */}
+      {open && (
+        <div
           aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"
         />
-      </summary>
-      <p className="mt-3 font-sans text-[15px] leading-[1.75] text-espresso/70 transition-colors group-data-[active=true]:text-cream/80">
-        {item.a}
-      </p>
-    </details>
+      )}
+
+      <h3 className="relative">
+        <button
+          type="button"
+          id={buttonId}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={() => setOpen((o) => !o)}
+          className="flex min-h-[68px] w-full cursor-pointer items-center gap-4 px-4 py-4 text-left [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-copper sm:px-6"
+        >
+          {/* <span
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display text-[16px] italic transition-colors duration-300 ${
+              open
+                ? "bg-gradient-to-br from-cream to-copper-light text-green-deep"
+                : "border border-copper/40 bg-green-bg text-green-deep"
+            }`}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span> */}
+
+          <span
+            className={`flex-1 font-display text-[19px] font-semibold leading-snug transition-colors duration-300 sm:text-[22px] ${
+              open ? "text-white" : "text-espresso"
+            }`}
+          >
+            {item.q}
+          </span>
+
+          <span
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+              open
+                ? "rotate-45 border-copper-light/60 bg-white/10 text-copper-light"
+                : "border-copper/40 text-copper"
+            }`}
+          >
+            <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+          </span>
+        </button>
+      </h3>
+
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        inert={!open}
+        className={`relative grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <p className="px-4 pb-6 pl-[72px] pr-6 font-sans text-[15px] leading-[1.8] text-white/85 sm:pl-[80px] sm:pr-10">
+            {item.a}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 export function ContactPage() {
@@ -90,7 +153,7 @@ export function ContactPage() {
       title: "Already ordered?",
       body: (
         <>
-          Check your order status  with your tracking code on the{" "}
+          Check your order status  using your tracking code on the{" "}
           <Link
             href={c.trackOrderHref}
             className="text-white underline underline-offset-2 hover:text-copper-light"
@@ -103,8 +166,8 @@ export function ContactPage() {
     },
     {
       icon: Globe2,
-      title: "Worldwide",
-      body: <>Finasto delivers from Indonesia to doorsteps across the world.</>,
+      title: "Worldwide Delivery",
+      body: <>Bringing the finest of Indonesia closer to you, wherever you are.</>,
     },
   ];
 
@@ -166,28 +229,36 @@ export function ContactPage() {
         </div>
       </section>
 
-      {/* ───────── FAQ ───────── */}
+            {/* ───────── FAQ ───────── */}
       <section
         aria-labelledby="contact-faq"
-        className="mx-auto max-w-[760px] px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24"
+        className="mx-auto max-w-[820px] px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24"
       >
         <div className="text-center">
+          <p className="inline-flex items-center justify-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper">
+            <span aria-hidden="true" className="h-px w-8 bg-copper-light" />
+            Need to know
+            <span aria-hidden="true" className="h-px w-8 bg-copper-light" />
+          </p>
           <h2
             id="contact-faq"
-            className="font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper"
+            className="mt-4 font-display text-[32px] leading-[1.1] text-green-deep sm:text-[40px] md:text-[48px]"
           >
-            Quick answers
+            Frequently asked questions
           </h2>
           <span
             aria-hidden="true"
-            className="mx-auto mt-3 block h-px w-10 bg-copper/60"
+            className="mx-auto mt-5 block h-[2px] w-20 rounded-full bg-gradient-to-r from-transparent via-copper to-transparent"
           />
+          <p className="mx-auto mt-4 max-w-md font-sans text-[15px] leading-relaxed text-warm-gray">
+            Everything about orders, delivery and stockists in one place.
+          </p>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 ">
-        {c.faq.map((item) => (
-  <FaqItem key={item.q} item={item} />
-))}
+        <div className="mt-10 flex flex-col gap-3">
+          {c.faq.map((item, i) => (
+            <FaqItem key={item.q} item={item} index={i} />
+          ))}
         </div>
       </section>
     </main>
