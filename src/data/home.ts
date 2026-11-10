@@ -139,7 +139,7 @@ export const philosophyPromises = [
   },
   {
     id: "delivery",
-    title: "The Art of Every Moment",
+    title: "The Art of  Moment",
     description: "Let every cup become a moment of calm, crafted to be savoured and remembered for years to come.",
   },
 ];
