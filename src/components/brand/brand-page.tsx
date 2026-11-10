@@ -2,7 +2,7 @@
 
 // import { useEffect, useState, type ReactNode } from "react";
 // import Link from "next/link";
-// import { motion, useReducedMotion } from "motion/react";
+// import { motion } from "motion/react";
 // import { IconBadge } from "@/components/ui/icon-badge";
 // import { InteractiveCard } from "@/components/ui/interactive-card";
 // import { ShineCta } from "@/components/ui/shine-cta";
@@ -38,7 +38,7 @@
 //   delay?: number;
 //   className?: string;
 // }) {
-//   const reduce = useReducedMotion();
+//   const reduce = false; // always animate, ignoring the device setting
 //   return (
 //     <motion.div
 //       className={className}
@@ -81,7 +81,7 @@
 //   children: ReactNode;
 //   dark?: boolean;
 // }) {
-//   const reduce = useReducedMotion();
+//   const reduce = false; // always animate, ignoring the device setting
 //   return (
 //     <div className="relative inline-flex h-16 w-16 items-center justify-center">
 //       <motion.span
@@ -160,11 +160,11 @@
 // // ───────── page ─────────
 
 // export function BrandPage() {
-//   const reduce = useReducedMotion();
+//   const reduce = false; // always animate, ignoring the device setting
 
 //   return (
 //     <main className="flex-1 ">
-//       <style>{`@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}`}</style>
+//       <style>{`html{scroll-behavior:smooth}`}</style>
 
 //       {/* ───────── HERO ───────── */}
 //       <section className="relative isolate overflow-hidden bg-gradient-to-br from-green-deep via-[#17391f] to-espresso-deep px-5 pb-12 pt-10 text-center sm:px-8 sm:pb-16 sm:pt-14">
@@ -603,7 +603,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { ShineCta } from "@/components/ui/shine-cta";
 import {
@@ -638,7 +638,7 @@ function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = false; // always animate, ignoring the device setting
   return (
     <motion.div
       className={className}
@@ -681,7 +681,7 @@ function Badge({
   children: ReactNode;
   dark?: boolean;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = false; // always animate, ignoring the device setting
   return (
     <div className="relative inline-flex h-16 w-16 items-center justify-center">
       <motion.span
@@ -760,11 +760,14 @@ function SectionNav() {
 // ───────── page ─────────
 
 export function BrandPage() {
-  const reduce = useReducedMotion();
+  const reduce = false; // always animate, ignoring the device setting
+  
+
+
 
   return (
     <main className="flex-1 ">
-      <style>{`@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}`}</style>
+      <style>{`html{scroll-behavior:smooth}`}</style>
 
       {/* ───────── HERO ───────── */}
       {/* <section className="relative isolate  bg-gradient-to-br  px-5 pb-12 pt-10 text-center sm:px-8 sm:pb-16 sm:pt-14">
@@ -803,9 +806,9 @@ export function BrandPage() {
       <section className="relative isolate h-[260px] overflow-hidden sm:h-[300px] md:h-[360px]">
   <h1 className="sr-only">{BRAND_NAME}</h1>
   <Image
-    src="/brand/final.jpeg"
+    src="/brand/hero.png" 
     alt=""
-    fill
+    fill 
     priority
     sizes="100vw"
     className="object-cover object-center"

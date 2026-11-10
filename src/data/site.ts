@@ -94,6 +94,8 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { label: "FLOVERA", href: "/shop" },
       { label: "BLUE MOON", href: "/shop" },
+      { label: "EXCLUSIVE OFFERS", href: "/shop" },
+
     ],
   },
   {
@@ -101,14 +103,18 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { label: "Shipping & Delivery", href: "/shipping" },
       { label: "Returns & Refunds", href: "/returns" },
-      { label: "FAQ", href: "/faq" },
+       { label: "Contact", href: "/contact" },
+      
     ],
   },
   {
     title: "About Finasto",
     links: [
       { label: "Our Story", href: "/brand" },
-      { label: "Contact", href: "/contact" },
+      { label: "Vision & Mission", href: "/brand" },
+      { label: "Our Commitment to Quality", href: "/brand" },
+
+     
     ],
   },
 ];

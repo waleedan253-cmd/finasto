@@ -42,6 +42,16 @@ export function BackgroundVideo({
     return () => io.disconnect();
   }, [disabled]);
 
+  // iOS needs muted and playsinline as real attributes, not only React props.
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.defaultMuted = true;
+    v.muted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+  }, []);
+
   // Play only while visible, pause when scrolled away.
   useEffect(() => {
     const v = ref.current;
@@ -49,6 +59,22 @@ export function BackgroundVideo({
     if (inView) v.play().catch(() => {});
     else v.pause();
   }, [inView, load]);
+
+  // Second chance: if autoplay was blocked (Low Power Mode), the first tap
+  // on the page starts the video.
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || !load) return;
+    const kick = () => {
+      if (v.paused && inView) v.play().catch(() => {});
+    };
+    window.addEventListener("touchstart", kick, { once: true, passive: true });
+    window.addEventListener("click", kick, { once: true });
+    return () => {
+      window.removeEventListener("touchstart", kick);
+      window.removeEventListener("click", kick);
+    };
+  }, [load, inView]);
 
   if (disabled) return null;
 
@@ -59,11 +85,11 @@ export function BackgroundVideo({
       muted
       loop
       playsInline
-      preload="none"
+      preload={load ? "auto" : "none"}
       aria-hidden="true"
       tabIndex={-1}
       disablePictureInPicture
-      onCanPlay={() => setReady(true)}
+      onPlaying={() => setReady(true)}
       className={`${className} transition-opacity duration-700 ${
         ready ? "opacity-100" : "opacity-0"
       }`}

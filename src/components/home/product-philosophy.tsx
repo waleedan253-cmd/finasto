@@ -240,7 +240,8 @@
 "use client";
 
 import { useRef, useState, type PointerEvent } from "react";
-import { motion, useReducedMotion } from "motion/react";
+// import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import {
   Droplets,
   Sparkles,
@@ -274,7 +275,8 @@ export function ProductPhilosophy() {
   const { eyebrow, heading, intro, steps } = philosophyContent;
   const [active, setActive] = useState(0);
   const last = steps.length - 1;
-  const reduce = useReducedMotion();
+  // const reduce = useReducedMotion();
+    const reduce = false; // this section always animates, ignoring the device setting
 
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleId = useRef(0);
@@ -293,7 +295,7 @@ export function ProductPhilosophy() {
 
   return (
     <section
-      onPointerDown={addRipple}
+   
       className="group relative isolate overflow-hidden border-t border-copper/30 bg-gradient-to-br from-[#10260f] via-green to-[#1b4a24] py-20 text-white sm:py-24 lg:py-32"
     >
       {/* animated blobs */}
@@ -354,15 +356,16 @@ export function ProductPhilosophy() {
         </span>
       ))}
 
-      <div className="relative z-10 mx-auto max-w-[1180px] px-5 sm:px-8">
+      <div className="relative z-10 mx-auto max-w-[1180px] px-5 sm:px-8" >
         {/* Part 1: statement + stepper */}
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-24">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="flex items-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper-light">
-              <span aria-hidden="true" className="h-px w-10 bg-copper-light/60" />
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-24"  >
+          <div className="lg:sticky lg:top-28 lg:self-start" >
+            <p className="flex items-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper-light" >
+              <span aria-hidden="true" className="h-px w-10 bg-copper-light/60"  />
               {eyebrow}
             </p>
             <motion.span
+            
               aria-hidden="true"
               className="mt-4 block h-[2px] w-24 origin-left bg-gradient-to-r from-copper-light via-copper to-transparent"
               initial={{ scaleX: reduce ? 1 : 0 }}
@@ -384,7 +387,7 @@ export function ProductPhilosophy() {
             </p>
           </div>
 
-          <ol className="relative">
+          <ol className="relative" >
             {steps.map((step, i) => {
               const Icon = STEP_ICONS[i % STEP_ICONS.length];
               const isActive = i === active;
@@ -393,9 +396,10 @@ export function ProductPhilosophy() {
               const buttonId = `philosophy-tab-${step.id}`;
 
               return (
-                <li key={step.id} className="relative pb-8 last:pb-0 sm:pb-10">
+                <li key={step.id} className="relative pb-8 last:pb-0 sm:pb-10" >
                   {i < last && (
                     <span
+                    
                       aria-hidden="true"
                       className="absolute bottom-0 left-7 top-16 w-px -translate-x-1/2 bg-white/15"
                     >
@@ -408,6 +412,7 @@ export function ProductPhilosophy() {
                   )}
 
                   <motion.button
+                     onPointerDown={addRipple}
                     type="button"
                     id={buttonId}
                     aria-expanded={isActive}
