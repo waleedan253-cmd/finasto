@@ -694,7 +694,7 @@ export function MobileNav({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 bg-[#0a1a0b]/70 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-50 bg-[#0a1a0b]/80 lg:hidden"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -713,15 +713,11 @@ export function MobileNav({
             {/* animated blobs */}
             <motion.div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-copper/35 blur-[80px]"
-              animate={reduce ? undefined : { x: [0, -24, 0], y: [0, 18, 0] }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-copper/35 blur-[40px]"
             />
             <motion.div
               aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 -left-16 h-60 w-60 rounded-full bg-emerald-300/15 blur-[80px]"
-              animate={reduce ? undefined : { x: [0, 20, 0], y: [0, -16, 0] }}
-              transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute -bottom-24 -left-16 h-60 w-60 rounded-full bg-emerald-300/15 blur-[40px]"
             />
             {/* dots */}
             <div
@@ -732,9 +728,9 @@ export function MobileNav({
             {!reduce && (
               <motion.span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent"
-                initial={{ left: "-40%" }}
-                animate={{ left: "140%" }}
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent will-change-transform"
+                initial={{ x: "-150%" }}
+                animate={{ x: "450%" }}
                 transition={{
                   duration: 2.2,
                   ease: "easeInOut",
@@ -830,7 +826,7 @@ export function MobileNav({
                   const label = (
                     <span
                       className={cn(
-                        "flex-1 font-display text-[20px] leading-tight transition-colors duration-300",
+                        "flex-1 font-display text-[20px] font-semibold leading-tight transition-colors duration-300",
                         active ? "text-white" : "text-white/80",
                       )}
                     >
@@ -922,8 +918,8 @@ export function MobileNav({
                                         "flex min-h-[46px] items-center gap-3 rounded-xl px-3 font-sans text-[15px] transition-colors active:bg-white/10",
                                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper-light",
                                         childActive
-                                          ? "font-medium text-copper-light"
-                                          : "text-white/70",
+                                          ? "font-semibold text-copper-light"
+                                          : "font-medium text-white/80",
                                       )}
                                     >
                                       <span
@@ -970,9 +966,9 @@ export function MobileNav({
                   {!reduce && (
                     <motion.span
                       aria-hidden="true"
-                      className="pointer-events-none absolute inset-y-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/50 to-transparent"
-                      initial={{ left: "-40%" }}
-                      animate={{ left: "140%" }}
+                      className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/50 to-transparent will-change-transform"
+                      initial={{ x: "-150%" }}
+                      animate={{ x: "450%" }}
                       transition={{
                         duration: 1.6,
                         ease: "easeInOut",
