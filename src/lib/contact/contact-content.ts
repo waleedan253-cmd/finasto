@@ -69,7 +69,7 @@ link: { label: "Track Order page", href: "/track-order" },
     },
     {
       q: "Can I return or exchange an item?",
-      a: "Returns and exchanges are subject to our Returns & Refunds Policy.",
+      a: "Returns and exchanges are subject to our Returns & Refunds Policy",
     link: { label: "Returns & Refunds", href: "/returns" },
     },
     {
