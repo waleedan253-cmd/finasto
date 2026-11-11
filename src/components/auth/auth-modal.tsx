@@ -659,7 +659,7 @@ const FEATURES = [
   {
     icon: ClipboardList,
     title: "Order Management",
-    text: "Access your orders, purchase records and order details.",
+    text: "Access your orders, purchase records, order history and detailed order information.",
   },
   {
     icon: Boxes,

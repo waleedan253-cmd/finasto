@@ -52,28 +52,41 @@ export function BackgroundVideo({
     v.setAttribute("playsinline", "");
   }, []);
 
+  const tryPlay = () => {
+    const v = ref.current;
+    if (v && inView && v.paused) v.play().catch(() => {});
+  };
+
   // Play only while visible, pause when scrolled away.
   useEffect(() => {
     const v = ref.current;
     if (!v || !load) return;
-    if (inView) v.play().catch(() => {});
+    if (inView) tryPlay();
     else v.pause();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, load]);
 
   // Second chance: if autoplay was blocked (Low Power Mode), the first tap
   // on the page starts the video.
+   // Fallback for Low Power Mode: the first real touch starts the video,
+  // and the listeners stay until play() actually succeeds.
   useEffect(() => {
     const v = ref.current;
     if (!v || !load) return;
+
+    const events = ["touchend", "pointerdown", "click"] as const;
+    const cleanup = () =>
+      events.forEach((e) => window.removeEventListener(e, kick));
     const kick = () => {
-      if (v.paused && inView) v.play().catch(() => {});
+      if (!inView) return;
+      v.play().then(cleanup).catch(() => {});
     };
-    window.addEventListener("touchstart", kick, { once: true, passive: true });
-    window.addEventListener("click", kick, { once: true });
-    return () => {
-      window.removeEventListener("touchstart", kick);
-      window.removeEventListener("click", kick);
-    };
+
+    if (!v.paused) return;
+    events.forEach((e) =>
+      window.addEventListener(e, kick, { passive: true }),
+    );
+    return cleanup;
   }, [load, inView]);
 
   if (disabled) return null;
@@ -89,6 +102,8 @@ export function BackgroundVideo({
       aria-hidden="true"
       tabIndex={-1}
       disablePictureInPicture
+           autoPlay
+      onCanPlay={tryPlay}
       onPlaying={() => setReady(true)}
       className={`${className} transition-opacity duration-700 ${
         ready ? "opacity-100" : "opacity-0"
