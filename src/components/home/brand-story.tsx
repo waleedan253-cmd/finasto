@@ -22,7 +22,7 @@ export function BrandStory() {
       />
       {/* Darken for text contrast */}
          <BackgroundVideo
-        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1794293149/1110.mp4"
+        src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1794362718/WhatsApp_Video_2026-11-10_at_7.25.36_PM.mp4"
         className="absolute inset-0 h-full w-full object-cover object-center "
       />
           

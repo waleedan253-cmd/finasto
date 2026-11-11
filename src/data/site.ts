@@ -92,9 +92,9 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Shop",
     links: [
-      { label: "FLOVERA", href: "/shop" },
-      { label: "BLUE MOON", href: "/shop" },
-      { label: "EXCLUSIVE OFFERS", href: "/shop" },
+      { label: "Flovera", href: "/shop" },
+      { label: "Blue Moon", href: "/shop" },
+      { label: "Exclusive Offers", href: "/shop" },
 
     ],
   },

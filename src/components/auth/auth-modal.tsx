@@ -604,6 +604,8 @@ import {
   LayoutDashboard,
   Users,
   ShieldCheck,
+  ClipboardList,
+  Boxes,
 } from "lucide-react";
 import { signInAction } from "@/lib/auth/actions";
 import { useAuthLoading } from "@/components/AuthLoadingProvider";
@@ -651,18 +653,18 @@ const PETALS = 12;
 const FEATURES = [
   {
     icon: LayoutDashboard,
-    title: "One clear dashboard",
-    text: "Orders, products and reports in a single calm view.",
+    title: "Dashboard Overview",
+    text: "View your account information and stay up to date with your latest activities.",
   },
   {
-    icon: Users,
-    title: "Affiliate insights",
-    text: "See how every partner is growing, in real time.",
+    icon: ClipboardList,
+    title: "Order Management",
+    text: "Access your orders, purchase records and order details.",
   },
   {
-    icon: ShieldCheck,
-    title: "Protected access",
-    text: "Stockiest and affiliate accounts only, always encrypted.",
+    icon: Boxes,
+    title: "Inventory Overview",
+    text: "Monitor product availability and maintain organised stock records.",
   },
 ];
 
@@ -913,11 +915,11 @@ export function AuthModal({
                 variants={rise}
                 className="mt-6 font-display text-[40px] leading-[1.06] text-white sm:text-[54px] lg:text-[64px]"
               >
-                Welcome back to{" "}
-                <span className="bg-gradient-to-r from-[#fbe7a6] via-[#e8c06a] to-[#b8862b] bg-[length:200%_100%] bg-clip-text text-transparent motion-safe:animate-[goldflow_6s_ease-in-out_infinite]">
-                  your garden
+                Welcome to FINASTO™{" "}
+                {/* <span className="bg-gradient-to-r from-[#fbe7a6] via-[#e8c06a] to-[#b8862b] bg-[length:200%_100%] bg-clip-text text-transparent motion-safe:animate-[goldflow_6s_ease-in-out_infinite]">
+                Your dedicated space to manage your orders and
                 </span>{" "}
-                of growth.
+                product inventory. */}
               </motion.h1>
 
              
@@ -1051,13 +1053,13 @@ export function AuthModal({
                         id="auth-modal-title"
                         className="mt-3 font-display text-[44px] leading-tight text-green"
                       >
-                        Sign in
+                        Sign In
                       </motion.h2>
                       <motion.p
                         variants={rise}
                         className="mt-1 font-sans text-[16px] text-espresso/65"
                       >
-                        Access management
+                       Business Signature Portal
                       </motion.p>
                       <motion.span
                         variants={rise}
@@ -1088,7 +1090,7 @@ export function AuthModal({
 
                       <motion.div variants={rise}>
                         <Field
-                          label="Email"
+                          label="Email Address"
                           type="email"
                           autoComplete="email"
                           autoFocus
@@ -1154,7 +1156,7 @@ export function AuthModal({
                             />
                           )}
                           {busy && <Loader2 className="relative h-4 w-4 animate-spin" />}
-                          <span className="relative">Sign in</span>
+                          <span className="relative">Sign In</span>
                         </button>
                       </motion.div>
                     </form>

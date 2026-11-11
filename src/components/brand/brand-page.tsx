@@ -806,7 +806,7 @@ export function BrandPage() {
       <section className="relative isolate h-[260px] overflow-hidden sm:h-[300px] md:h-[360px]">
   <h1 className="sr-only">{BRAND_NAME}</h1>
   <Image
-    src="/brand/hero.png" 
+    src="/brand/brandfinal.png" 
     alt=""
     fill 
     priority
@@ -972,12 +972,12 @@ export function BrandPage() {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition-all duration-[1400ms] ease-out group-hover:left-[130%] group-hover:opacity-100"
               />
-              <span
+              {/* <span
                 aria-hidden="true"
                 className="pointer-events-none absolute bottom-2 right-6 select-none font-display text-[120px] font-light leading-none text-white/[0.05] sm:text-[160px]"
               >
                 01
-              </span>
+              </span> */}
 
               <Badge dark>
                 <Eye className="h-6 w-6 text-green" strokeWidth={1.5} aria-hidden="true" />
@@ -1027,12 +1027,12 @@ export function BrandPage() {
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-copper/15 to-transparent opacity-0 transition-all duration-[1400ms] ease-out group-hover:left-[130%] group-hover:opacity-100"
               />
-              <span
+              {/* <span
                 aria-hidden="true"
                 className="pointer-events-none absolute bottom-2 right-6 select-none font-display text-[120px] font-light leading-none text-copper/[0.08] sm:text-[160px]"
               >
                 02
-              </span>
+              </span> */}
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute left-0 top-0 h-16 w-16 rounded-tl-[28px] border-l-2 border-t-2 border-copper/60"

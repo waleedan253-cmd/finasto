@@ -4,6 +4,8 @@ import Link from "next/link";
 import { footerColumns, socialLinks } from "@/data/site";
 import { withTM } from "@/lib/brand";
 import { FooterLink, SocialLink } from "@/components/layout/footer-links";
+import { FooterHeadingLine } from "@/components/layout/footer-heading-line";
+import { motion } from "motion/react";
 
 const socialIcons = {
   instagram: InstagramIcon,
@@ -86,6 +88,8 @@ export function SiteFooter() {
                 <h3 className="font-sans text-[13px]  font-bold uppercase tracking-[0.1em] text-green dark:text-copper-light">
                   {withTM(column.title)}
                 </h3>
+                <FooterHeadingLine />
+                
                 <ul className="mt-4 flex flex-col gap-3">
                   {column.links.map((link) => (
                     <li key={link.href}>
@@ -103,6 +107,7 @@ export function SiteFooter() {
               <h3 className="font-sans text-[13px] font-bold uppercase tracking-[0.1em] text-green dark:text-copper-light">
                 Follow Us
               </h3>
+              <FooterHeadingLine />
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {socialLinks.map((social) => {
                   const Icon = socialIcons[social.icon];
@@ -126,6 +131,7 @@ export function SiteFooter() {
             <h3 className="font-sans text-[13px] font-bold  uppercase tracking-[0.1em] text-green dark:text-copper-light">
               Follow Us
             </h3>
+            <FooterHeadingLine />
             <div className="mt-4 flex items-center gap-3">
               {socialLinks.map((social) => {
                 const Icon = socialIcons[social.icon];
