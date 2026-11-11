@@ -1331,7 +1331,7 @@ function GateHalf({ side, open }: { side: "left" | "right"; open: boolean }) {
       <div
         aria-hidden="true"
         className="absolute inset-x-0 bottom-0 z-0 h-[5dvh] border-t border-[#c47a42]/70"
-        style={{ background: "linear-gradient(180deg, #fbf8f0 0%, #e4dccb 55%, #bdb29e 100%)" }}
+        style={{ background: "linear-gradient(180deg, #3f8a58 0%, #2a6e43 55%, #1f5a3a 100%)" }}
       >
         <div className="absolute inset-x-0 top-[45%] h-px bg-black/15" />
         <div className="absolute inset-x-0 top-[78%] h-px bg-black/20" />
@@ -1531,7 +1531,7 @@ export default function IntroGate() {
           className="absolute inset-x-0 bottom-0 h-[34%]"
           style={{
             background:
-              "linear-gradient(0deg, rgba(255,255,248,0.6) 0%, rgba(240,248,232,0.2) 55%, transparent 100%)",
+              "linear-gradient(0deg, rgba(31,90,58,0.55) 0%, rgba(63,138,88,0.2) 55%, transparent 100%)",
           }}
         />
         {/* soft vignette to pull the eye toward the medallion */}
