@@ -49,7 +49,7 @@ function FaqItem({
   item,
   index,
 }: {
-  item: (typeof c.faq)[number];
+ item: { q: string; a: string; link?: { label: string; href: string } };
   index: number;
 }) {
   const [open, setOpen] = useState(false);
@@ -124,6 +124,18 @@ function FaqItem({
         <div className="overflow-hidden">
           <p className="px-4 pb-6 pl-[72px] pr-6 font-sans text-[15px] leading-[1.8] text-white/85 sm:pl-[80px] sm:pr-10">
             {item.a}
+{item.link && (
+  <>
+    {" "}
+    <Link
+      href={item.link.href}
+      className="text-copper-light underline underline-offset-2 hover:text-white"
+    >
+      {item.link.label}
+    </Link>
+    .
+  </>
+)}
           </p>
         </div>
       </div>

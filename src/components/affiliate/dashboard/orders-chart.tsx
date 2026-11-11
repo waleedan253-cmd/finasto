@@ -17,6 +17,8 @@
 //
 // Needs: npm install recharts
 
+"use client";
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -31,6 +33,8 @@ import {
   YAxis,
 } from "recharts";
 import { Empty, Segmented, Select, Skeleton } from "antd";
+import { motion } from "motion/react";
+import { TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 // Type-only import: erased at build, so no server code reaches the browser.
 import type { DashboardDay } from "@/lib/affiliate/dashboard-queries";
@@ -68,6 +72,10 @@ const TEXT_COLOR = "var(--color-espresso)";
 const MUTED_COLOR = "var(--color-warm-gray)";
 const GRID_COLOR = "var(--color-border-strong)";
 
+// "$850", "$1.2k", "$12k": keeps the axis narrow on phones.
+const axisUsd = (v: number) =>
+  v >= 1000 ? `$${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k` : `$${v}`;
+
 export function OrdersChart({
   daily,
   range,
@@ -87,15 +95,21 @@ export function OrdersChart({
 
   // Tooltip uses theme tokens, so it flips with light and dark mode.
   const tooltipProps = {
+    wrapperStyle: { outline: "none" },
     contentStyle: {
       backgroundColor: "var(--color-white)",
-      border: "1px solid var(--color-border-strong)",
+      border: "1px solid var(--color-copper)",
       borderRadius: 12,
-      boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-      fontSize: 12,
+      boxShadow: "0 12px 28px -12px rgba(16,38,15,0.35)",
+      fontSize: 13,
+      padding: "8px 12px",
     },
-    labelStyle: { color: "var(--color-warm-gray)", marginBottom: 4 },
-    itemStyle: { color: "var(--color-espresso)" },
+    labelStyle: {
+      color: "var(--color-warm-gray)",
+      marginBottom: 4,
+      fontWeight: 500,
+    },
+    itemStyle: { color: "var(--color-espresso)", fontWeight: 600 },
   };
 
   // Amounts stay USD; the affiliate's locked currency is shown as "approx.".
@@ -114,6 +128,18 @@ export function OrdersChart({
     return a.approx ? `${a.original} (${a.approx})` : a.original;
   };
 
+  const headline =
+    metric === "commission"
+      ? amount(totalCommission).original
+      : String(totalOrders);
+  // Shrink the number as it gets longer, and wrap instead of cutting it.
+  const headlineSize =
+    headline.length > 16
+      ? "text-[20px]"
+      : headline.length > 12
+        ? "text-[26px]"
+        : "text-[32px]";
+
   const onRangeChange = (value: DashboardRange) => {
     startTransition(() => {
       router.replace(`?range=${value}`, { scroll: false });
@@ -121,39 +147,60 @@ export function OrdersChart({
   };
 
   return (
-    <div
+    <motion.div
       aria-busy={isPending}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "relative flex h-full flex-col overflow-hidden rounded-2xl border border-border-strong bg-white p-4 shadow-[0_1px_2px_rgba(50,30,24,0.06),0_6px_16px_rgba(50,30,24,0.05)] transition-opacity dark:border-border dark:shadow-none sm:p-5",
+        "finasto-card relative flex h-full flex-col overflow-hidden p-4 pt-5 transition-opacity sm:p-5 sm:pt-6",
         isPending && "opacity-60",
       )}
     >
+      {/* thin accent bar on top, same as the other cards */}
       <span
         aria-hidden
-        className="absolute inset-x-0 top-0 h-[2px] bg-copper/70 dark:hidden"
+        className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#10260f] via-green to-[#1b4a24]"
       />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <p className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-warm-gray">
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-green-deep">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#10260f] via-[#1f5a3a] to-[#1b4a24] text-white">
+              <TrendingUp
+                className="h-3.5 w-3.5"
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+            </span>
             {label}
           </p>
-          <p className="mt-2 font-display text-[32px] leading-none tabular-nums text-espresso">
-            {metric === "commission"
-              ? amount(totalCommission).original
-              : totalOrders}
-          </p>
-          <p className="mt-1.5 font-sans text-[12px] text-warm-gray">
+          <motion.p
+            key={metric}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className={`mt-2 break-words font-display font-semibold leading-tight text-espresso [font-variant-numeric:tabular-nums] ${headlineSize}`}
+          >
+            {headline}
+          </motion.p>
+          <p className="mt-1.5 break-words font-sans text-[12px] text-warm-gray">
             {metric === "commission"
               ? `${totalOrders} orders`
               : `${commissionText(totalCommission)} commission`}
             {" · "}
-            {bucket === "month" ? "Months are UTC" : "Days are UTC"}
+            <span className="text-warm-gray/80">
+              {bucket === "month" ? "Months are UTC" : "Days are UTC"}
+            </span>
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           <Segmented<"commission" | "orders">
+            size="large"
+            block
+            className="touch-manipulation font-medium [&_.ant-segmented-item-selected]:!bg-[#1f5a3a] [&_.ant-segmented-item-selected]:!text-white [&_.ant-segmented-thumb]:!bg-[#1f5a3a]"
             value={metric}
             onChange={setMetric}
             options={[
@@ -162,6 +209,7 @@ export function OrdersChart({
             ]}
           />
           <Select<DashboardRange>
+            size="large"
             placeholder=""
             value={range}
             onChange={onRangeChange}
@@ -169,7 +217,7 @@ export function OrdersChart({
               value: r.value,
               label: r.label,
             }))}
-            style={{ minWidth: 150 }}
+            className="w-full sm:w-[170px]"
             aria-label="Chart period"
           />
         </div>
@@ -180,7 +228,7 @@ export function OrdersChart({
           <Skeleton active title={false} paragraph={{ rows: 4 }} />
         </div>
       ) : isEmpty ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="mt-4 flex min-h-[220px] flex-1 items-center justify-center rounded-xl border border-dashed border-copper/30 bg-green-bg/40">
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description="No orders in this period. Share your link and they will appear here."
@@ -208,7 +256,7 @@ export function OrdersChart({
                   >
                     <stop
                       offset="0%"
-                      style={{ stopColor: COMMISSION_COLOR, stopOpacity: 0.35 }}
+                      style={{ stopColor: COMMISSION_COLOR, stopOpacity: 0.45 }}
                     />
                     <stop
                       offset="100%"
@@ -231,7 +279,7 @@ export function OrdersChart({
                   minTickGap={24}
                 />
                 <YAxis
-                  tickFormatter={(v) => `$${v}`}
+                  tickFormatter={(v) => axisUsd(Number(v))}
                   tick={{ fill: MUTED_COLOR, fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
@@ -246,12 +294,26 @@ export function OrdersChart({
                     "Commission",
                   ]}
                 />
+                {/* soft glow: a wide, faint copy of the line (no blur filter) */}
+                <Area
+                  dataKey="commissionUsd"
+                  type="monotone"
+                  stroke={COMMISSION_COLOR}
+                  strokeWidth={9}
+                  strokeOpacity={0.14}
+                  fill="none"
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                  tooltipType="none"
+                />
                 <Area
                   dataKey="commissionUsd"
                   name="Commission"
                   type="monotone"
                   stroke={COMMISSION_COLOR}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
+                  animationDuration={900}
                   fill="url(#commissionFill)"
                   dot={false}
                   activeDot={{
@@ -267,6 +329,18 @@ export function OrdersChart({
                 data={daily}
                 margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
               >
+                <defs>
+                  <linearGradient id="ordersFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="0%"
+                      style={{ stopColor: ORDERS_COLOR, stopOpacity: 1 }}
+                    />
+                    <stop
+                      offset="100%"
+                      style={{ stopColor: ORDERS_COLOR, stopOpacity: 0.5 }}
+                    />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
@@ -297,7 +371,8 @@ export function OrdersChart({
                 <Bar
                   dataKey="orders"
                   name="Orders"
-                  fill={ORDERS_COLOR}
+                  fill="url(#ordersFill)"
+                  animationDuration={800}
                   radius={[6, 6, 0, 0]}
                   maxBarSize={bucket === "month" ? 32 : 20}
                 />
@@ -306,6 +381,6 @@ export function OrdersChart({
           </ResponsiveContainer>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

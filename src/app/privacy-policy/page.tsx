@@ -195,7 +195,7 @@ export default function PrivacyPolicyPage() {
   return (
     <PolicyPage
       path="/privacy-policy"
-      eyebrow="Legal"
+      eyebrow="privacy"
       title="Privacy Policy"
       intro="This Privacy Policy explains what information FINASTO™ collects, how we use it, when it may be shared, how it is protected and how privacy-related enquiries are handled."
       updated={UPDATED}

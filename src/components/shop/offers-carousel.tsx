@@ -77,19 +77,19 @@ export function OffersCarousel({ products }: { products: Product[] }) {
   const heading = (
     <div className="mb-10 text-center">
       <p className="inline-flex items-center justify-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper">
-        <span aria-hidden="true" className="h-px w-8 bg-copper-light" />
-        Limited-time deals
-        <span aria-hidden="true" className="h-px w-8 bg-copper-light" />
-      </p>
-      <h2 className="mt-4 font-display text-[32px] leading-[1.1] text-green-deep sm:text-[40px] md:text-[48px]">
+        {/* <span aria-hidden="true" className="h-px w-8 bg-copper-light" /> */}
+        <h2 className="mt-4 font-display text-[32px] leading-[1.1] text-green-deep sm:text-[40px] md:text-[48px]">
         Exclusive Offers
       </h2>
+        {/* <span aria-hidden="true" className="h-px w-8 bg-copper-light" /> */}
+      </p>
+     
       <span
         aria-hidden="true"
         className="mx-auto mt-5 block h-[2px] w-20 rounded-full bg-gradient-to-r from-transparent via-copper to-transparent"
       />
       <p className="mx-auto mt-4 max-w-md font-sans text-[15px] leading-relaxed text-warm-gray">
-        Handpicked savings on our finest coffee and tea.
+      Discover exclusive offers across our full collection.
       </p>
     </div>
   );

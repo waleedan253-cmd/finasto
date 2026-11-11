@@ -170,7 +170,7 @@ export default function TermsPage() {
   return (
     <PolicyPage
       path="/terms"
-      eyebrow="Legal"
+      eyebrow="terms "
       title="Terms of Service"
       intro="These Terms govern your access to and use of our website, products, promotional programmes and related services. Please read them before using our website or purchasing our products."
       updated={UPDATED}

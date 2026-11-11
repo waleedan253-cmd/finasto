@@ -99,7 +99,7 @@ const router = useRouter();
           isCompact &&
             "bg-cream/90 shadow-[0_10px_30px_-12px_rgba(35,77,42,0.25)]",
         )}
-      >
+      > 
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-copper/60 to-transparent"
@@ -288,12 +288,16 @@ const router = useRouter();
                 openCart();
               }}
               aria-label={count > 0 ? `Open bag, ${count} items` : "Open bag"}
-              className="relative inline-flex h-11 w-11 items-center justify-center text-espresso/85 transition-colors hover:text-espresso"
+              className="group relative inline-flex h-11 w-11 items-center justify-center rounded-full text-espresso/85 transition-all duration-300 hover:text-espresso active:scale-90 [-webkit-tap-highlight-color:transparent]"
               style={{ cursor: "pointer" }}
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-1 scale-50 rounded-full bg-green/15 opacity-0 ring-1 ring-green/40 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-active:scale-100 group-active:opacity-100"
+              />
               <ShoppingBag
                 key={count}
-                className="h-[19px] w-[19px] animate-[finasto-bag-bump_350ms_ease-out] text-green"
+                className="relative h-[19px] w-[19px] animate-[finasto-bag-bump_350ms_ease-out] text-green transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110 group-active:-rotate-12 group-active:scale-110"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />
@@ -371,7 +375,7 @@ const router = useRouter();
         />
       )}
 
-      <MobileNav
+      <MobileNav 
         open={isMobileNavOpen}
         onClose={() => setIsMobileNavOpen(false)}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -415,11 +419,17 @@ function IconButton({
       aria-expanded={expanded}
       onClick={onClick}
       className={cn(
-        "relative inline-flex h-11 w-11 items-center justify-center text-espresso/85 transition-colors hover:text-espresso",
+        "group relative inline-flex h-11 w-11 items-center justify-center rounded-full text-espresso/85 transition-all duration-300 hover:text-espresso active:scale-90 [-webkit-tap-highlight-color:transparent]",
         className,
       )}
     >
-      {children}
+      <span
+        aria-hidden="true"
+        className="absolute inset-1 scale-50 rounded-full bg-copper/15 opacity-0 ring-1 ring-copper/40 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-active:scale-100 group-active:opacity-100"
+      />
+      <span className="relative transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:scale-110 group-active:scale-110">
+        {children}
+      </span>
     </button>
   );
 }

@@ -60,7 +60,8 @@ export const contactContent = {
     },
     {
       q: "How can I track my order?",
-      a: "You can conveniently track your order using your tracking number through the Track Order page.",
+      a: "You can conveniently track your order using your tracking number through the",
+link: { label: "Track Order page", href: "/track-order" },
     },
     {
       q: "Will I have to pay customs duties or import taxes?",
@@ -68,7 +69,8 @@ export const contactContent = {
     },
     {
       q: "Can I return or exchange an item?",
-      a: "Returns and exchanges are subject to our Returns & Refunds Policy and applicable Indonesian laws.",
+      a: "Returns and exchanges are subject to our Returns & Refunds Policy.",
+    link: { label: "Returns & Refunds", href: "/returns" },
     },
     {
       q: "How can I become a FINASTO™ Stockist?",

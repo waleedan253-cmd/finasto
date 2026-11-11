@@ -1610,10 +1610,10 @@ export default function IntroGate() {
               aria-hidden="true"
               className="pointer-events-none absolute inset-[10px] rounded-full border border-dashed border-[#f3c796]/40"
             />
-            <BaliGate
+            {/* <BaliGate
               strokeWidth={1.1}
               className="h-11 w-11 text-[#f3c796] drop-shadow-[0_0_12px_rgba(196,122,66,0.75)] md:h-14 md:w-14"
-            />
+            /> */}
             {/* medallion is deep green, so keep the light-on-dark logo */}
             <Image
               src="/brand/finasto-logo-dark.png"

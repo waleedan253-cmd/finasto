@@ -806,7 +806,7 @@ export function BrandPage() {
       <section className="relative isolate h-[260px] overflow-hidden sm:h-[300px] md:h-[360px]">
   <h1 className="sr-only">{BRAND_NAME}</h1>
   <Image
-    src="/brand/brandfinal.png" 
+    src="/brand/Finasto Sunrise Tea Plantation Banner.png" 
     alt=""
     fill 
     priority

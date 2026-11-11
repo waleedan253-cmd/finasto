@@ -663,8 +663,8 @@ const FEATURES = [
   },
   {
     icon: Boxes,
-    title: "Inventory Overview",
-    text: "Monitor product availability and maintain organised stock records.",
+    title: "Inventory Insights",
+    text: "Access your orders, purchase records, order history and detailed order information.",
   },
 ];
 
@@ -897,13 +897,13 @@ export function AuthModal({
               animate="show"
               className="order-2 text-center lg:order-1 lg:text-left"
             >
-              <motion.p
+              {/* <motion.p
                 variants={rise}
                 className="flex items-center justify-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper-light lg:justify-start"
               >
                 <span aria-hidden="true" className="h-px w-10 bg-copper-light/60" />
                 Finasto management portal
-              </motion.p>
+              </motion.p> */}
 
               <motion.span
                 variants={rise}
@@ -1159,6 +1159,15 @@ export function AuthModal({
                           <span className="relative">Sign In</span>
                         </button>
                       </motion.div>
+<motion.div variants={rise} className="flex flex-col items-center gap-3">
+  <span
+    aria-hidden="true"
+   className="block h-[2px] w-14 rounded-full bg-gradient-to-r from-green to-copper"
+  />
+  <p className="text-center font-sans text-[13px] leading-relaxed text-espresso/65">
+    Exclusive access for registered FINASTO™ Brand Promoters and Stockists.
+  </p>
+</motion.div>
                     </form>
                   </div>
                 </div>
