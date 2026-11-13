@@ -4,8 +4,8 @@
 // affiliate picks: last 7 / 30 / 90 days, last month, or last 12 months
 // (one bar per month).
 //
-// Same look as the rest of the dashboard: Ant Design Card, theme colors
-// (green bars, copper line, espresso text and grid). It is a client
+// Same look as the rest of the dashboard: plain Tailwind and the aff-*
+// theme colors (green bars, gold line, muted text and grid). It is a client
 // component because recharts draws in the browser and the chosen
 // currency comes from useMarket().
 //
@@ -16,8 +16,6 @@
 // commission in the tooltip as "approx." (same rule as withApprox).
 //
 // Needs: npm install recharts
-
-"use client";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -66,11 +64,11 @@ function formatBucket(day: string, bucket: "day" | "month"): string {
 }
 
 // Theme colors (defined as CSS variables in your theme).
-const ORDERS_COLOR = "var(--color-green)";
-const COMMISSION_COLOR = "var(--color-copper)";
-const TEXT_COLOR = "var(--color-espresso)";
-const MUTED_COLOR = "var(--color-warm-gray)";
-const GRID_COLOR = "var(--color-border-strong)";
+const ORDERS_COLOR = "var(--color-aff-green-900)";
+const COMMISSION_COLOR = "var(--color-aff-gold-600)";
+const TEXT_COLOR = "var(--color-aff-green-900)";
+const MUTED_COLOR = "var(--color-aff-muted)";
+const GRID_COLOR = "var(--color-aff-border)";
 
 // "$850", "$1.2k", "$12k": keeps the axis narrow on phones.
 const axisUsd = (v: number) =>
@@ -93,23 +91,23 @@ export function OrdersChart({
   const [isPending, startTransition] = useTransition();
   const [metric, setMetric] = useState<"commission" | "orders">("commission");
 
-  // Tooltip uses theme tokens, so it flips with light and dark mode.
+  // Tooltip uses the aff-* theme tokens.
   const tooltipProps = {
     wrapperStyle: { outline: "none" },
     contentStyle: {
       backgroundColor: "var(--color-white)",
-      border: "1px solid var(--color-copper)",
+      border: "1px solid var(--color-aff-gold-500)",
       borderRadius: 12,
-      boxShadow: "0 12px 28px -12px rgba(16,38,15,0.35)",
+      boxShadow: "0 12px 28px -12px rgba(3,24,7,0.3)",
       fontSize: 13,
       padding: "8px 12px",
     },
     labelStyle: {
-      color: "var(--color-warm-gray)",
+      color: "var(--color-aff-muted)",
       marginBottom: 4,
       fontWeight: 500,
     },
-    itemStyle: { color: "var(--color-espresso)", fontWeight: 600 },
+    itemStyle: { color: "var(--color-aff-green-900)", fontWeight: 600 },
   };
 
   // Amounts stay USD; the affiliate's locked currency is shown as "approx.".
@@ -154,20 +152,20 @@ export function OrdersChart({
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "finasto-card relative flex h-full flex-col overflow-hidden p-4 pt-5 transition-opacity sm:p-5 sm:pt-6",
+        "relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-aff-border bg-white p-4 pt-5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] transition-opacity sm:p-5 sm:pt-6",
         isPending && "opacity-60",
       )}
     >
-      {/* thin accent bar on top, same as the other cards */}
+      {/* thin gold line on top, same as the other cards */}
       <span
         aria-hidden
-        className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#10260f] via-green to-[#1b4a24]"
+        className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-aff-gold-600 via-aff-gold-300 to-aff-gold-600 opacity-70"
       />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-green-deep">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#10260f] via-[#1f5a3a] to-[#1b4a24] text-white">
+          <p className="flex items-center gap-2 font-sans text-[13px] font-semibold text-aff-green-900">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-aff-green-900 text-aff-gold-300">
               <TrendingUp
                 className="h-3.5 w-3.5"
                 strokeWidth={2}
@@ -181,16 +179,16 @@ export function OrdersChart({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className={`mt-2 break-words font-display font-semibold leading-tight text-espresso [font-variant-numeric:tabular-nums] ${headlineSize}`}
+            className={`mt-2 break-words font-display font-semibold leading-tight text-aff-green-900 [font-variant-numeric:tabular-nums] ${headlineSize}`}
           >
             {headline}
           </motion.p>
-          <p className="mt-1.5 break-words font-sans text-[12px] text-warm-gray">
+          <p className="mt-1.5 break-words font-sans text-[12px] text-aff-muted">
             {metric === "commission"
               ? `${totalOrders} orders`
               : `${commissionText(totalCommission)} commission`}
             {" · "}
-            <span className="text-warm-gray/80">
+            <span className="text-aff-muted/80">
               {bucket === "month" ? "Months are UTC" : "Days are UTC"}
             </span>
           </p>
@@ -200,7 +198,7 @@ export function OrdersChart({
           <Segmented<"commission" | "orders">
             size="large"
             block
-            className="touch-manipulation font-medium [&_.ant-segmented-item-selected]:!bg-[#1f5a3a] [&_.ant-segmented-item-selected]:!text-white [&_.ant-segmented-thumb]:!bg-[#1f5a3a]"
+            className="touch-manipulation font-medium [&_.ant-segmented-item-selected]:!bg-aff-green-900 [&_.ant-segmented-item-selected]:!text-aff-gold-300 [&_.ant-segmented-thumb]:!bg-aff-green-900"
             value={metric}
             onChange={setMetric}
             options={[
@@ -228,7 +226,7 @@ export function OrdersChart({
           <Skeleton active title={false} paragraph={{ rows: 4 }} />
         </div>
       ) : isEmpty ? (
-        <div className="mt-4 flex min-h-[220px] flex-1 items-center justify-center rounded-xl border border-dashed border-copper/30 bg-green-bg/40">
+        <div className="mt-4 flex min-h-[220px] flex-1 items-center justify-center rounded-xl border border-dashed border-aff-gold-500/40 bg-aff-ivory">
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description="No orders in this period. Share your link and they will appear here."

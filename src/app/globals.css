@@ -61,6 +61,238 @@
   --font-display: var(--font-cormorant);
   --font-sans: var(--font-inter);
 }
+
+
+
+/* Affiliate dashboard palette (new, isolated, does not touch existing tokens) */
+
+.aff-orders-table .ant-table {
+  background: transparent;
+}
+.aff-orders-table .ant-table-thead > tr > th {
+  background: var(--color-aff-ivory);
+  color: var(--color-aff-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-aff-border);
+}
+.aff-orders-table .ant-table-thead > tr > th::before {
+  display: none; /* antd's little column separators */
+}
+.aff-orders-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-aff-border) 60%, transparent);
+  padding-block: 14px;
+}
+.aff-orders-table .ant-table-tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+.aff-orders-table .ant-table-tbody > tr:hover > td {
+  background: var(--color-aff-ivory);
+}
+.aff-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--color-aff-border);
+  background: #fff;
+  box-shadow: 0 10px 30px -22px rgba(172, 131, 78, 0.45);
+}
+.aff-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--color-aff-gold-300), transparent);
+}
+.aff-payout-card .ant-card-head {
+  background: var(--color-aff-ivory);
+  border-bottom: 1px solid var(--color-aff-border);
+  padding-inline: 16px;
+}
+.aff-payout-card .ant-card-head-wrapper {
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.aff-payout-card .ant-card-head-title {
+  font-family: var(--font-display, inherit);
+  font-size: 18px;
+  font-weight: 600;
+  white-space: normal;
+  color: var(--color-aff-green-900);
+}
+.aff-payout-card .ant-card-extra {
+  padding-block: 0;
+  font-size: 12px;
+}
+.aff-payout-card .ant-card-body {
+  padding: 16px;
+}
+@media (min-width: 640px) {
+  .aff-payout-card .ant-card-head { padding-inline: 20px; }
+  .aff-payout-card .ant-card-body { padding: 20px; }
+}
+
+/* Primary button: dark green with gold text. Disabled keeps antd's grey. */
+.aff-payout-card .ant-btn-primary:not(:disabled) {
+  background: var(--color-aff-green-900);
+  color: var(--color-aff-gold-300);
+  border: 1px solid color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent);
+  box-shadow: none;
+}
+.aff-payout-card .ant-btn-primary:not(:disabled):hover {
+  background: var(--color-aff-green-800);
+  color: var(--color-aff-gold-300);
+}
+.aff-payout-card .ant-btn-default:not(:disabled):hover {
+  border-color: var(--color-aff-gold-500);
+  color: var(--color-aff-green-900);
+}
+/* Expanded row: ivory instead of antd's grey. */
+.aff-payout-card .ant-table-expanded-row > .ant-table-cell {
+  background: var(--color-aff-ivory);
+}
+
+/* Rejected alert: same muted red as the Rejected badge. */
+.aff-payout-card .ant-alert-error {
+  background: rgba(190, 60, 50, 0.06);
+  border: 1px solid rgba(190, 60, 50, 0.3);
+}
+.aff-payout-card .ant-alert-error .ant-alert-message {
+  color: #A3342B;
+  font-weight: 600;
+}
+/* Confirm payout dialog. Rendered in a portal, so it is scoped by
+   rootClassName="aff-dialog" and not by .aff-payout-card. */
+.aff-dialog .ant-modal-content {
+  border-radius: 16px;
+  border: 1px solid var(--color-aff-border);
+  padding: 20px;
+}
+.aff-dialog .ant-modal-title {
+  font-family: var(--font-display, inherit);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-aff-green-900);
+}
+.aff-dialog .ant-modal-body {
+  color: var(--color-aff-green-900);
+}
+
+/* Bordered tables: ivory label column, soft lines. */
+.aff-dialog .ant-descriptions-view {
+  border-color: var(--color-aff-border);
+  border-radius: 12px;
+}
+.aff-dialog .ant-descriptions-row > th,
+.aff-dialog .ant-descriptions-row > td {
+  border-color: var(--color-aff-border);
+}
+.aff-dialog .ant-descriptions-item-label {
+  background: var(--color-aff-ivory);
+  color: var(--color-aff-muted);
+}
+
+/* Error alert: same muted red as the Rejected badge. */
+.aff-dialog .ant-alert-error {
+  background: rgba(190, 60, 50, 0.06);
+  border: 1px solid rgba(190, 60, 50, 0.3);
+}
+.aff-dialog .ant-alert-error .ant-alert-message {
+  color: #A3342B;
+  font-weight: 600;
+}
+
+/* Buttons: same as the payout card. Disabled and loading keep antd's look. */
+.aff-dialog .ant-btn-primary:not(:disabled) {
+  background: var(--color-aff-green-900);
+  color: var(--color-aff-gold-300);
+  border: 1px solid color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent);
+  box-shadow: none;
+}
+.aff-dialog .ant-btn-primary:not(:disabled):hover {
+  background: var(--color-aff-green-800);
+  color: var(--color-aff-gold-300);
+}
+.aff-dialog .ant-btn-default:not(:disabled):hover {
+  border-color: var(--color-aff-gold-500);
+  color: var(--color-aff-green-900);
+}
+/* Orders table inside an expanded row: white card on the ivory row. */
+.aff-payout-card .ant-table-expanded-row .ant-table {
+  background: var(--color-white);
+  border: 1px solid var(--color-aff-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+/* Settings forms. Scoped by .aff-antd-card. */
+.aff-antd-card .ant-form-item-label > label {
+  color: var(--color-aff-green-900);
+  font-weight: 500;
+}
+.aff-antd-card .ant-form-item-extra {
+  color: var(--color-aff-muted);
+  font-size: 12px;
+}
+
+/* Locked fields (profile after first save): ivory with readable muted text.
+   -webkit-text-fill-color is for Safari, which ignores `color` on disabled inputs. */
+.aff-antd-card .ant-input[disabled],
+.aff-antd-card .ant-input-disabled,
+.aff-antd-card .ant-input-affix-wrapper-disabled,
+.aff-antd-card .ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background: var(--color-aff-ivory);
+  color: var(--color-aff-muted);
+  -webkit-text-fill-color: var(--color-aff-muted);
+}
+
+/* Info alert (bank form, no details yet): dark green tint like the Approved badge. */
+.aff-antd-card .ant-alert-info {
+  background: color-mix(in srgb, var(--color-aff-green-900) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-aff-green-900) 20%, transparent);
+}
+.aff-antd-card .ant-alert-info .ant-alert-message,
+.aff-antd-card .ant-alert-info .ant-alert-icon {
+  color: var(--color-aff-green-900);
+}
+
+/* Warning alert (profile, not completed): gold tint like the Requested badge. */
+.aff-antd-card .ant-alert-warning {
+  background: color-mix(in srgb, var(--color-aff-gold-400) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent);
+}
+.aff-antd-card .ant-alert-warning .ant-alert-message,
+.aff-antd-card .ant-alert-warning .ant-alert-icon {
+  color: #7A5526;
+}
+.aff-antd-card .ant-alert-warning .ant-alert-message {
+  font-weight: 600;
+}
+
+/* Dropdown lists. Portaled to <body>, so scoped by popupClassName. */
+.ant-select-dropdown.aff-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: var(--color-aff-ivory);
+}
+.ant-select-dropdown.aff-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: color-mix(in srgb, var(--color-aff-green-900) 8%, transparent);
+  color: var(--color-aff-green-900);
+}
+@theme {
+  --color-aff-green-950: #031807;
+  --color-aff-green-900: #0a210c;
+  --color-aff-green-800: #183110;
+  --color-aff-gold-600: #ac834e;
+  --color-aff-gold-500: #c1a576;
+  --color-aff-gold-400: #e6c399;
+  --color-aff-gold-300: #f1cc9c;
+   --color-aff-cream-50: #fdeedc;
+  --color-aff-ivory: #faf6ef;
+  --color-aff-border: #e4d9c5;
+  --color-aff-muted: #6f675c;
+}
 .dark .hover\:bg-espresso-deep:hover,
 .dark .hover\:bg-espresso:hover {
   background-color: var(--color-copper-light);
@@ -344,4 +576,24 @@ html {
   .glow-icon-svg {
     transition: none;
   }
+}
+/* Affiliate banner: one slow gold sheen, transform only */
+@keyframes aff-sheen {
+  0%   { transform: translateX(-120%) skewX(-12deg); }
+  60%, 100% { transform: translateX(260%) skewX(-12deg); }
+}
+
+.aff-sheen::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 30%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(241, 204, 156, 0.18), transparent);
+  animation: aff-sheen 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aff-sheen::after { animation: none; }
 }

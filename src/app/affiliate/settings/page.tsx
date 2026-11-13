@@ -9,7 +9,7 @@ import { Metadata } from "next";
 // adds a short intro. Role and active-status checks happen in
 // app/affiliate/layout.tsx; getMySettings() re-checks the role itself.
 export const metadata: Metadata = {
-  title: "Setting ",
+  title: "Settings",
   robots: { index: false, follow: false },
 };
 export default async function AffiliateSettingsPage() {

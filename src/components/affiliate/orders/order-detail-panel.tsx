@@ -114,7 +114,7 @@ export function OrderDetailPanel({
   const sameCurrency = order.orderCurrency === "USD";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 sm:gap-6">
       <div>
         <Breadcrumb
           items={[
@@ -127,51 +127,64 @@ export function OrderDetailPanel({
           ]}
         />
 
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="truncate font-display text-[28px] leading-tight text-espresso">
-              {order.orderNumber}
-            </h1>
-            <p className="mt-1 font-sans text-[14px] text-warm-gray">
-              Placed {fmtDateTime(order.orderedAt)}
-            </p>
+        <header className="mt-4 rounded-2xl bg-gradient-to-br from-aff-gold-600 via-aff-gold-300 to-aff-gold-500 p-[1.5px] shadow-[0_18px_44px_-20px_rgba(172,131,78,0.55)]">
+          <div className="relative isolate overflow-hidden rounded-[15px] bg-gradient-to-br from-aff-green-950 via-aff-green-900 to-aff-green-800">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-16 -top-16 -z-10 h-48 w-48 rounded-full bg-aff-gold-400/15 blur-3xl"
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
+            />
+            <div className="relative z-10 flex flex-col gap-3 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-6">
+              <div className="min-w-0">
+                <h1 className="break-all font-display text-[22px] font-semibold leading-tight text-aff-gold-300 sm:text-[30px]">
+                  {order.orderNumber}
+                </h1>
+                <p className="mt-1.5 font-sans text-[13px] text-aff-cream-50/75 sm:text-[14px]">
+                  Placed {fmtDateTime(order.orderedAt)}
+                </p>
+              </div>
+              {/* Light chip so the status badges stay readable on dark green */}
+              <div className="flex w-fit max-w-full flex-wrap gap-2 rounded-2xl bg-aff-ivory p-1.5">
+                <OrderStatusBadge status={order.status} />
+                <PaymentStatusBadge status={order.paymentStatus} />
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <OrderStatusBadge status={order.status} />
-            <PaymentStatusBadge status={order.paymentStatus} />
-          </div>
-        </div>
+        </header>
       </div>
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         {/* ─────────── Main column ─────────── */}
-        <div className="flex flex-col gap-6 lg:col-span-2">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:col-span-2">
           {/* Items */}
-          <section className="finasto-card p-5 sm:p-6">
-            <h2 className="font-display text-[20px] leading-tight text-espresso">
+          <section className="aff-card p-4 sm:p-6">
+            <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
               Items
             </h2>
 
-            <ul className="mt-4 divide-y divide-border">
+            <ul className="mt-4 divide-y divide-aff-border">
               {order.items.map((item, index) => (
                 <li
                   key={`${item.productName}-${index}`}
                   className="flex items-start justify-between gap-4 py-3"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-sans text-[14px] font-medium text-espresso">
+                    <p className="truncate font-sans text-[14px] font-medium text-aff-green-900">
                       {item.productName}
                     </p>
-                    <p className="font-sans text-[12px] text-warm-gray">
+                    <p className="font-sans text-[12px] 	text-aff-muted">
                       {item.variantName ? `${item.variantName} · ` : ""}
                       {item.quantity} × {formatPrice(item.unitPriceUsd, "USD")}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end">
-                    <span className="font-sans text-[14px] tabular-nums text-espresso">
+                    <span className="font-sans text-[14px] tabular-nums text-aff-green-900">
                       {formatPrice(item.lineTotalUsd, "USD")}
                     </span>
                     {approxUsd(item.lineTotalUsd) && (
-                      <span className="font-sans text-[11px] text-warm-gray">
+                      <span className="font-sans text-[11px] 	text-aff-muted">
                         {approxUsd(item.lineTotalUsd)}
                       </span>
                     )}
@@ -180,13 +193,13 @@ export function OrderDetailPanel({
               ))}
             </ul>
 
-            <dl className="mt-2 space-y-1.5 border-t border-border pt-4 font-sans text-[13px]">
+            <dl className="mt-2 space-y-1.5 border-t border-aff-border pt-4 font-sans text-[13px]">
               <div className="flex justify-between gap-4">
-                <dt className="text-warm-gray">Order total (USD)</dt>
-                <dd className="text-right tabular-nums text-espresso">
+                <dt className="	text-aff-muted">Order total (USD)</dt>
+                <dd className="text-right tabular-nums text-aff-green-900">
                   {formatPrice(order.totalUsd, "USD")}
                   {approxUsd(order.totalUsd) && (
-                    <span className="block text-[11px] text-warm-gray">
+                    <span className="block text-[11px] 	text-aff-muted">
                       {approxUsd(order.totalUsd)}
                     </span>
                   )}
@@ -194,13 +207,13 @@ export function OrderDetailPanel({
               </div>
               {!sameCurrency && (
                 <div className="flex justify-between gap-4">
-                  <dt className="text-warm-gray">
+                  <dt className="	text-aff-muted">
                     Customer paid ({order.orderCurrency})
                   </dt>
-                  <dd className="text-right tabular-nums text-espresso">
+                  <dd className="text-right tabular-nums text-aff-green-900">
                     {formatPrice(order.totalAmount, order.orderCurrency)}
                     {approxPaid && (
-                      <span className="block text-[11px] text-warm-gray">
+                      <span className="block text-[11px] 	text-aff-muted">
                         {approxPaid}
                       </span>
                     )}
@@ -208,14 +221,14 @@ export function OrderDetailPanel({
                 </div>
               )}
             </dl>
-            <p className="mt-3 font-sans text-[12px] text-warm-gray">
+            <p className="mt-3 font-sans text-[12px] 	text-aff-muted">
               Item prices are shown in USD.
             </p>
           </section>
 
           {/* Timeline */}
-          <section className="finasto-card p-5 sm:p-6">
-            <h2 className="font-display text-[20px] leading-tight text-espresso">
+          <section className="aff-card p-4 sm:p-6">
+            <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
               Order timeline
             </h2>
 
@@ -225,8 +238,8 @@ export function OrderDetailPanel({
                   <span
                     className={
                       step.done
-                        ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-espresso text-cream"
-                        : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-border-strong text-warm-gray"
+                        ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-aff-green-900 text-aff-gold-300"
+                        : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-aff-border 	text-aff-muted"
                     }
                   >
                     {step.done ? (
@@ -247,13 +260,13 @@ export function OrderDetailPanel({
                     <p
                       className={
                         step.done
-                          ? "font-sans text-[14px] text-espresso"
-                          : "font-sans text-[14px] text-warm-gray"
+                          ? "font-sans text-[14px] text-aff-green-900"
+                          : "font-sans text-[14px] 	text-aff-muted"
                       }
                     >
                       {step.label}
                     </p>
-                    <p className="font-sans text-[12px] text-warm-gray">
+                    <p className="font-sans text-[12px] 	text-aff-muted">
                       {step.at ? fmtDateTime(step.at) : "Not yet"}
                     </p>
                   </div>
@@ -264,25 +277,25 @@ export function OrderDetailPanel({
         </div>
 
         {/* ─────────── Side column ─────────── */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
           {/* Commission */}
-          <section className="finasto-card p-5 sm:p-6">
-            <h2 className="font-display text-[20px] leading-tight text-espresso">
+          <section className="aff-card p-4 sm:p-6">
+            <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
               Your commission
             </h2>
 
-            <p className="mt-4 font-sans text-[28px] font-medium tabular-nums text-espresso">
+            <p className="mt-4 font-display text-[30px] font-semibold tabular-nums text-aff-green-900 sm:text-[34px]">
               {showCommissionAmount
                 ? formatPrice(order.commissionUsd, "USD")
                 : "—"}
             </p>
             {showCommissionAmount && approxUsd(order.commissionUsd) && (
-              <p className="font-sans text-[12px] text-warm-gray">
+              <p className="font-sans text-[12px] 	text-aff-muted">
                 {approxUsd(order.commissionUsd)}
               </p>
             )}
             {showCommissionAmount && (
-              <p className="font-sans text-[12px] text-warm-gray">
+              <p className="font-sans text-[12px] 	text-aff-muted">
                 {order.commissionPercent}% of{" "}
                 {formatPrice(order.totalUsd, "USD")}
               </p>
@@ -291,16 +304,16 @@ export function OrderDetailPanel({
             <div className="mt-3">
               <CommissionStateBadge state={order.commissionState} />
             </div>
-            <p className="mt-3 font-sans text-[13px] leading-relaxed text-warm-gray">
+            <p className="mt-3 font-sans text-[13px] leading-relaxed 	text-aff-muted">
               {commissionNote(order)}
             </p>
 
             {order.payoutRequestNumber && (
-              <p className="mt-3 font-sans text-[13px] text-warm-gray">
+              <p className="mt-3 font-sans text-[13px] 	text-aff-muted">
                 Payout request:{" "}
                 <Link
                   href="/affiliate/payouts"
-                  className="font-medium text-espresso hover:text-copper"
+                  className="font-medium text-aff-green-900 hover:text-aff-gold-600"
                 >
                   {order.payoutRequestNumber}
                 </Link>
@@ -309,21 +322,21 @@ export function OrderDetailPanel({
           </section>
 
           {/* Customer */}
-          <section className="finasto-card p-5 sm:p-6">
-            <h2 className="font-display text-[20px] leading-tight text-espresso">
+          <section className="aff-card p-4 sm:p-6">
+            <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
               Customer
             </h2>
 
-            <p className="mt-4 font-sans text-[14px] text-espresso">
+            <p className="mt-4 font-sans text-[14px] text-aff-green-900">
               {order.customerFirstName}
             </p>
             {order.customerEmailMasked && (
-              <p className="font-sans text-[13px] text-warm-gray">
+              <p className="font-sans text-[13px] 	text-aff-muted">
                 {order.customerEmailMasked}
               </p>
             )}
 
-            <p className="mt-4 flex items-start gap-2 font-sans text-[12px] leading-relaxed text-warm-gray">
+            <p className="mt-4 flex items-start gap-2 font-sans text-[12px] leading-relaxed 	text-aff-muted">
               <ShieldCheck
                 className="mt-0.5 h-4 w-4 shrink-0"
                 strokeWidth={1.6}

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { RateMap } from "@/lib/currency";
 import { getAffiliateDisplay } from "@/lib/affiliate/display-currency";
 
-export const metadata = { title: "specific order " };
+export const metadata = { title: "Order details" };
 
 // /affiliate/orders/<order number>   e.g. /affiliate/orders/FIN-20261007-XS7Z
 //

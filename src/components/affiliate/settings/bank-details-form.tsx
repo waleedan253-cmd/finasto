@@ -128,12 +128,12 @@ export function BankDetailsForm({
 
   return (
     <Card
-      className="finasto-card"
+      className="aff-card aff-antd-card"
       bordered={false}
       style={{ background: "var(--color-white)" }}
       title="Bank details"
       extra={
-        <span className="text-[13px] text-warm-gray">
+        <span className="text-[13px] text-aff-muted">
           Where Finasto pays your commissions
         </span>
       }
@@ -218,6 +218,7 @@ export function BankDetailsForm({
             >
               <AutoComplete
                 allowClear
+                popupClassName="aff-dropdown"
                 options={settings.countries.map((v) => ({ value: v }))}
                 placeholder="Pick one or type the country"
                 filterOption={filterOption}
@@ -239,6 +240,7 @@ export function BankDetailsForm({
             >
               <AutoComplete
                 allowClear
+                popupClassName="aff-dropdown"
                 options={COMMON_CURRENCIES.map((v) => ({ value: v }))}
                 placeholder="e.g. USD"
                 filterOption={filterOption}
@@ -300,7 +302,7 @@ export function BankDetailsForm({
           </Col>
         </Row>
 
-        <p className="mb-4 text-[13px] leading-relaxed text-warm-gray">
+        <p className="mb-4 text-[13px] leading-relaxed text-aff-muted">
           Your bank details are visible only to you and the Finasto admin team.
         </p>
 

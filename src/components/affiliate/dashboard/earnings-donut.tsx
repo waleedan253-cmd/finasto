@@ -182,15 +182,252 @@
 //   );
 // }
 
+// "use client";
+
+// import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+// import { motion } from "motion/react";
+// import { PieChart as PieIcon } from "lucide-react";
+// import type { DashboardEarnings } from "@/lib/affiliate/dashboard-queries";
+// import { withApprox, type RateMap } from "@/lib/currency";
+
+// const EASE = [0.22, 1, 0.36, 1] as const;
+
+// export function EarningsDonut({
+//   earnings,
+//   rates,
+//   currency,
+// }: {
+//   earnings: DashboardEarnings;
+//   rates: RateMap;
+//   currency: string;
+// }) {
+//   const usd = (n: number) => withApprox(n, "USD", currency, rates).original;
+
+//   // The card is always dark green (in light and dark mode), so the slice
+//   // colors are fixed, bright values that stay readable on it.
+//   // Negative values (refund adjustments) are shown as 0 in the donut.
+//   const slices = [
+//     {
+//       name: "Available",
+//       value: Math.max(earnings.availableUsd, 0),
+//       color: "#e0a56d",
+//     },
+//     {
+//       name: "Pending",
+//       value: Math.max(earnings.pendingUsd, 0),
+//       color: "#f3e3c1",
+//     },
+//     {
+//       name: "In review",
+//       value: Math.max(earnings.inReviewUsd, 0),
+//       color: "#7fb3cc",
+//     },
+//     {
+//       name: "Paid out",
+//       value: Math.max(earnings.paidUsd, 0),
+//       color: "#8fcb78",
+//     },
+//   ];
+
+//   const total = slices.reduce((sum, s) => sum + s.value, 0);
+//   const totalApprox = withApprox(total, "USD", currency, rates).approx;
+
+//   const totalText = usd(total);
+//   // Shrink the font as the amount gets longer, and wrap instead of cutting it.
+//   const totalSize =
+//     totalText.length > 18
+//       ? "text-[20px]"
+//       : totalText.length > 13
+//         ? "text-[24px]"
+//         : "text-[28px]";
+//   const longTotal = totalText.length > 16;
+//   const paidOut = slices.find((s) => s.name === "Paid out")?.value ?? 0;
+//   const paidPct = total > 0 ? Math.round((paidOut / total) * 100) : 0;
+
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0, y: 24 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true, margin: "-40px" }}
+//       // whileHover={{ y: -3 }}
+//       transition={{ duration: 0.7, ease: EASE }}
+//       className="relative isolate flex flex-col overflow-hidden rounded-2xl border border-copper/30 bg-gradient-to-br from-[#10260f] via-[#1f5a3a] to-[#1b4a24] p-4 text-white shadow-[0_24px_50px_-26px_rgba(16,38,15,0.85)] sm:p-5"
+//     >
+//       {/* dots */}
+//       <div
+//         aria-hidden
+//         className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"
+//       />
+//       {/* static copper glow in the corner */}
+//       <div
+//         aria-hidden
+//         className="pointer-events-none absolute -right-14 -top-14 -z-10 h-44 w-44 rounded-full bg-copper/30 blur-[50px]"
+//       />
+//       {/* thin copper line on top, matching the other cards' accent bars */}
+//       <span
+//         aria-hidden
+//         className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-copper via-copper-light to-copper"
+//       />
+
+//       <p className="flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-copper-light">
+//         <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/10 text-copper-light ring-1 ring-copper/40">
+//           <PieIcon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
+//         </span>
+//         Earnings split
+//       </p>
+
+//       {total > 0 && (
+//         <div className="mt-2">
+//           <p
+//             className={`break-words font-display font-semibold leading-tight text-white [font-variant-numeric:tabular-nums] ${totalSize}`}
+//           >
+//             {totalText}
+//           </p>
+//           {totalApprox && (
+//             <p className="mt-0.5 break-words font-sans text-[12px] text-white/70 [font-variant-numeric:tabular-nums]">
+//               {totalApprox}
+//             </p>
+//           )}
+//           <p className="mt-1 font-sans text-[12px] text-white/60">
+//             Total across all statuses
+//           </p>
+//         </div>
+//       )}
+
+//       {total === 0 ? (
+//         <div className="flex flex-col items-center gap-3 py-8">
+//           <span
+//             aria-hidden
+//             className="h-20 w-20 rounded-full border-[6px] border-dashed border-copper-light/30"
+//           />
+//           <p className="text-center font-sans text-[13px] text-white/70">
+//             No earnings yet. Your split will appear here after your first
+//             commission.
+//           </p>
+//         </div>
+//       ) : (
+//         <>
+//           <div
+//             className="relative mx-auto mt-3 h-[160px] w-full"
+//             role="img"
+//             aria-label={`Earnings split, total ${totalText}, ${paidPct}% paid out`}
+//           >
+//             {/* soft static glow behind the donut */}
+//             <div
+//               aria-hidden
+//               className="pointer-events-none absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(224,165,109,0.22)_0%,rgba(224,165,109,0.06)_45%,transparent_70%)]"
+//             />
+
+//             <ResponsiveContainer width="100%" height="100%">
+//               <PieChart>
+//                 <Pie
+//                   data={slices}
+//                   dataKey="value"
+//                   nameKey="name"
+//                   innerRadius="68%"
+//                   outerRadius="92%"
+//                   paddingAngle={
+//                     slices.filter((s) => s.value > 0).length > 1 ? 3 : 0
+//                   }
+//                   startAngle={90}
+//                   endAngle={-270}
+//                   animationDuration={900}
+//                   animationEasing="ease-out"
+//                   stroke="none"
+//                 >
+//                   {slices.map((s) => (
+//                     <Cell key={s.name} fill={s.color} />
+//                   ))}
+//                 </Pie>
+//                 <Tooltip
+//                   formatter={(value, name) => [
+//                     usd(Number(value)),
+//                     String(name),
+//                   ]}
+//                   contentStyle={{
+//                     backgroundColor: "#10260f",
+//                     border: "1px solid rgba(224,165,109,0.45)",
+//                     borderRadius: 12,
+//                     fontSize: 12,
+//                     color: "#ffffff",
+//                   }}
+//                   itemStyle={{ color: "#ffffff" }}
+//                   labelStyle={{ color: "#e0a56d" }}
+//                 />
+//               </PieChart>
+//             </ResponsiveContainer>
+
+//             {/* The hole only holds a short value ("100%" at most), so it can
+//                 never be crossed by a long amount. */}
+//             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+//               <span className="font-display text-[30px] font-semibold leading-none text-white [font-variant-numeric:tabular-nums]">
+//                 {paidPct}%
+//               </span>
+//               <span className="mt-1.5 font-sans text-[10.5px] font-medium uppercase tracking-[0.12em] text-copper-light">
+//                 paid out
+//               </span>
+//             </div>
+//           </div>
+
+//           <ul
+//             className={`mt-4 grid grid-cols-1 gap-2 ${
+//               longTotal ? "" : "min-[420px]:grid-cols-2"
+//             }`}
+//           >
+//             {slices.map((s, i) => {
+//               const pct = Math.round((s.value / total) * 100);
+//               return (
+//                 <motion.li
+//                   key={s.name}
+//                   initial={{ opacity: 0, y: 12 }}
+//                   whileInView={{ opacity: 1, y: 0 }}
+//                   viewport={{ once: true }}
+//                   transition={{ duration: 0.5, ease: EASE, delay: 0.3 + i * 0.08 }}
+//                   className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2.5 font-sans transition-colors [@media(hover:hover)]:hover:border-copper/50 [@media(hover:hover)]:hover:bg-white/10"
+//                 >
+//                   <div className="flex items-center gap-2 text-[12px]">
+//                     <span
+//                       aria-hidden
+//                       className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/10"
+//                       style={{ backgroundColor: s.color, color: s.color }}
+//                     />
+//                     <span className="truncate text-white/70">{s.name}</span>
+//                     <span className="ml-auto text-[11px] font-medium text-copper-light">
+//                       {pct}%
+//                     </span>
+//                   </div>
+//                   <p className="mt-1 break-words text-[14px] font-semibold leading-snug text-white [font-variant-numeric:tabular-nums]">
+//                     {usd(s.value)}
+//                   </p>
+//                 </motion.li>
+//               );
+//             })}
+//           </ul>
+//         </>
+//       )}
+//     </motion.div>
+//   );
+// }
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { PieChart as PieIcon } from "lucide-react";
 import type { DashboardEarnings } from "@/lib/affiliate/dashboard-queries";
 import { withApprox, type RateMap } from "@/lib/currency";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+// Every slice color lives here. Recharts draws SVG, so it needs real color
+// values (CSS variables), not Tailwind class names. Gold and cream come
+// from the theme; paid out uses the success status color, the same as the
+// "Paid out" badge in Recent orders.
+const SLICE_COLOR = {
+  available: "var(--color-aff-gold-300)",
+  pending: "var(--color-aff-gold-600)",
+  inReview: "var(--color-aff-cream-50)",
+  paidOut: "#2F9E6B",
+} as const;
 
 export function EarningsDonut({
   earnings,
@@ -201,31 +438,32 @@ export function EarningsDonut({
   rates: RateMap;
   currency: string;
 }) {
+  const reduce = useReducedMotion();
   const usd = (n: number) => withApprox(n, "USD", currency, rates).original;
 
-  // The card is always dark green (in light and dark mode), so the slice
-  // colors are fixed, bright values that stay readable on it.
+  // The card is always dark green, so the slice colors (SLICE_COLOR above)
+  // are chosen to stay readable on it.
   // Negative values (refund adjustments) are shown as 0 in the donut.
   const slices = [
     {
       name: "Available",
       value: Math.max(earnings.availableUsd, 0),
-      color: "#e0a56d",
+      color: SLICE_COLOR.available,
     },
     {
       name: "Pending",
       value: Math.max(earnings.pendingUsd, 0),
-      color: "#f3e3c1",
+      color: SLICE_COLOR.pending,
     },
     {
       name: "In review",
       value: Math.max(earnings.inReviewUsd, 0),
-      color: "#7fb3cc",
+      color: SLICE_COLOR.inReview,
     },
     {
       name: "Paid out",
       value: Math.max(earnings.paidUsd, 0),
-      color: "#8fcb78",
+      color: SLICE_COLOR.paidOut,
     },
   ];
 
@@ -246,31 +484,25 @@ export function EarningsDonut({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={reduce ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      // whileHover={{ y: -3 }}
       transition={{ duration: 0.7, ease: EASE }}
-      className="relative isolate flex flex-col overflow-hidden rounded-2xl border border-copper/30 bg-gradient-to-br from-[#10260f] via-[#1f5a3a] to-[#1b4a24] p-4 text-white shadow-[0_24px_50px_-26px_rgba(16,38,15,0.85)] sm:p-5"
+      className="relative isolate flex flex-col overflow-hidden rounded-2xl border border-aff-gold-400/30 bg-gradient-to-br from-aff-green-950 via-aff-green-900 to-aff-green-800 p-4 text-aff-cream-50 shadow-[0_18px_44px_-22px_rgba(172,131,78,0.6)] sm:p-5"
     >
-      {/* dots */}
+      {/* static gold glow in the corner, same as the hero card */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]"
+        className="pointer-events-none absolute -right-12 -top-12 -z-10 h-44 w-44 rounded-full bg-aff-gold-400/15 blur-3xl"
       />
-      {/* static copper glow in the corner */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-14 -top-14 -z-10 h-44 w-44 rounded-full bg-copper/30 blur-[50px]"
-      />
-      {/* thin copper line on top, matching the other cards' accent bars */}
+      {/* thin gold line on top, same as the hero card */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-copper via-copper-light to-copper"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
       />
 
-      <p className="flex items-center gap-2 font-sans text-[11px] font-semibold uppercase tracking-[0.14em] text-copper-light">
-        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/10 text-copper-light ring-1 ring-copper/40">
+      <p className="flex items-center gap-2 font-sans text-[13px] font-semibold text-aff-cream-50/80">
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg border border-aff-gold-400/40 bg-aff-green-950/60 text-aff-gold-300">
           <PieIcon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
         </span>
         Earnings split
@@ -279,16 +511,16 @@ export function EarningsDonut({
       {total > 0 && (
         <div className="mt-2">
           <p
-            className={`break-words font-display font-semibold leading-tight text-white [font-variant-numeric:tabular-nums] ${totalSize}`}
+            className={`break-words font-display font-semibold leading-tight text-aff-gold-300 [font-variant-numeric:tabular-nums] ${totalSize}`}
           >
             {totalText}
           </p>
           {totalApprox && (
-            <p className="mt-0.5 break-words font-sans text-[12px] text-white/70 [font-variant-numeric:tabular-nums]">
+            <p className="mt-0.5 break-words font-sans text-[13px] text-aff-cream-50/70 [font-variant-numeric:tabular-nums]">
               {totalApprox}
             </p>
           )}
-          <p className="mt-1 font-sans text-[12px] text-white/60">
+          <p className="mt-1 font-sans text-[12px] text-aff-cream-50/70">
             Total across all statuses
           </p>
         </div>
@@ -298,9 +530,9 @@ export function EarningsDonut({
         <div className="flex flex-col items-center gap-3 py-8">
           <span
             aria-hidden
-            className="h-20 w-20 rounded-full border-[6px] border-dashed border-copper-light/30"
+            className="h-20 w-20 rounded-full border-[6px] border-dashed border-aff-gold-400/30"
           />
-          <p className="text-center font-sans text-[13px] text-white/70">
+          <p className="text-center font-sans text-[13px] text-aff-cream-50/70">
             No earnings yet. Your split will appear here after your first
             commission.
           </p>
@@ -310,12 +542,14 @@ export function EarningsDonut({
           <div
             className="relative mx-auto mt-3 h-[160px] w-full"
             role="img"
-            aria-label={`Earnings split, total ${totalText}, ${paidPct}% paid out`}
+            aria-label={`Earnings split, total ${totalText}, ${paidPct}% paid out. ${slices
+              .map((s) => `${s.name} ${usd(s.value)}`)
+              .join(", ")}.`}
           >
             {/* soft static glow behind the donut */}
             <div
               aria-hidden
-              className="pointer-events-none absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(224,165,109,0.22)_0%,rgba(224,165,109,0.06)_45%,transparent_70%)]"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(241,204,156,0.16)_0%,rgba(241,204,156,0.05)_45%,transparent_70%)]"
             />
 
             <ResponsiveContainer width="100%" height="100%">
@@ -331,6 +565,7 @@ export function EarningsDonut({
                   }
                   startAngle={90}
                   endAngle={-270}
+                  isAnimationActive={!reduce}
                   animationDuration={900}
                   animationEasing="ease-out"
                   stroke="none"
@@ -345,14 +580,14 @@ export function EarningsDonut({
                     String(name),
                   ]}
                   contentStyle={{
-                    backgroundColor: "#10260f",
-                    border: "1px solid rgba(224,165,109,0.45)",
+                    backgroundColor: "var(--color-aff-green-950)",
+                    border: "1px solid var(--color-aff-gold-500)",
                     borderRadius: 12,
                     fontSize: 12,
-                    color: "#ffffff",
+                    color: "var(--color-aff-cream-50)",
                   }}
-                  itemStyle={{ color: "#ffffff" }}
-                  labelStyle={{ color: "#e0a56d" }}
+                  itemStyle={{ color: "var(--color-aff-cream-50)" }}
+                  labelStyle={{ color: "var(--color-aff-gold-300)" }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -360,49 +595,45 @@ export function EarningsDonut({
             {/* The hole only holds a short value ("100%" at most), so it can
                 never be crossed by a long amount. */}
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-[30px] font-semibold leading-none text-white [font-variant-numeric:tabular-nums]">
+              <span className="font-display text-[30px] font-semibold leading-none text-aff-gold-300 [font-variant-numeric:tabular-nums]">
                 {paidPct}%
               </span>
-              <span className="mt-1.5 font-sans text-[10.5px] font-medium uppercase tracking-[0.12em] text-copper-light">
+              <span className="mt-1.5 font-sans text-[12px] font-medium text-aff-cream-50/70">
                 paid out
               </span>
             </div>
           </div>
 
-          <ul
-            className={`mt-4 grid grid-cols-1 gap-2 ${
-              longTotal ? "" : "min-[420px]:grid-cols-2"
-            }`}
-          >
-            {slices.map((s, i) => {
-              const pct = Math.round((s.value / total) * 100);
-              return (
-                <motion.li
-                  key={s.name}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, ease: EASE, delay: 0.3 + i * 0.08 }}
-                  className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2.5 font-sans transition-colors [@media(hover:hover)]:hover:border-copper/50 [@media(hover:hover)]:hover:bg-white/10"
-                >
-                  <div className="flex items-center gap-2 text-[12px]">
-                    <span
-                      aria-hidden
-                      className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-white/10"
-                      style={{ backgroundColor: s.color, color: s.color }}
-                    />
-                    <span className="truncate text-white/70">{s.name}</span>
-                    <span className="ml-auto text-[11px] font-medium text-copper-light">
-                      {pct}%
-                    </span>
-                  </div>
-                  <p className="mt-1 break-words text-[14px] font-semibold leading-snug text-white [font-variant-numeric:tabular-nums]">
-                    {usd(s.value)}
-                  </p>
-                </motion.li>
-              );
-            })}
-          </ul>
+         <ul className="mt-4 flex flex-col gap-2">
+  {slices.map((s, i) => {
+    const pct = Math.round((s.value / total) * 100);
+    return (
+      <motion.li
+        key={s.name}
+        initial={reduce ? false : { opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: EASE, delay: 0.3 + i * 0.08 }}
+        className="flex items-center gap-2 rounded-xl border border-aff-gold-400/20 bg-aff-green-950/40 px-3 py-2.5 font-sans transition-colors [@media(hover:hover)]:hover:border-aff-gold-400/50 [@media(hover:hover)]:hover:bg-aff-green-950/60"
+      >
+        <span
+          aria-hidden
+          className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-aff-cream-50/10"
+          style={{ backgroundColor: s.color }}
+        />
+        <span className="shrink-0 text-[12px] text-aff-cream-50/70">
+  {s.name}
+</span>
+<span className="min-w-0 flex-1 break-words text-right text-[14px] font-semibold leading-snug text-aff-cream-50 [font-variant-numeric:tabular-nums]">
+  {usd(s.value)}
+</span>
+<span className="w-10 shrink-0 text-right text-[12px] font-medium text-aff-gold-300">
+  {pct}%
+</span>
+      </motion.li>
+    );
+  })}
+</ul>
         </>
       )}
     </motion.div>

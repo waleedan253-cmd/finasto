@@ -92,7 +92,7 @@ export default function PaidPayoutsList({
       fixed: "left",
       width: 190,
       render: (value: string) => (
-        <span className="font-medium text-[#9A5A24] dark:text-copper">
+        <span className="font-medium text-aff-green-900">
           {value}
         </span>
       ),
@@ -124,7 +124,7 @@ export default function PaidPayoutsList({
           <div>
             <strong>{converted.original}</strong>
             {converted.approx && (
-              <div className="text-[12px] text-warm-gray">
+              <div className="text-[12px] text-aff-muted">
                 {converted.approx}
               </div>
             )}
@@ -144,7 +144,7 @@ export default function PaidPayoutsList({
             href={r.proofUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="!text-green"
+            className="!text-[#1F7A52] hover:!text-aff-green-900 hover:underline"
             style={{ padding: 0 }}
           >
             View proof
@@ -157,13 +157,14 @@ export default function PaidPayoutsList({
 
   return (
     <Card
-      className="finasto-card"
+      className="aff-card aff-payout-card"
       bordered={false}
       style={{ background: "var(--color-white)" }}
       title="Paid payouts"
     >
       <Table<PaidPayout>
         size="middle"
+        className="aff-orders-table"
         rowKey="id"
         columns={columns}
         dataSource={payouts}
@@ -190,20 +191,14 @@ export default function PaidPayoutsList({
                 colon={false}
               >
                 <Descriptions.Item
-                  label={<span className="text-green">Paid at</span>}
+                  label={<span style={{ color: "#1F7A52" }}>Paid at</span>}
                 >
                   {dateTime(r.paidAt)}
                 </Descriptions.Item>
                 {r.paidAmount != null && r.paidCurrency && (
                   <Descriptions.Item
                     label={
-                      <span
-                        style={{
-                          color: "#1677ff",
-                        }}
-                      >
-                        Amount sent
-                      </span>
+                      <span className="text-aff-muted">Amount sent</span>
                     }
                   >
                     {money(r.paidAmount, r.paidCurrency)}
@@ -212,13 +207,7 @@ export default function PaidPayoutsList({
                 {r.paymentReference && (
                   <Descriptions.Item
                     label={
-                      <span
-                        style={{
-                          color: "green",
-                        }}
-                      >
-                        Reference
-                      </span>
+                      <span className="text-aff-muted">Reference</span>
                     }
                   >
                     <Typography.Text copyable>
@@ -230,6 +219,7 @@ export default function PaidPayoutsList({
 
               <Table<PaidPayoutOrder>
                 size="small"
+                className="aff-orders-table"
                 rowKey="orderNumber"
                 columns={orderColumns}
                 dataSource={r.orders}

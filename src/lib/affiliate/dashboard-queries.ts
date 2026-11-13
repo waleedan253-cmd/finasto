@@ -53,6 +53,7 @@ export type MyDashboard = {
   bucket: "day" | "month"; // one bar per day, or per month for 12m
   recentOrders: MyOrderRow[];
   canRequestPayout: boolean; // something is available to request
+  affiliateName: string | null; // shown in the welcome banner
 };
 
 /* ------------------------------------------------------------------ */
@@ -100,7 +101,7 @@ export async function getMyDashboard(
 
   const { data: affiliate } = await supabase
     .from("affiliates")
-    .select("id")
+       .select("id, name")
     .eq("profile_id", user.id)
     .maybeSingle();
 
@@ -160,6 +161,7 @@ export async function getMyDashboard(
     range,
     bucket: stats.bucket === "month" ? "month" : "day",
     recentOrders: recent.rows,
-    canRequestPayout: earnings.availableUsd > 0,
+      canRequestPayout: earnings.availableUsd > 0,
+    affiliateName: affiliate.name ?? null,
   };
 }

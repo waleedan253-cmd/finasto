@@ -33,17 +33,30 @@ import type {
 
 type Tone = "success" | "info" | "warn" | "neutral";
 
-const TONES: Record<Tone, { bg: string; color: string }> = {
-  success: { bg: "var(--color-green-bg)", color: "var(--color-green)" },
+// Soft tinted pills for light cards. Each tone has a background, a text
+// color (dark enough to read) and a thin border. "success" uses the same
+// green as the "Paid out" slice on the dashboard.
+const TONES: Record<Tone, { bg: string; color: string; border: string }> = {
+  success: {
+    bg: "rgba(47, 158, 107, 0.10)",
+    color: "#1F7A52",
+    border: "rgba(47, 158, 107, 0.30)",
+  },
   info: {
-    bg: "color-mix(in srgb, var(--color-espresso) 10%, transparent)",
-    color: "var(--color-espresso)",
+    bg: "color-mix(in srgb, var(--color-aff-green-900) 8%, transparent)",
+    color: "var(--color-aff-green-900)",
+    border: "color-mix(in srgb, var(--color-aff-green-900) 20%, transparent)",
   },
   warn: {
-    bg: "color-mix(in srgb, var(--color-copper) 14%, transparent)",
-    color: "var(--color-copper)",
+    bg: "color-mix(in srgb, var(--color-aff-gold-400) 25%, transparent)",
+    color: "#7A5526",
+    border: "color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent)",
   },
-  neutral: { bg: "var(--color-cream)", color: "var(--color-warm-gray)" },
+  neutral: {
+    bg: "var(--color-aff-ivory)",
+    color: "var(--color-aff-muted)",
+    border: "var(--color-aff-border)",
+  },
 };
 
 type Entry = {
@@ -205,7 +218,7 @@ function Pill({
     icon: Minus,
     description: undefined,
   };
-  const { bg, color } = TONES[tone];
+  const { bg, color, border } = TONES[tone];
 
   return (
     <span
@@ -213,6 +226,7 @@ function Pill({
       style={{
         backgroundColor: bg,
         color,
+        border: `1px solid ${border}`,
         borderRadius: 9999,
         display: "inline-flex",
         alignItems: "center",

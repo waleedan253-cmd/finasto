@@ -20,10 +20,10 @@ import { availableMarkets, primaryNav } from "@/data/site";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { AuthModal } from "@/components/auth/auth-modal";
+// import { AuthModal } from "@/components/auth/auth-modal";
 import { GlobalOutlined } from "@ant-design/icons";
 import { Flag } from "@/components/ui/flag";
-import { ThemeToggle } from "@/components/ThemeToggle";
+// import { ThemeToggle } from "@/components/ThemeToggle";
 
 /**
  * Primary storefront header. Compacts on scroll (84px -> 64px) with a
@@ -266,20 +266,16 @@ const router = useRouter();
               />
             </IconButton> */}
 
-            <IconButton
-              label="Account"
-              className="hidden sm:inline-flex"
-              onClick={() => setIsAuthOpen(true)}
-            >
-              <User
-                style={{
-                  cursor: "pointer",
-                }}
-                className="h-[19px] w-[19px] text-copper"
-                strokeWidth={1.6}
-                
-              />
-            </IconButton>
+           <IconButton
+  label="Account"
+  href="/sign-in"
+  className="hidden sm:inline-flex"
+>
+  <User
+    className="h-[19px] w-[19px] text-copper"
+    strokeWidth={1.6}
+  />
+</IconButton>
             <button
               type="button"
               onClick={() => {
@@ -375,12 +371,15 @@ const router = useRouter();
         />
       )}
 
-      <MobileNav 
-        open={isMobileNavOpen}
-        onClose={() => setIsMobileNavOpen(false)}
-        onOpenAuth={() => setIsAuthOpen(true)}
-      />
-      <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+     <MobileNav
+  open={isMobileNavOpen}
+  onClose={() => setIsMobileNavOpen(false)}
+  onOpenAuth={() => {
+    setIsMobileNavOpen(false);
+    router.push("/sign-in");
+  }}
+/>
+      {/* <AuthModal open={isAuthOpen} onClose={() => setIsAuthOpen(false)} /> */}
     </>
   );
 }
@@ -405,24 +404,21 @@ function IconButton({
   className,
   onClick,
   expanded,
+  href,
 }: {
   children: React.ReactNode;
   label: string;
   className?: string;
   onClick?: () => void;
   expanded?: boolean;
+  href?: string;
 }) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      aria-expanded={expanded}
-      onClick={onClick}
-      className={cn(
-        "group relative inline-flex h-11 w-11 items-center justify-center rounded-full text-espresso/85 transition-all duration-300 hover:text-espresso active:scale-90 [-webkit-tap-highlight-color:transparent]",
-        className,
-      )}
-    >
+  const classes = cn(
+    "group relative inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-espresso/85 transition-all duration-300 hover:text-espresso active:scale-90 [-webkit-tap-highlight-color:transparent]",
+    className,
+  );
+  const inner = (
+    <>
       <span
         aria-hidden="true"
         className="absolute inset-1 scale-50 rounded-full bg-copper/15 opacity-0 ring-1 ring-copper/40 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 group-active:scale-100 group-active:opacity-100"
@@ -430,6 +426,26 @@ function IconButton({
       <span className="relative transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:scale-110 group-active:scale-110">
         {children}
       </span>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} aria-label={label} className={classes}>
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      aria-expanded={expanded}
+      onClick={onClick}
+      className={classes}
+    >
+      {inner}
     </button>
   );
 }

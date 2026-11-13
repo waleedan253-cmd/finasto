@@ -42,10 +42,12 @@ const shortDate = (iso: string | null) =>
       })
     : "-";
 
+// Soft tints for the icon chip and badge. Keys stay the same, so the
+// <EarningsCard accent="..."> calls below need no change.
 const ACCENTS = {
-  green: "bg-green/10 text-green",
-  copper: "bg-copper/10 text-copper",
-  gray: "bg-espresso/5 text-warm-gray",
+  green: "bg-[rgba(47,158,107,0.12)] text-[#1F7A52]",
+  copper: "bg-aff-gold-400/25 text-[#7A5526]",
+  gray: "bg-aff-green-900/5 text-aff-muted",
 } as const;
 
 function EarningsCard({
@@ -66,9 +68,9 @@ function EarningsCard({
   note?: string;
 }) {
   return (
-    <div className="finasto-card flex flex-col p-4 sm:p-5">
+    <div className="aff-card flex flex-col p-4 sm:p-5">
       <div className="flex items-start justify-between gap-2">
-        <p className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-warm-gray">
+        <p className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-aff-muted">
           {title}
         </p>
         <span
@@ -80,11 +82,11 @@ function EarningsCard({
           <Icon className="h-[18px] w-[18px]" strokeWidth={1.7} />
         </span>
       </div>
-      <p className="mt-3 font-display text-[30px] leading-none tabular-nums text-espresso">
+      <p className="mt-3 break-words font-display text-[26px] leading-tight tabular-nums text-aff-green-900 sm:text-[30px]">
         {value}
       </p>
       {approx && (
-        <p className="mt-1.5 font-sans text-[12px] text-warm-gray">{approx}</p>
+        <p className="mt-1.5 font-sans text-[12px] text-aff-muted">{approx}</p>
       )}
       <span
         className={cn(
@@ -96,7 +98,7 @@ function EarningsCard({
         {badge}
       </span>
       {note && (
-        <p className="mt-3 font-sans text-[12px] text-warm-gray">{note}</p>
+        <p className="mt-3 font-sans text-[12px] text-aff-muted">{note}</p>
       )}
     </div>
   );
@@ -229,7 +231,7 @@ export default function EligibleOrdersTable({
         />
       </div>
       <Card
-        className="finasto-card"
+        className="aff-card aff-payout-card"
         bordered={false}
         style={{ background: "var(--color-white)" }}
         title="Orders ready for payout"
@@ -258,6 +260,7 @@ export default function EligibleOrdersTable({
 
         <Table<EligibleOrder>
           size="middle"
+          className="aff-orders-table"
           rowKey="orderId"
           columns={columns}
           dataSource={orders}
@@ -274,16 +277,7 @@ export default function EligibleOrdersTable({
         />
 
         {/* Running total + action. Wraps on small screens. */}
-        <div
-          style={{
-            marginTop: 16,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 12,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-aff-border bg-aff-ivory p-3 sm:p-4">
           <Space direction="vertical" size={0}>
             <Typography.Text type="secondary">
               {selectedKeys.length} order{selectedKeys.length === 1 ? "" : "s"}{" "}
@@ -305,7 +299,7 @@ export default function EligibleOrdersTable({
             )}
           </Space>
 
-          <Space wrap>
+          <Space wrap className="w-full sm:w-auto">
             {orders.length > 0 && (
               <Button
                 onClick={() =>

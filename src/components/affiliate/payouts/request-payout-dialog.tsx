@@ -84,6 +84,7 @@ export default function RequestPayoutDialog({
       {contextHolder}
       <Modal
         title="Confirm payout request"
+        rootClassName="aff-dialog"
         open={open}
         onCancel={handleClose}
         onOk={handleSend}
@@ -94,7 +95,7 @@ export default function RequestPayoutDialog({
         maskClosable={false}
         keyboard={!submitting}
         closable={!submitting}
-        width={520}
+        width="min(520px, calc(100vw - 32px))"
         destroyOnClose
       >
         <Descriptions
@@ -142,7 +143,10 @@ export default function RequestPayoutDialog({
           </Descriptions.Item>
         </Descriptions>
 
-        <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
+        <Typography.Paragraph
+          className="text-aff-muted"
+          style={{ marginBottom: 0 }}
+        >
           The amount is calculated in USD. Your bank details are saved with this
           request, so changing them later will not affect it.
         </Typography.Paragraph>

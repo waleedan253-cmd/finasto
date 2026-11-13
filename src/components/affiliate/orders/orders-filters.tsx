@@ -99,8 +99,8 @@ export function OrdersFilters({
     });
   }
 
-  return (
-    <div className="flex flex-col gap-4">
+   return (
+    <div className="flex flex-col gap-4 rounded-2xl border border-aff-border bg-white p-4 shadow-[0_10px_30px_-22px_rgba(172,131,78,0.45)] sm:p-5">
       <Input.Search
         size="large"
         allowClear
@@ -111,56 +111,59 @@ export function OrdersFilters({
         aria-label="Search orders by order number"
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <Select
-            value={status}
-            onChange={(value) => updateParams({ status: value ?? "" })}
-            allowClear
-            placeholder="All order statuses"
-            style={{ minWidth: 180 }}
-            aria-label="Filter by order status"
-            options={ORDER_STATUS_OPTIONS}
-          />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
+        <Select
+          value={status}
+          onChange={(value) => updateParams({ status: value ?? "" })}
+          allowClear
+          placeholder="All order statuses"
+          className="w-full lg:w-[190px]"
+          aria-label="Filter by order status"
+          options={ORDER_STATUS_OPTIONS}
+        />
 
-          <Select
-            value={paymentStatus}
-            onChange={(value) => updateParams({ payment: value ?? "" })}
-            allowClear
-            placeholder="All payment statuses"
-            style={{ minWidth: 190 }}
-            aria-label="Filter by payment status"
-            options={PAYMENT_STATUS_OPTIONS}
-          />
+        <Select
+          value={paymentStatus}
+          onChange={(value) => updateParams({ payment: value ?? "" })}
+          allowClear
+          placeholder="All payment statuses"
+          className="w-full lg:w-[200px]"
+          aria-label="Filter by payment status"
+          options={PAYMENT_STATUS_OPTIONS}
+        />
 
-          <Select
-            value={commissionState}
-            onChange={(value) => updateParams({ commission: value ?? "" })}
-            allowClear
-            placeholder="All commission states"
-            style={{ minWidth: 200 }}
-            aria-label="Filter by commission state"
-            options={COMMISSION_STATE_OPTIONS}
-          />
+        <Select
+          value={commissionState}
+          onChange={(value) => updateParams({ commission: value ?? "" })}
+          allowClear
+          placeholder="All commission states"
+          className="w-full sm:col-span-2 lg:col-span-1 lg:w-[210px]"
+          aria-label="Filter by commission state"
+          options={COMMISSION_STATE_OPTIONS}
+        />
 
-          {hasFilters && (
-            <button
-              type="button"
-              onClick={clearAll}
-              className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-full px-3 font-sans text-[13px] text-warm-gray transition-colors hover:text-espresso"
-            >
-              <X className="h-3.5 w-3.5" aria-hidden="true" />
-              Clear filters
-            </button>
-          )}
-        </div>
+        {hasFilters && (
+          <button
+            type="button"
+            onClick={clearAll}
+            className="inline-flex h-8 w-fit cursor-pointer items-center gap-1 rounded-full border border-aff-border bg-aff-ivory px-3 font-sans text-[13px] font-medium text-aff-muted transition-colors hover:border-aff-gold-500 hover:text-aff-green-900"
+          >
+            <X className="h-3.5 w-3.5" aria-hidden="true" />
+            Clear filters
+          </button>
+        )}
+      </div>
 
+      <div className="flex items-center justify-between gap-3 border-t border-aff-border pt-3">
         <p
           aria-live="polite"
-          className="font-sans text-[13px] text-warm-gray transition-opacity"
+          className="font-sans text-[13px] text-aff-muted transition-opacity"
           style={{ opacity: isPending ? 0.6 : 1 }}
         >
-          {resultCount} {resultCount === 1 ? "order" : "orders"}
+          <span className="font-semibold text-aff-green-900">
+            {resultCount}
+          </span>{" "}
+          {resultCount === 1 ? "order" : "orders"}
         </p>
       </div>
     </div>

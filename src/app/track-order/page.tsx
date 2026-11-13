@@ -69,7 +69,7 @@ export default async function TrackOrderPage({
               className="mt-5 block h-[2px] w-14 rounded-full bg-gradient-to-r from-copper-light to-copper"
             />
             <p className="mt-5 max-w-[460px] font-sans text-[15px] leading-relaxed text-white/75 md:text-[16px]">
-              Enter your email and tracking code to follow your Finasto order,
+              Enter your email and tracking code to follow your Finasto™ order,
               wherever in the world it is headed.
             </p>
 

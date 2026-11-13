@@ -68,16 +68,14 @@ export function OrdersTable({
 
   if (orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border-strong bg-white py-16 text-center">
-        <ShoppingBag
-          className="h-6 w-6 text-warm-gray"
-          strokeWidth={1.4}
-          aria-hidden="true"
-        />
-        <p className="mt-3 font-sans text-[14px] text-espresso">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-aff-gold-500/50 bg-aff-ivory px-4 py-14 text-center sm:py-16">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full border border-aff-gold-400/50 bg-aff-green-900 text-aff-gold-300">
+          <ShoppingBag className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+        </span>
+        <p className="mt-3 font-sans text-[14px] text-aff-green-900">
           No orders found
         </p>
-        <p className="mt-1 max-w-xs font-sans text-[13px] text-warm-gray">
+        <p className="mt-1 max-w-xs font-sans text-[13px] text-aff-muted">
           Try a different search or filter. Orders placed through your referral
           links will appear here.
         </p>
@@ -91,7 +89,7 @@ export function OrdersTable({
       key: "sr",
       width: 60,
       render: (_, __, index) => (
-        <span className="tabular-nums text-warm-gray">
+        <span className="tabular-nums text-aff-muted">
           {startIndex + index + 1}
         </span>
       ),
@@ -103,11 +101,11 @@ export function OrdersTable({
         <div className="min-w-0">
           <Link
             href={detailHref(order)}
-            className="block truncate font-sans text-[14px] font-medium text-green hover:text-copper"
+            className="block truncate font-sans text-[14px] font-medium text-aff-green-900 hover:text-aff-gold-600"
           >
             {order.orderNumber}
           </Link>
-          <p className="font-sans text-[12px] text-warm-gray">
+          <p className="font-sans text-[12px] text-aff-muted">
             {itemsLabel(order.itemCount)}
           </p>
         </div>
@@ -118,11 +116,11 @@ export function OrdersTable({
       dataIndex: "customerFirstName",
       render: (_, order) => (
         <div className="min-w-0">
-          <p className="truncate font-sans text-[14px] text-espresso">
+          <p className="truncate font-sans text-[14px] text-aff-green-900">
             {order.customerFirstName}
           </p>
           {order.customerEmailMasked && (
-            <p className="truncate font-sans text-[12px] text-warm-gray">
+            <p className="truncate font-sans text-[12px] text-aff-muted">
               {order.customerEmailMasked}
             </p>
           )}
@@ -135,11 +133,11 @@ export function OrdersTable({
       align: "right",
       render: (_, order) => (
         <div className="flex flex-col items-end">
-          <span className="font-sans text-[13px] tabular-nums text-espresso">
+          <span className="font-sans text-[13px] tabular-nums text-aff-green-900">
             {formatPrice(order.totalAmount, order.orderCurrency)}
           </span>
           {approx.total(order) && (
-            <span className="font-sans text-[11px] text-warm-gray">
+            <span className="font-sans text-[11px] text-aff-muted">
               {approx.total(order)}
             </span>
           )}
@@ -161,13 +159,13 @@ export function OrdersTable({
       dataIndex: "commissionUsd",
       render: (_, order) => (
         <div className="flex flex-col items-start gap-1">
-          <span className="font-sans text-[13px] tabular-nums text-espresso">
+          <span className="font-sans text-[13px] tabular-nums text-aff-green-900">
             {hasCommissionAmount(order)
               ? `${formatPrice(order.commissionUsd, "USD")} (${order.commissionPercent}%)`
               : "—"}
           </span>
           {approx.commission(order) && (
-            <span className="font-sans text-[11px] text-warm-gray">
+            <span className="font-sans text-[11px] text-aff-muted">
               {approx.commission(order)}
             </span>
           )}
@@ -179,7 +177,7 @@ export function OrdersTable({
       title: "Date",
       dataIndex: "orderedAt",
       render: (_, order) => (
-        <span className="font-sans text-[13px] text-espresso/80">
+        <span className="font-sans text-[13px] text-aff-green-900/80">
           {dateFmt.format(new Date(order.orderedAt))}
         </span>
       ),
@@ -189,13 +187,18 @@ export function OrdersTable({
   return (
     <>
       {/* Desktop table */}
-      <div className="finasto-card hidden overflow-hidden md:block">
+      <div className="relative hidden overflow-hidden rounded-2xl border border-aff-border bg-white shadow-[0_10px_30px_-22px_rgba(172,131,78,0.45)] md:block">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
+        />
         <Table<MyOrderRow>
           columns={columns}
           dataSource={orders}
           rowKey="orderNumber"
           pagination={false}
-          className="finasto-admin-table"
+          scroll={{ x: 880 }}
+          className="aff-orders-table"
         />
       </div>
 
@@ -225,26 +228,30 @@ function OrderCard({
 }) {
   const approx = makeApprox(rates, currency);
   return (
-    <li className="finasto-card p-4">
+    <li className="relative overflow-hidden rounded-2xl border border-aff-border bg-white p-4 shadow-[0_10px_30px_-22px_rgba(172,131,78,0.45)]">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
+      />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <Link
             href={detailHref(order)}
-            className="block truncate font-sans text-[15px] font-medium text-espresso"
+            className="block truncate py-0.5 font-sans text-[15px] font-semibold text-aff-green-900 hover:text-aff-gold-600"
           >
             {order.orderNumber}
           </Link>
-          <p className="mt-0.5 font-sans text-[12px] text-warm-gray">
+          <p className="mt-0.5 font-sans text-[12px] text-aff-muted">
             {itemsLabel(order.itemCount)} ·{" "}
             {dateFmt.format(new Date(order.orderedAt))}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end">
-          <span className="font-sans text-[14px] font-medium tabular-nums text-espresso">
+          <span className="font-sans text-[14px] font-medium tabular-nums text-aff-green-900">
             {formatPrice(order.totalAmount, order.orderCurrency)}
           </span>
           {approx.total(order) && (
-            <span className="font-sans text-[11px] text-warm-gray">
+            <span className="font-sans text-[11px] text-aff-muted">
               {approx.total(order)}
             </span>
           )}
@@ -257,22 +264,22 @@ function OrderCard({
       </div>
 
       <dl className="mt-3 grid grid-cols-2 gap-y-1.5 font-sans text-[13px]">
-        <dt className="text-warm-gray">Customer</dt>
-        <dd className="min-w-0 text-right text-espresso">
+        <dt className="text-aff-muted">Customer</dt>
+        <dd className="min-w-0 text-right text-aff-green-900">
           <span className="block truncate">{order.customerFirstName}</span>
           {order.customerEmailMasked && (
-            <span className="block truncate text-[12px] text-warm-gray">
+            <span className="block truncate text-[12px] text-aff-muted">
               {order.customerEmailMasked}
             </span>
           )}
         </dd>
-        <dt className="text-warm-gray">Commission</dt>
-        <dd className="text-right tabular-nums text-espresso">
+        <dt className="text-aff-muted">Commission</dt>
+        <dd className="text-right tabular-nums text-aff-green-900">
           {hasCommissionAmount(order)
             ? `${formatPrice(order.commissionUsd, "USD")} (${order.commissionPercent}%)`
             : "—"}
           {approx.commission(order) && (
-            <span className="block text-[11px] text-warm-gray">
+            <span className="block text-[11px] text-aff-muted">
               {approx.commission(order)}
             </span>
           )}

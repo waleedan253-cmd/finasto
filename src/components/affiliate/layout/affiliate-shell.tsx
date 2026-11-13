@@ -15,7 +15,7 @@ import { AffiliateSidebar } from "./affiliate-sidebar";
 import { affiliateNav, isNavActive } from "./affiliate-nav";
 
 import { AffiliateNotificationBell } from "./notification-bell";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 // Fixed 260px sidebar on desktop (76px collapsed), a slide-in drawer with
 // overlay on mobile, and a sticky top bar with the page title, theme
@@ -60,10 +60,7 @@ export function AffiliateShell({
 
   return (
     <div className="relative min-h-screen bg-cream dark:bg-cream-soft">
-      <div
-        aria-hidden
-        className="dark-glow pointer-events-none fixed -bottom-40 -right-40 z-0 h-[520px] w-[520px] rounded-full"
-      />
+    
       {open && (
         <div
           aria-hidden="true"
@@ -76,7 +73,7 @@ export function AffiliateShell({
         id="affiliate-sidebar"
         aria-label="Affiliate navigation"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] overflow-hidden border-r border-copper/25 bg-[radial-gradient(ellipse_at_top,#1d4a26_0%,#0d2612_45%,#06140a_100%)] transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
+          "fixed inset-y-0 left-0 z-50 w-[280px] overflow-hidden border-r border-aff-gold-600/25 bg-[radial-gradient(ellipse_at_top,var(--color-aff-green-800)_0%,var(--color-aff-green-900)_45%,var(--color-aff-green-950)_100%)] transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
           open && "shadow-[0_0_60px_-10px_rgba(16,38,15,0.45)]",
           collapsed ? "lg:w-[76px]" : "lg:w-[260px]",
           open ? "translate-x-0" : "-translate-x-full",
@@ -93,7 +90,7 @@ export function AffiliateShell({
           collapsed ? "lg:pl-[76px]" : "lg:pl-[260px]",
         )}
       >
-        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between gap-3 border-b border-border bg-cream/85 px-4 shadow-[0_1px_0_0_rgba(201,128,63,0.18)] backdrop-blur-xl backdrop-saturate-150 sm:px-6">
+        <header className="sticky top-0 z-30 flex h-[68px] items-center justify-between gap-3 border-b border-aff-border bg-aff-ivory/85 px-4 shadow-[0_1px_0_0_rgba(172,131,78,0.25)] backdrop-blur-xl backdrop-saturate-150 sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <button
               type="button"
@@ -101,7 +98,7 @@ export function AffiliateShell({
               aria-label="Open menu"
               aria-controls="affiliate-sidebar"
               aria-expanded={open}
-              className="inline-flex h-11 w-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl text-espresso transition-colors active:bg-espresso/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper lg:hidden"
+              className="inline-flex h-11 w-11 shrink-0 cursor-pointer touch-manipulation items-center justify-center rounded-xl text-aff-green-900 transition-colors active:bg-aff-green-900/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aff-gold-600 lg:hidden"
             >
               <Menu className="h-6 w-6" strokeWidth={1.6} />
             </button>
@@ -110,7 +107,7 @@ export function AffiliateShell({
               type="button"
               onClick={() => setCollapsed((c) => !c)}
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="hidden h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-warm-gray transition-colors active:bg-espresso/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper [@media(hover:hover)]:hover:bg-espresso/5 [@media(hover:hover)]:hover:text-espresso lg:inline-flex"
+              className="hidden h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-aff-muted transition-colors active:bg-aff-green-900/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aff-gold-600 [@media(hover:hover)]:hover:bg-aff-green-900/5 [@media(hover:hover)]:hover:text-aff-green-900 lg:inline-flex"
             >
               {collapsed ? (
                 <PanelLeftOpen className="h-5 w-5" strokeWidth={1.6} />
@@ -119,33 +116,34 @@ export function AffiliateShell({
               )}
             </button>
             <div className="min-w-0">
-              <p className="hidden font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-copper sm:block">
+              <p className="hidden font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-aff-gold-600 sm:block">
                 Affiliate
               </p>
-              {/* <h1 className="truncate font-display text-[20px] font-semibold leading-tight tracking-tight text-espresso sm:text-[22px]">
+              <h1 className="truncate font-display text-[20px] font-semibold leading-tight tracking-tight text-aff-green-900 sm:text-[22px]">
                 {title}
-              </h1> */}
+                 
+              </h1>
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <ThemeToggle />
+          
             <AffiliateNotificationBell />
 
             <span
               aria-hidden
-              className="mx-1 hidden h-6 w-px bg-border sm:block"
+              className="mx-1 hidden h-6 w-px bg-aff-border sm:block"
             />
 
             <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-deep to-green font-sans text-[12px] font-semibold text-cream ring-2 ring-copper/50 ring-offset-2 ring-offset-cream">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-deep to-green font-sans text-[12px] font-semibold text-aff-cream-50 ring-2 ring-aff-gold-500/60 ring-offset-2 ring-offset-aff-ivory">
                 {initials}
               </div>
               <div className="hidden min-w-0 md:block">
-                <p className="max-w-[160px] truncate font-sans text-[13px] leading-tight text-espresso">
+                <p className="max-w-[160px] truncate font-sans text-[13px] leading-tight text-aff-green-900">
                   {name || "Affiliate"}
                 </p>
-                <p className="max-w-[160px] truncate font-sans text-[11px] leading-tight text-warm-gray">
+                <p className="max-w-[160px] truncate font-sans text-[11px] leading-tight text-aff-muted">
                   {email}
                 </p>
               </div>
@@ -158,29 +156,29 @@ export function AffiliateShell({
             <div className="finasto-card relative mx-auto mt-4 max-w-md overflow-hidden p-6 text-center sm:mt-8 sm:p-8">
               <span
                 aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-copper via-copper-light to-copper"
+                className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-aff-gold-600 via-aff-gold-300 to-aff-gold-600"
               />
-              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green-deep to-green text-cream ring-2 ring-copper/50 ring-offset-2 ring-offset-cream">
+              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green-deep to-green text-aff-cream-50 ring-2 ring-aff-gold-500/60 ring-offset-2 ring-offset-aff-ivory">
                 <UserRound
                   className="h-5 w-5"
                   strokeWidth={1.7}
                   aria-hidden="true"
                 />
               </span>
-              <h1 className="mt-4 font-display text-[22px] font-semibold leading-tight text-espresso">
+              <h1 className="mt-4 font-display text-[22px] font-semibold leading-tight text-aff-green-900">
                 Complete your profile
               </h1>
-              <p className="mt-3 font-sans text-[14px] leading-relaxed text-warm-gray">
+              <p className="mt-3 font-sans text-[14px] leading-relaxed text-aff-muted">
                 Add your username, phone number and country first. Your country
                 decides the currency your prices are shown in.
               </p>
               <Link
                 href="/affiliate/settings"
-                className="group mt-6 inline-flex h-11 touch-manipulation items-center justify-center gap-2 rounded-full border border-copper/60 bg-gradient-to-br from-green-deep to-green px-6 font-sans text-[14px] font-medium text-cream shadow-[0_12px_28px_-12px_rgba(35,77,42,0.9)] transition-all duration-200 active:scale-[0.97] active:from-green active:to-green-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:from-green [@media(hover:hover)]:hover:to-green-deep"
+                className="group mt-6 inline-flex h-11 touch-manipulation items-center justify-center gap-2 rounded-full border border-aff-gold-500/60 bg-gradient-to-br from-green-deep to-green px-6 font-sans text-[14px] font-medium text-aff-cream-50 shadow-[0_12px_28px_-12px_rgba(35,77,42,0.9)] transition-all duration-200 active:scale-[0.97] active:from-aff-green-800 active:to-aff-green-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aff-gold-600 [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:from-aff-green-800 hover:to-aff-green-900"
               >
                 Go to Settings
                 <ArrowRight
-                  className="h-4 w-4 text-copper-light transition-transform duration-200 group-active:translate-x-1"
+                  className="h-4 w-4 text-aff-gold-300 transition-transform duration-200 group-active:translate-x-1"
                   strokeWidth={1.8}
                   aria-hidden="true"
                 />

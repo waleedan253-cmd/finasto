@@ -68,9 +68,9 @@ export default function PayoutRequestsList({
       key: "requestNumber",
 
       fixed: "left",
-      width: 190,
+      width: 160,
       render: (value: string) => (
-        <span className="font-medium text-copper">{value}</span>
+        <span className="font-medium text-aff-green-900">{value}</span>
       ),
     },
     {
@@ -100,7 +100,7 @@ export default function PayoutRequestsList({
           <div>
             <strong>{converted.original}</strong>
             {converted.approx && (
-              <div className="text-[12px] text-warm-gray">
+              <div className="text-[12px] text-aff-muted">
                 {converted.approx}
               </div>
             )}
@@ -119,13 +119,14 @@ export default function PayoutRequestsList({
 
   return (
     <Card
-      className="finasto-card"
+      className="aff-card aff-payout-card"
       bordered={false}
       style={{ background: "var(--color-white)" }}
       title="Request history"
     >
       <Table<MyPayoutRequest>
         size="middle"
+        className="aff-orders-table"
         rowKey="id"
         columns={columns}
         dataSource={requests}
@@ -166,7 +167,7 @@ export default function PayoutRequestsList({
                 colon={false}
               >
                 <Descriptions.Item
-                  label={<span className="text-green">Commission</span>}
+                  label={<span style={{ color: "#1F7A52" }}>Commission</span>}
                 >
                   {usd(r.itemsTotalUsd)}
                 </Descriptions.Item>
@@ -181,7 +182,7 @@ export default function PayoutRequestsList({
                   </Descriptions.Item>
                 )}
                 <Descriptions.Item
-                  label={<span className="text-warm-gray">Requested</span>}
+                  label={<span className="text-aff-muted">Requested</span>}
                 >
                   {dateTime(r.requestedAt)}
                 </Descriptions.Item>
@@ -189,9 +190,7 @@ export default function PayoutRequestsList({
                   <Descriptions.Item
                     label={
                       <span
-                        style={{
-                          color: "green",
-                        }}
+                        style={{ color: "#1F7A52" }}
                       >
                         Approved
                       </span>
@@ -204,9 +203,7 @@ export default function PayoutRequestsList({
                   <Descriptions.Item
                     label={
                       <span
-                        style={{
-                          color: "red",
-                        }}
+                        style={{ color: "#A3342B" }}
                       >
                         Rejected
                       </span>
