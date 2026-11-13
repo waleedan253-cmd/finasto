@@ -76,7 +76,7 @@ export function AffiliateShell({
         id="affiliate-sidebar"
         aria-label="Affiliate navigation"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] border-r border-border bg-cream transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
+          "fixed inset-y-0 left-0 z-50 w-[280px] overflow-hidden border-r border-copper/25 bg-[radial-gradient(ellipse_at_top,#1d4a26_0%,#0d2612_45%,#06140a_100%)] transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
           open && "shadow-[0_0_60px_-10px_rgba(16,38,15,0.45)]",
           collapsed ? "lg:w-[76px]" : "lg:w-[260px]",
           open ? "translate-x-0" : "-translate-x-full",

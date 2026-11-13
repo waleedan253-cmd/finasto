@@ -44,6 +44,10 @@ import {
   type CountryPriceDraft,
 } from "./country-price-repeater";
 import { OfferDrawer } from "./offer-drawer";
+import {
+  ProductSectionsEditor,
+  type SectionDraft,
+} from "./product-sections-editor";
 import { formatStoreDate } from "@/lib/store-time";
 
 
@@ -76,6 +80,7 @@ type FormValues = {
   featured: boolean;
   metaTitle: string;
   metaDescription: string;
+  sections: SectionDraft[];
 };
 
 type VariantErrors = Record<
@@ -203,6 +208,14 @@ function buildInput(state: {
     featured: !!values.featured,
     metaTitle: trimOrNull(values.metaTitle),
     metaDescription: trimOrNull(values.metaDescription),
+    sections: (values.sections ?? []).map((s) => ({
+      title: s.title,
+      type: s.type,
+      content: (s.text ?? "")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+    })),
     variants: state.variants.map((v) => ({
       id: v.id,
       name: v.name,
@@ -257,6 +270,7 @@ const FORM_FIELDS: (keyof FormValues)[] = [
   "featured",
   "metaTitle",
   "metaDescription",
+  "sections",
 ];
 function FeaturedSwitch({
   checked,
@@ -355,6 +369,11 @@ export function ProductForm({
     featured: product?.featured ?? false,
     metaTitle: product?.metaTitle ?? "",
     metaDescription: product?.metaDescription ?? "",
+    sections: (product?.sections ?? []).map((s) => ({
+      title: s.title,
+      type: s.type,
+      text: s.content.join("\n"),
+    })),
   };
 
   // Editing a variant clears stale errors (they are index-based, so a
@@ -468,7 +487,14 @@ export function ProductForm({
               <Form.Item
                 label="Short description (shown on the card)"
                 name="shortDescription"
-                rules={[{ max: 160, message: "Max 160 characters" }]}
+                rules={[
+                  {
+                    required: true,
+                    whitespace: true,
+                    message: "Enter a short description",
+                  },
+                  { max: 160, message: "Max 160 characters" },
+                ]}
               >
                 <Input.TextArea
                   rows={2}
@@ -528,6 +554,22 @@ export function ProductForm({
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Form.Item
+                label="Description"
+                name="description"
+                rules={[
+                  { max: 5000, message: "Keep it under 5000 characters" },
+                ]}
+                className="!mb-0"
+              >
+                <Input.TextArea
+                  rows={6}
+                  showCount
+                  maxLength={5000}
+                  placeholder="What makes this product special?"
+                />
+              </Form.Item>
 
               {/* <Form.Item
                 label="Short description (shown on the card)"
@@ -605,7 +647,20 @@ export function ProductForm({
                   className="!rounded-none"
                 />
               </Form.Item> */}
+              
             </Card>
+             <Card
+              title="Product sections"
+              extra={
+                <span className="text-[13px] text-neutral-500">
+                  Ingredients, brewing, packaging, anything else
+                </span>
+              }
+            >
+               <ProductSectionsEditor />
+            </Card>
+                         
+
 
             <Card
               title="Images"
@@ -665,6 +720,8 @@ export function ProductForm({
                 />
               </Card>
             </div>
+
+           
 
             {/* <Collapse
               ghost={false}

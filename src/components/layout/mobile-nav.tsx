@@ -774,10 +774,10 @@ export function MobileNav({
               >
                 <X className="h-5 w-5" strokeWidth={1.6} />
               </motion.button>
-              <span
+              {/* <span
                 aria-hidden="true"
                 className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-copper-light/70 via-copper/30 to-transparent"
-              />
+              /> */}
             </div>
 
             {/* Navigation */}

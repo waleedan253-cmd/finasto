@@ -427,13 +427,13 @@ export function PolicyPage({
               variants={rise}
               className="flex items-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper-light"
             >
-              <motion.span
+              {/* <motion.span
                 aria-hidden="true"
                 className="h-px w-10 origin-left bg-copper-light/70"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.8, ease: EASE, delay: 0.5 }}
-              />
+              /> */}
               {eyebrow}
             </motion.p>
             <motion.span

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn, formatPrice } from "@/lib/utils";
-import { getComparePrice, getPrice, type Product } from "@/data/products";
+import { getComparePrice, getPriceInfo, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { formatStoreDate } from "@/lib/store-time";
@@ -43,7 +43,7 @@ const { bind: cartBind } = usePointerActive();
   const { market } = useMarket();
   const { addItem } = useCart();
 
-  const price = getPrice(product, market.currencyCode);
+  const { amount: price, currency } = getPriceInfo(product, market.currencyCode);
   const compare = getComparePrice(product, market.currencyCode);
   const onOffer = compare !== undefined && compare > price;
   const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
@@ -52,17 +52,21 @@ const { bind: cartBind } = usePointerActive();
     <article {...cardBind} className="group relative flex flex-col overflow-hidden rounded-[16px] border border-border-strong bg-white shadow-[0_1px_2px_rgba(50,30,24,0.06)] transition-all duration-300 data-[active=true]:shadow-[0_8px_24px_rgba(50,30,24,0.08)] dark:border-border dark:shadow-none dark:data-[active=true]:border-copper/40">
       <Link
         href={`/shop/${product.slug}`}
+        tabIndex={-1}
+        aria-hidden="true"
         className="relative block aspect-square w-full overflow-hidden"
         style={{ backgroundColor: `${product.accentColor}1A` }}
       >
-        <span
-          className={cn(
-            "absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 font-sans text-[10px] font-medium uppercase tracking-wide",
-            stateClass[product.state],
-          )}
-        >
-          {stateLabel[product.state]}
-        </span>
+        {product.state !== "available" && (
+          <span
+            className={cn(
+              "absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 font-sans text-[10px] font-medium uppercase tracking-wide",
+              stateClass[product.state],
+            )}
+          >
+            {stateLabel[product.state]}
+          </span>
+        )}
         <Image
           src={product.image}
           alt={`${product.name} — ${product.category} pouch`}
@@ -116,8 +120,25 @@ className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center
           {product.category}
         </p>
         <h3 className="mt-1 font-sans text-[15px] font-semibold text-espresso">
-          {product.name}
+          <Link
+            href={`/shop/${product.slug}`}
+            className="after:absolute after:inset-0 after:z-10 after:rounded-[16px] focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-copper"
+          >
+            {product.name}
+          </Link>
         </h3>
+        {product.tagline.length > 0 && (
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {product.tagline.slice(0, 2).map((word) => (
+              <li
+                key={word}
+                className="rounded-full border border-border-strong px-2.5 py-0.5 font-sans text-[11px] text-espresso/80 dark:border-border"
+              >
+                {word}
+              </li>
+            ))}
+          </ul>
+        )}
         {product.rating !== undefined && (
           <div
             className="mt-1.5 flex items-center gap-1.5"
@@ -142,29 +163,25 @@ className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center
           </div>
         )}
         {(product.origin || product.weight) && (
-          <p className="mt-1 font-sans text-[12px] text-warm-gray">
+          <p className="mt-2 font-sans text-[12px] tracking-wide text-warm-gray/80">
             {[product.origin, product.weight].filter(Boolean).join(" · ")}
           </p>
         )}
 
-        {product.tastingNote && (
-          <p className="mt-2 line-clamp-2 font-sans text-[12px] italic leading-relaxed text-warm-gray">
-            {product.tastingNote}
-          </p>
-        )}
+       
         {product.shortDescription && (
           <p className="mt-2 line-clamp-2 font-sans text-[12px] leading-relaxed text-warm-gray">
             {product.shortDescription}
           </p>
         )}
         <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2">
-          <span className="font-sans text-[13px] font-medium text-espresso">
-            {formatPrice(price, market.currencyCode)}
+          <span className="font-sans text-[16px] font-semibold text-espresso">
+                      {formatPrice(price, currency)}
           </span>
           {onOffer && (
             <>
               <span className="font-sans text-[12px] text-warm-gray line-through">
-                {formatPrice(compare, market.currencyCode)}
+                              {formatPrice(compare, currency)}
               </span>
               <span className="font-sans text-[11px] font-medium text-copper">
                 -{percentOff}%
@@ -186,7 +203,7 @@ className="absolute right-3 top-14 z-20 flex h-9 w-9 cursor-pointer items-center
   {...cartBind}
   onClick={() => addItem(product.id)}
   disabled={isOutOfStock}
-  className="mt-3 h-10 w-full cursor-pointer rounded-full bg-gradient-to-b from-green to-green font-sans text-[13px] font-medium text-cream shadow-sm transition-all data-[active=true]:from-espresso-deep data-[active=true]:to-espresso-deep data-[active=true]:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:data-[active=true]:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso [-webkit-tap-highlight-color:transparent]"
+  className="relative z-20 mt-3 h-10 w-full cursor-pointer rounded-full bg-gradient-to-b from-green to-green font-sans text-[13px] font-medium text-cream shadow-sm transition-all data-[active=true]:from-espresso-deep data-[active=true]:to-espresso-deep data-[active=true]:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:data-[active=true]:bg-copper-light disabled:cursor-not-allowed disabled:bg-none disabled:bg-disabled disabled:shadow-none dark:disabled:bg-disabled dark:disabled:text-espresso [-webkit-tap-highlight-color:transparent]"
 >
           {isOutOfStock ? "Out of Stock" : "Add to Cart"}
         </button>

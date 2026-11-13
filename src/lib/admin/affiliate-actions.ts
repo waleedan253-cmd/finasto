@@ -220,10 +220,14 @@ export async function inviteAffiliateUser(
   // profiles is a thin role/name mirror, keyed by the auth user id.
   const { error: profileError } = await supabase.from("profiles").upsert({
     id: invited.user.id,
-    role: "affiliate",
-    name: affiliate.name,
+  //   role: "affiliate",
+  //   name: affiliate.name,
+  //   email: affiliate.email,
+  //   status: "active",
+  // });
+      role: "affiliate",
+    full_name: affiliate.name,
     email: affiliate.email,
-    status: "active",
   });
   if (profileError) {
     return {

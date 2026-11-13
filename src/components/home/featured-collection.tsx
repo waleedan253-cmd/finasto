@@ -37,8 +37,8 @@ export async function FeaturedCollection() {
   const copy = headingByMode[collectionMode];
   const allProducts = await getStorefrontProducts();
   const offers = allProducts.filter((p) => p.compareAtPrice !== undefined);
-  const products =
-    collectionMode === "featured" && offers.length > 0 ? offers : allProducts;
+  const products =(
+    collectionMode === "featured" && offers.length > 0 ? offers : allProducts).slice(0,2);
 
   return (
     <section

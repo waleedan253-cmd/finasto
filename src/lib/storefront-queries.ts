@@ -14,7 +14,7 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select(
-      `id, name, category,featured, currency_code, tagline, short_description, features, origin,
+      `id, name, category,featured, currency_code, tagline, short_description, description, sections, features, origin,
        tasting_note, accent_color, created_at,
        product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
        product_images ( url, is_primary ),
@@ -108,12 +108,14 @@ async function fetchStorefrontProducts(): Promise<Product[]> {
       category: p.category ?? "Uncategorized",
       tagline: p.tagline ?? [],
       shortDescription: p.short_description ?? "",
+      description: p.description ?? "",
+      sections: Array.isArray(p.sections) ? p.sections : [],
       price: basePrice,
       currency: "USD",
       prices,
       compareAtPrice: compareAt,
       comparePrices: compareAt !== undefined ? comparePrices : undefined,
-      // offerEndsAt: hasSale ? cheapest.sale_ends_at : undefined,
+            offerEndsAt: hasSale ? (cheapest?.sale_ends_at ?? undefined) : undefined,
       image: img?.url ?? "/product/placeholder.png",
       state,
       accentColor: p.accent_color,

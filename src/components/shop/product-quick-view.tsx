@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Modal } from "antd";
 import { Star } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { getComparePrice, getPrice, type Product } from "@/data/products";
+import { getComparePrice, getPriceInfo, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 
@@ -22,7 +22,7 @@ export function ProductQuickView({
   const { addItem } = useCart();
 
   const isOutOfStock = product.state === "out-of-stock";
-  const price = getPrice(product, market.currencyCode);
+  const { amount: price, currency } = getPriceInfo(product, market.currencyCode);
   const compare = getComparePrice(product, market.currencyCode);
   const onOffer = compare !== undefined && compare > price;
   const percentOff = onOffer ? Math.round((1 - price / compare) * 100) : 0;
@@ -34,7 +34,7 @@ export function ProductQuickView({
       footer={null}
       centered
       width={860}
-      destroyOnClose
+      destroyOnHidden
       aria-label={`${product.name} quick view`}
     >
       <div className="grid gap-6 pt-4 md:grid-cols-2">
@@ -79,12 +79,12 @@ export function ProductQuickView({
 
           <div className="mt-4 flex flex-wrap items-baseline gap-x-3">
             <span className="font-sans text-[24px] font-semibold text-espresso">
-              {formatPrice(price, market.currencyCode)}
+              {formatPrice(price, currency)}
             </span>
             {onOffer && (
               <>
                 <span className="font-sans text-[15px] text-warm-gray line-through">
-                  {formatPrice(compare, market.currencyCode)}
+                  {formatPrice(compare, currency)}
                 </span>
                 <span className="font-sans text-[13px] font-medium text-copper">
                   -{percentOff}%

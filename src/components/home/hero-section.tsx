@@ -130,7 +130,7 @@ export function HeroSection() {
               <div
                 key={s.id}
                  aria-hidden={!isActive}
-                {...(!isActive ? { inert: "" as unknown as boolean } : {})}
+                                inert={!isActive}
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${i + 1} of ${total}`}

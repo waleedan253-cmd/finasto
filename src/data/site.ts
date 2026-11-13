@@ -122,12 +122,13 @@ export const footerColumns: FooterColumn[] = [
 export type SocialLink = {
   label: string;
   href: string;
-  icon: "instagram" | "facebook" | "tiktok" | "youtube";
+  icon: "instagram" | "facebook" | "tiktok" | "whatsapp";
 };
 
 export const socialLinks: SocialLink[] = [
   { label: "Instagram", href: "https://www.instagram.com/finasto.id", icon: "instagram" },
   { label: "Facebook", href: "https://www.facebook.com/finasto.id", icon: "facebook" },
   { label: "TikTok", href: "https://www.tiktok.com/@finasto.id", icon: "tiktok" },
+  { label: "WhatsApp", href: "https://whatsapp.com/channel/0029VbE9ezdLtOjAaOVDDC2x", icon: "whatsapp" },
   // { label: "YouTube", href: "https://youtube.com", icon: "youtube" },
 ];

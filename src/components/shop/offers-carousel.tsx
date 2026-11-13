@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { Product } from "@/data/products";
-import { getPrice, getComparePrice } from "@/data/products";
+import { getPriceInfo, getComparePrice } from "@/data/products";
 import { formatPrice } from "@/lib/utils";
 import { useMarket } from "@/components/providers/market-provider";
 
@@ -14,9 +14,11 @@ function daysLeft(iso?: string): number | null {
 
 function OfferCard({ p }: { p: Product }) {
   const { market } = useMarket();
-  const currencyCode = market.currencyCode;
-  const price = getPrice(p, currencyCode);
-  const compare = getComparePrice(p, currencyCode);
+  const { amount: price, currency: currencyCode } = getPriceInfo(
+    p,
+    market.currencyCode,
+  );
+  const compare = getComparePrice(p, market.currencyCode);
   const off =
     compare && compare > price ? Math.round((1 - price / compare) * 100) : null;
   const days = daysLeft(p.offerEndsAt);
@@ -41,7 +43,10 @@ function OfferCard({ p }: { p: Product }) {
         <h3 className="mt-1 truncate font-display text-2xl">{p.name}</h3>
 
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-sans text-lg font-semibold text-copper-light">
+          <span
+            suppressHydrationWarning
+            className="font-sans text-lg font-semibold text-copper-light"
+          >
             {formatPrice(price, currencyCode)}
           </span>
           {compare && (
@@ -76,13 +81,13 @@ export function OffersCarousel({ products }: { products: Product[] }) {
 
   const heading = (
     <div className="mb-10 text-center">
-      <p className="inline-flex items-center justify-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper">
+      <div className="inline-flex items-center justify-center gap-3 font-sans text-[12px] font-medium uppercase tracking-[0.22em] text-copper">
         {/* <span aria-hidden="true" className="h-px w-8 bg-copper-light" /> */}
         <h2 className="mt-4 font-display text-[32px] leading-[1.1] text-green-deep sm:text-[40px] md:text-[48px]">
         Exclusive Offers
       </h2>
         {/* <span aria-hidden="true" className="h-px w-8 bg-copper-light" /> */}
-      </p>
+      </div>
      
       <span
         aria-hidden="true"

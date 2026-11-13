@@ -32,6 +32,12 @@ const num = (v: unknown): number => {
 
 export type ProductStatus = "active" | "disabled" | "draft";
 
+export type ProductSection = {
+  title: string;
+  type: "text" | "list" | "steps";
+  content: string[];
+};
+
 // One row in the Products table/list.
 export type ProductListItem = {
   id: string;
@@ -106,12 +112,12 @@ export type ProductDetail = {
   }[];
   variants: ProductVariant[];
   countryPrices: ProductCountryPrice[];
-  metaTitle: string | null;
+   metaTitle: string | null;
   metaDescription: string | null;
+  sections: ProductSection[];
   createdAt: string;
   updatedAt: string;
 };
-
 /* ------------------------------------------------------------------ */
 /* List                                                                 */
 /* ------------------------------------------------------------------ */
@@ -217,7 +223,7 @@ export async function getProductById(
             id, name, description, category, status, featured,
       short_description, tagline, features, origin, tasting_note, accent_color,
       currency_code,
-      meta_title, meta_description, created_at, updated_at,
+      meta_title, meta_description, sections, created_at, updated_at,
       product_images ( id, url, alt, storage_path, is_primary ),
       product_variants ( id, name, sku, price, sale_price, sale_starts_at, sale_ends_at, stock, weight, status ),
       product_country_prices (
@@ -280,8 +286,9 @@ export async function getProductById(
         active: !!cp.active,
       };
     }),
-    metaTitle: data.meta_title,
+       metaTitle: data.meta_title,
     metaDescription: data.meta_description,
+    sections: (data.sections ?? []) as ProductSection[],
     createdAt: data.created_at,
     updatedAt: data.updated_at,
   };

@@ -14,13 +14,13 @@ export function BrandStory() {
       {/* Landscape background */}
       
       <div className="relative aspect-video w-full sm:absolute sm:inset-0 sm:aspect-auto">
-        <Image
+        {/* <Image
           src="/story/golden-dawn-bali-rice-terraces.png"
           alt="Terraced rice fields and a Balinese temple at sunrise, seen through tropical foliage"
           fill
           sizes="100vw"
           className="object-cover object-center"
-        />
+        /> */}
         <BackgroundVideo
           src="https://res.cloudinary.com/v3yvl8gm/video/upload/v1794362718/WhatsApp_Video_2026-11-10_at_7.25.36_PM.mp4"
           className="absolute inset-0 h-full w-full object-cover object-center"

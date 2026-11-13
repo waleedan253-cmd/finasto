@@ -4,7 +4,7 @@ import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
 import { Leaf, Coffee, Sprout } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
-import { getComparePrice, getPrice, type Product } from "@/data/products";
+import { getComparePrice, getPriceInfo, type Product } from "@/data/products";
 import { useMarket } from "@/components/providers/market-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { useRouter } from "next/navigation";
@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
   const { market } = useMarket();
   const { addItem } = useCart();
 
-  const price = getPrice(product, market.currencyCode);
+  const { amount: price, currency } = getPriceInfo(product, market.currencyCode);
   const compare = getComparePrice(product, market.currencyCode);
   const onOffer = compare !== undefined && compare > price;
 
@@ -171,10 +171,10 @@ export function ProductCard({ product }: { product: Product }) {
             <p className="font-sans text-[20px] font-medium text-white">
               {onOffer && (
                 <span className="mr-2 text-[13px] text-white/60 line-through">
-                  {formatPrice(compare, market.currencyCode)}
+                  {formatPrice(compare, currency)}
                 </span>
               )}
-              {formatPrice(price, market.currencyCode)}
+              {formatPrice(price, currency)}
             </p>
             {onOffer && product.offerEndsAt && (
               <p

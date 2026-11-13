@@ -329,7 +329,7 @@ export default function ShippingPage() {
   return (
     <PolicyPage
       path="/shipping"
-      eyebrow="Shipping"
+      eyebrow="Shipping delivery"
       title="Shipping & Delivery"
       intro="FINASTO™ orders are carefully prepared and shipped from Indonesia. Here’s what to expect from checkout to delivery."
       updated={UPDATED}

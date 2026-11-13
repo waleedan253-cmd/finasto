@@ -7,14 +7,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { MAX_QUANTITY, useCart } from "@/components/providers/cart-provider";
 import { useMarket } from "@/components/providers/market-provider";
-import { getPrice, type Product } from "@/data/products";
+import { getPriceInfo, type Product } from "@/data/products";
 import { cn, formatPrice } from "@/lib/utils";
 
 export function CartDrawer({ products = [] }: { products?: Product[] }) {
   const { lines, count, isOpen, closeCart, setQuantity, removeItem } =
     useCart();
   const { market } = useMarket();
-  const currency = market.currencyCode;
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Focus the close button and lock page scroll while the drawer is open.
@@ -45,9 +44,17 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
     return product ? [{ product, quantity: line.quantity }] : [];
   });
 
+  // One currency for the whole bag: the chosen one only if every item has a
+  // verified price in it, otherwise USD for all items (never mixed).
+  const currency = items.every(
+    ({ product }) => product.prices[market.currencyCode] !== undefined,
+  )
+    ? market.currencyCode
+    : "USD";
+
   const subtotal = items.reduce(
     (sum, { product, quantity }) =>
-      sum + getPrice(product, currency) * quantity,
+      sum + getPriceInfo(product, currency).amount * quantity,
     0,
   );
 
@@ -128,7 +135,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 {/* Items */}
                 <ul className="flex-1 divide-y divide-border overflow-y-auto px-5">
                   {items.map(({ product, quantity }) => {
-                    const unitPrice = getPrice(product, currency);
+                    const unitPrice = getPriceInfo(product, currency).amount;
                     return (
                       <li key={product.id} className="flex gap-4 py-5">
                         <Link

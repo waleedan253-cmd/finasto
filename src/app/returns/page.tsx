@@ -312,7 +312,7 @@ export default function ReturnsPage() {
   return (
     <PolicyPage
       path="/returns"
-      eyebrow="Returns"
+      eyebrow="returns refunds "
       title="Returns & Refunds"
       intro="At FINASTO™, we are committed to providing quality products and a reliable shopping experience. Please review our Returns & Refunds Policy before placing your order."
       updated={UPDATED}
@@ -435,15 +435,18 @@ export default function ReturnsPage() {
             className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-copper/20 blur-3xl"
           />
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
-            <p className="font-display text-[64px] leading-none">
-              2
-              <span className="ml-2 font-sans text-[15px] font-normal text-white/75">
-                business days
-              </span>
-            </p>
+            <div className="shrink-0 font-sans font-extrabold leading-none text-white">
+  <div className="flex items-end gap-2">
+    <span className="text-[72px] leading-[0.85]">2</span>
+    <span className="pb-1 text-[20px] font-bold leading-none">Business</span>
+  </div>
+  <span className="mt-1 block text-[48px] uppercase leading-[0.9] tracking-tight">
+    Days
+  </span>
+</div>
             <div
               aria-hidden="true"
-              className="hidden h-14 w-px bg-copper/50 sm:block"
+              className="hidden h-24 w-px bg-copper/50 sm:block"
             />
             <p className="font-sans text-[14.5px] leading-relaxed text-white/85">
               Customers should report damaged, incorrect or missing items
@@ -510,9 +513,7 @@ export default function ReturnsPage() {
               as="li"
               key={text}
               delay={(i % 2) * 0.08}
-              className={`flex gap-3 rounded-2xl border border-copper/30 bg-green-bg p-4 ${
-                i === conditions.length - 1 ? "sm:col-span-2" : ""
-              }`}
+              className="flex gap-3 rounded-2xl border border-copper/30 bg-green-bg p-4"
             >
               <span className="mt-0.5 shrink-0">
                 <GlowIcon className="h-6 w-6 bg-gradient-to-br from-green-deep to-green text-cream">

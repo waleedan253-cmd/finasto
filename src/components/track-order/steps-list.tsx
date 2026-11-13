@@ -6,7 +6,7 @@ import { usePointerActive } from "../../app/hooks/usePointerActive";
 const steps = [
   {
     icon: PackageSearch,
-    title: "Enter your details",
+    title: "Enter Your Details",
     text: "Enter your email and tracking code from your confirmation email.",
   },
   {
@@ -17,7 +17,7 @@ const steps = [
   {
     icon: Truck,
     title: "Worldwide Delivery",
-    text: "From Indonesia to Your Doorstep Across the World.",
+    text: "From Indonesia to your doorstep across the world.",
   },
 ] as const;
 

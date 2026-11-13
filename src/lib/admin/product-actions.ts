@@ -88,6 +88,15 @@ const imageSchema = z.object({
   isPrimary: z.boolean(),
 });
 
+const sectionSchema = z.object({
+  title: z.string().trim().min(1, "Enter a title").max(60),
+  type: z.enum(["text", "list", "steps"]),
+  content: z
+    .array(z.string().trim().min(1).max(1000))
+    .min(1, "Add content")
+    .max(20),
+});
+
 const productInputSchema = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(5000),
@@ -95,7 +104,7 @@ const productInputSchema = z.object({
   status: statusSchema,
   featured: z.boolean(),
   tagline: z.array(z.string().trim().min(1).max(24)).max(3),
-  shortDescription: z.string().trim().max(160),
+   shortDescription: z.string().trim().min(1, "Enter a short description").max(160),
   features: z.array(z.string().trim().min(1).max(30)).max(6),
   origin: z.string().trim().max(60).nullable(),
   tastingNote: z.string().trim().max(120).nullable(),
@@ -105,7 +114,8 @@ const productInputSchema = z.object({
   metaDescription: z.string().trim().max(160).nullable(),
   variants: z.array(variantSchema).min(1, "Add at least one variant"),
   countryPrices: z.array(countryPriceSchema),
-  images: z.array(imageSchema).max(1),
+   images: z.array(imageSchema).max(1),
+  sections: z.array(sectionSchema).max(12),
   // ids the admin removed in the form's variant/country-price repeaters
   deletedVariantIds: z.array(z.string().uuid()),
   deletedCountryPriceIds: z.array(z.string().uuid()),
@@ -189,8 +199,9 @@ export async function createProduct(
       tasting_note: data.tastingNote,
       accent_color: data.accentColor,
       currency_code: data.currencyCode,
-      meta_title: data.metaTitle,
+          meta_title: data.metaTitle,
       meta_description: data.metaDescription,
+      sections: data.sections,
     })
     .select("id")
     .single();
@@ -274,7 +285,8 @@ export async function updateProduct(
       accent_color: data.accentColor,
       currency_code: data.currencyCode,
       meta_title: data.metaTitle,
-      meta_description: data.metaDescription,
+          meta_description: data.metaDescription,
+      sections: data.sections,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

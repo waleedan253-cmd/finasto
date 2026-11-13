@@ -64,7 +64,7 @@ export function ShopHero() {
           const isActive = i === active;
           return (
             <div 
-              key={s.id}
+                           key={`${s.id}-${i}`}
               role="group"
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${total}`}
@@ -97,7 +97,7 @@ export function ShopHero() {
         >
           {heroSlides.map((s, i) => (
             <button
-              key={s.id}
+            key={`${s.id}-${i}`}
               role="tab"
               type="button"
               aria-selected={i === active}

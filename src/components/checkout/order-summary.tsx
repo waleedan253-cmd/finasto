@@ -4,7 +4,7 @@
 // import Link from "next/link";
 // import { useCart } from "@/components/providers/cart-provider";
 // import { useMarket } from "@/components/providers/market-provider";
-// import { getPrice } from "@/data/products";
+// import { getPriceInfo } from "@/data/products";
 // import { useProducts } from "@/components/providers/products-provider";
 // import { formatPrice } from "@/lib/utils";
 
@@ -120,7 +120,7 @@ import Link from "next/link";
 import { Mail, ShoppingBag, Truck } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
 import { useMarket } from "@/components/providers/market-provider";
-import { getPrice } from "@/data/products";
+import { getPriceInfo } from "@/data/products";
 import { useProducts } from "@/components/providers/products-provider";
 import { formatPrice } from "@/lib/utils";
 
@@ -140,16 +140,22 @@ export function OrderSummary() {
   const products = useProducts();
   const { lines } = useCart();
   const { market } = useMarket();
-  const currency = market.currencyCode;
-
-  const items = lines.flatMap((line) => {
+    const items = lines.flatMap((line) => {
     const product = products.find((p) => p.id === line.productId);
     return product ? [{ product, quantity: line.quantity }] : [];
   });
 
+  // One currency for the whole order: the chosen one only if every item has
+  // a verified price in it, otherwise USD for all items (never mixed).
+  const currency = items.every(
+    ({ product }) => product.prices[market.currencyCode] !== undefined,
+  )
+    ? market.currencyCode
+    : "USD";
+
   const subtotal = items.reduce(
     (sum, { product, quantity }) =>
-      sum + getPrice(product, currency) * quantity,
+      sum + getPriceInfo(product, currency).amount * quantity,
     0,
   );
 
@@ -199,7 +205,7 @@ export function OrderSummary() {
       <div className="p-5 sm:p-8">
         <ul className="flex max-h-[340px] flex-col gap-4 overflow-y-auto pr-1">
           {items.map(({ product, quantity }) => {
-            const unitPrice = getPrice(product, currency);
+            const unitPrice = getPriceInfo(product, currency).amount;
             return (
               <li key={product.id} className="flex items-center gap-3 sm:gap-4">
                 <div

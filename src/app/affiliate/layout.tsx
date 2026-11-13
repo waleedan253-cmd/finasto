@@ -30,11 +30,11 @@ export default async function AffiliateLayout({
 
   if (!affiliate || affiliate.status !== "active") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream p-6">
+      <div className="flex min-h-screen items-center justify-center bg-pattern p-6">
         <div className="w-full max-w-md rounded-2xl border border-border bg-white p-8 text-center">
           <h1 className="font-display text-[24px] leading-tight text-espresso">
             Account unavailable
-          </h1>
+          </h1> 
           <p className="mt-3 font-sans text-[14px] leading-relaxed text-warm-gray">
             Your affiliate account is currently inactive or has been removed.
             Please contact the Finasto team if you think this is a mistake.
