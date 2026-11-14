@@ -65,6 +65,186 @@
 
 
 /* Affiliate dashboard palette (new, isolated, does not touch existing tokens) */
+/* Antd cards that hold forms (scoped by aff-antd-card) */
+.aff-antd-card .ant-card-head {
+  background: var(--color-aff-ivory);
+  border-bottom: 1px solid var(--color-aff-border);
+  padding-inline: 16px;
+}
+.aff-antd-card .ant-card-head-wrapper {
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.aff-antd-card .ant-card-head-title {
+  font-family: var(--font-display, inherit);
+  font-size: 18px;
+  font-weight: 600;
+  white-space: normal;
+  color: var(--color-aff-green-900);
+}
+.aff-antd-card .ant-card-extra {
+  padding-block: 0;
+}
+.aff-antd-card .ant-card-body {
+  padding: 16px;
+}
+@media (min-width: 640px) {
+  .aff-antd-card .ant-card-head { padding-inline: 24px; }
+  .aff-antd-card .ant-card-body { padding: 24px; }
+}
+
+/* Labels and helper text */
+.aff-antd-card .ant-form-item-label > label {
+  color: var(--color-aff-green-900);
+  font-weight: 500;
+}
+.aff-antd-card .ant-form-item-extra {
+  color: var(--color-aff-muted);
+  font-size: 12px;
+}
+
+/* Gold focus on inputs and selects */
+.aff-antd-card .ant-input:hover,
+.aff-antd-card .ant-input-affix-wrapper:hover,
+.aff-antd-card .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--color-aff-gold-500);
+}
+.aff-antd-card .ant-input:focus,
+.aff-antd-card .ant-input-affix-wrapper-focused,
+.aff-antd-card .ant-select-focused .ant-select-selector {
+  border-color: var(--color-aff-gold-600) !important;
+  box-shadow: 0 0 0 3px rgba(172, 131, 78, 0.18) !important;
+}
+
+/* Locked (disabled) fields look calm, not broken */
+.aff-antd-card .ant-input[disabled],
+.aff-antd-card .ant-input-affix-wrapper-disabled,
+.aff-antd-card .ant-select-disabled .ant-select-selector {
+  background: var(--color-aff-ivory);
+  color: var(--color-aff-muted);
+}
+
+/* Primary button */
+.aff-antd-card .ant-btn-primary:not(:disabled) {
+  background: var(--color-aff-green-900);
+  color: var(--color-aff-gold-300);
+  border: 1px solid color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent);
+  box-shadow: none;
+}
+.aff-antd-card .ant-btn-primary:not(:disabled):hover {
+  background: var(--color-aff-green-800);
+  color: var(--color-aff-gold-300);
+}
+/* Buttons inside the dark action bar */
+.aff-payout-card .aff-action-bar .ant-btn-primary:not(:disabled) {
+  background: linear-gradient(90deg, var(--color-aff-gold-600), var(--color-aff-gold-300), var(--color-aff-gold-500));
+  color: var(--color-aff-green-950);
+  border: 0;
+  font-weight: 600;
+}
+.aff-payout-card .aff-action-bar .ant-btn-primary:not(:disabled):hover {
+  filter: brightness(1.06);
+  color: var(--color-aff-green-950);
+}
+.aff-payout-card .aff-action-bar .ant-btn-default {
+  background: var(--color-aff-ivory);
+  border-color: transparent;
+  color: var(--color-aff-green-900);
+}
+.aff-payout-card .aff-action-bar .ant-btn-primary:disabled {
+  background: rgba(253, 238, 220, 0.12);
+  color: rgba(253, 238, 220, 0.45);
+  border: 0;
+}
+/* Payout confirmation modal (scoped by rootClassName="aff-dialog") */
+
+.aff-dialog .ant-modal-content {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 16px;
+  border: 1px solid var(--color-aff-border);
+  box-shadow: 0 24px 60px -24px rgba(3, 24, 7, 0.45);
+}
+.aff-dialog .ant-modal-content::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  z-index: 1;
+  background: linear-gradient(90deg, transparent, var(--color-aff-gold-300), transparent);
+}
+.aff-dialog .ant-modal-header {
+  margin: 0;
+  padding: 18px 20px;
+  background: var(--color-aff-ivory);
+  border-bottom: 1px solid var(--color-aff-border);
+}
+.aff-dialog .ant-modal-title {
+  font-family: var(--font-display, inherit);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-aff-green-900);
+}
+.aff-dialog .ant-modal-body {
+  padding: 16px 20px;
+}
+.aff-dialog .ant-modal-footer {
+  margin: 0;
+  padding: 14px 20px;
+  background: var(--color-aff-ivory);
+  border-top: 1px solid var(--color-aff-border);
+}
+
+/* Tables inside the modal */
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-view,
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-row,
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-item-label,
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-item-content {
+  border-color: var(--color-aff-border);
+}
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-item-label {
+  background: var(--color-aff-ivory);
+  color: var(--color-aff-muted);
+  font-size: 13px;
+}
+.aff-dialog .ant-descriptions-bordered .ant-descriptions-item-content {
+  color: var(--color-aff-green-900);
+  word-break: break-word;
+}
+
+/* Buttons */
+.aff-dialog .ant-btn-primary:not(:disabled) {
+  background: var(--color-aff-green-900);
+  color: var(--color-aff-gold-300);
+  border: 1px solid color-mix(in srgb, var(--color-aff-gold-600) 40%, transparent);
+  box-shadow: none;
+}
+.aff-dialog .ant-btn-primary:not(:disabled):hover {
+  background: var(--color-aff-green-800);
+  color: var(--color-aff-gold-300);
+}
+.aff-dialog .ant-btn-default:not(:disabled):hover {
+  border-color: var(--color-aff-gold-500);
+  color: var(--color-aff-green-900);
+}
+
+/* Phones: full-width stacked buttons, primary on top */
+@media (max-width: 480px) {
+  .aff-dialog .ant-modal-body { padding: 14px 16px; }
+  .aff-dialog .ant-modal-footer {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .aff-dialog .ant-modal-footer .ant-btn {
+    width: 100%;
+    margin: 0;
+    height: 44px;
+  }
+}
 
 .aff-orders-table .ant-table {
   background: transparent;
@@ -96,7 +276,7 @@
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid var(--color-aff-border);
-  background: #fff;
+    background: linear-gradient(to bottom, var(--color-aff-ivory), #fff);
   box-shadow: 0 10px 30px -22px rgba(172, 131, 78, 0.45);
 }
 .aff-card::before {

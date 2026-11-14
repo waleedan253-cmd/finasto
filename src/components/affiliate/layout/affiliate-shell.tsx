@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Menu,
-  PanelLeftClose,
-  PanelLeftOpen,
-  UserRound,
-} from "lucide-react";
+import { ArrowRight, Menu, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AffiliateSidebar } from "./affiliate-sidebar";
 import { affiliateNav, isNavActive } from "./affiliate-nav";
@@ -73,7 +67,7 @@ export function AffiliateShell({
         id="affiliate-sidebar"
         aria-label="Affiliate navigation"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] overflow-hidden border-r border-aff-gold-600/25 bg-[radial-gradient(ellipse_at_top,var(--color-aff-green-800)_0%,var(--color-aff-green-900)_45%,var(--color-aff-green-950)_100%)] transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
+          "fixed inset-y-0 left-0 z-50 w-[280px] border-r border-aff-gold-600/25 bg-[radial-gradient(ellipse_at_top,var(--color-aff-green-800)_0%,var(--color-aff-green-900)_45%,var(--color-aff-green-950)_100%)] transition-[transform,width] duration-300 ease-out lg:translate-x-0 lg:shadow-none",
           open && "shadow-[0_0_60px_-10px_rgba(16,38,15,0.45)]",
           collapsed ? "lg:w-[76px]" : "lg:w-[260px]",
           open ? "translate-x-0" : "-translate-x-full",
@@ -82,6 +76,7 @@ export function AffiliateShell({
         <AffiliateSidebar
           onNavigate={() => setOpen(false)}
           collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed((c) => !c)}
         />
       </aside>
       <div
@@ -103,18 +98,7 @@ export function AffiliateShell({
               <Menu className="h-6 w-6" strokeWidth={1.6} />
             </button>
 
-            <button
-              type="button"
-              onClick={() => setCollapsed((c) => !c)}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="hidden h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-aff-muted transition-colors active:bg-aff-green-900/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aff-gold-600 [@media(hover:hover)]:hover:bg-aff-green-900/5 [@media(hover:hover)]:hover:text-aff-green-900 lg:inline-flex"
-            >
-              {collapsed ? (
-                <PanelLeftOpen className="h-5 w-5" strokeWidth={1.6} />
-              ) : (
-                <PanelLeftClose className="h-5 w-5" strokeWidth={1.6} />
-              )}
-            </button>
+           
             <div className="min-w-0">
               <p className="hidden font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-aff-gold-600 sm:block">
               Brand Promoter

@@ -112,10 +112,12 @@ export function ProfileForm({
     <Card
       className="aff-card aff-antd-card"
       bordered={false}
-      style={{ background: "var(--color-white)" }}
+   
       title="Profile"
       extra={
-        <span className="text-[13px] text-aff-muted">Your contact details</span>
+        <span className="font-sans text-[12px] text-aff-muted sm:text-[13px]">
+          Your contact details
+        </span>
       }
     >
       <Form<FormValues>
@@ -224,12 +226,13 @@ export function ProfileForm({
           <Input placeholder="e.g. Punjab, Lahore" />
         </Form.Item>
 
-        <div className="flex justify-end">
+                <div className="flex justify-end border-t border-aff-border pt-4">
           <Button
             type="primary"
             htmlType="submit"
             loading={isPending}
             size="large"
+            className="w-full sm:w-auto sm:min-w-[160px]"
           >
             Save profile
           </Button>

@@ -85,7 +85,7 @@ export function RecentOrders({
   const amount = (n: number) => withApprox(n, "USD", currency, rates);
 
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-aff-border bg-white shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)]">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-aff-border bg-gradient-to-b from-aff-ivory to-white">
       <span
         aria-hidden
         className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-aff-gold-600 via-aff-gold-300 to-aff-gold-600 opacity-70"

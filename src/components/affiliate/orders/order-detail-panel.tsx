@@ -159,12 +159,12 @@ export function OrderDetailPanel({
         {/* ─────────── Main column ─────────── */}
         <div className="flex flex-col gap-4 sm:gap-6 lg:col-span-2">
           {/* Items */}
-          <section className="aff-card p-4 sm:p-6">
+          <section className="aff-card  p-4 sm:p-6">
             <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
               Items
             </h2>
 
-            <ul className="mt-4 divide-y divide-aff-border">
+            <ul className="mt-4 divide-y divide-aff-border ">
               {order.items.map((item, index) => (
                 <li
                   key={`${item.productName}-${index}`}
@@ -279,47 +279,60 @@ export function OrderDetailPanel({
         {/* ─────────── Side column ─────────── */}
         <div className="flex flex-col gap-4 sm:gap-6">
           {/* Commission */}
-          <section className="aff-card p-4 sm:p-6">
-            <h2 className="font-display text-[20px] leading-tight text-aff-green-900">
-              Your commission
-            </h2>
+                    {/* Commission */}
+          <div className="rounded-2xl bg-gradient-to-br from-aff-gold-600 via-aff-gold-300 to-aff-gold-500 p-[1.5px] shadow-[0_18px_44px_-22px_rgba(172,131,78,0.6)]">
+            <section className="relative isolate overflow-hidden rounded-[15px] bg-gradient-to-br from-aff-green-950 via-aff-green-900 to-aff-green-800 p-4 sm:p-6">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-12 -top-12 -z-10 h-44 w-44 rounded-full bg-aff-gold-400/15 blur-3xl"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
+              />
 
-            <p className="mt-4 font-display text-[30px] font-semibold tabular-nums text-aff-green-900 sm:text-[34px]">
-              {showCommissionAmount
-                ? formatPrice(order.commissionUsd, "USD")
-                : "—"}
-            </p>
-            {showCommissionAmount && approxUsd(order.commissionUsd) && (
-              <p className="font-sans text-[12px] 	text-aff-muted">
-                {approxUsd(order.commissionUsd)}
-              </p>
-            )}
-            {showCommissionAmount && (
-              <p className="font-sans text-[12px] 	text-aff-muted">
-                {order.commissionPercent}% of{" "}
-                {formatPrice(order.totalUsd, "USD")}
-              </p>
-            )}
+              <h2 className="font-sans text-[13px] font-medium text-aff-cream-50/80">
+                Your commission
+              </h2>
 
-            <div className="mt-3">
-              <CommissionStateBadge state={order.commissionState} />
-            </div>
-            <p className="mt-3 font-sans text-[13px] leading-relaxed 	text-aff-muted">
-              {commissionNote(order)}
-            </p>
-
-            {order.payoutRequestNumber && (
-              <p className="mt-3 font-sans text-[13px] 	text-aff-muted">
-                Payout request:{" "}
-                <Link
-                  href="/affiliate/payouts"
-                  className="font-medium text-aff-green-900 hover:text-aff-gold-600"
-                >
-                  {order.payoutRequestNumber}
-                </Link>
+              <p className="mt-3 break-words font-display text-[30px] font-semibold leading-tight tabular-nums text-aff-gold-300 sm:text-[36px]">
+                {showCommissionAmount
+                  ? formatPrice(order.commissionUsd, "USD")
+                  : "—"}
               </p>
-            )}
-          </section>
+              {showCommissionAmount && approxUsd(order.commissionUsd) && (
+                <p className="mt-1 font-sans text-[13px] text-aff-cream-50/70">
+                  {approxUsd(order.commissionUsd)}
+                </p>
+              )}
+              {showCommissionAmount && (
+                <p className="font-sans text-[12px] text-aff-cream-50/70">
+                  {order.commissionPercent}% of{" "}
+                  {formatPrice(order.totalUsd, "USD")}
+                </p>
+              )}
+
+              {/* Light chip: the badge colors are made for light backgrounds */}
+              <div className="mt-4 w-fit max-w-full rounded-2xl bg-aff-ivory p-1.5">
+                <CommissionStateBadge state={order.commissionState} />
+              </div>
+              <p className="mt-3 font-sans text-[13px] leading-relaxed text-aff-cream-50/75">
+                {commissionNote(order)}
+              </p>
+
+              {order.payoutRequestNumber && (
+                <p className="mt-3 font-sans text-[13px] text-aff-cream-50/75">
+                  Payout request:{" "}
+                  <Link
+                    href="/affiliate/payouts"
+                    className="font-medium text-aff-gold-300 underline-offset-2 hover:underline"
+                  >
+                    {order.payoutRequestNumber}
+                  </Link>
+                </p>
+              )}
+            </section>
+          </div>
 
           {/* Customer */}
           <section className="aff-card p-4 sm:p-6">

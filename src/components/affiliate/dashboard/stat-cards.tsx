@@ -425,6 +425,7 @@
 //     </section>
 //   );
 // }
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -492,11 +493,32 @@ function sizeFor(text: string, sizes: [string, string, string]) {
 /* One look for all three: ivory card, one thin gold line, green chip.  */
 /* ------------------------------------------------------------------ */
 
+// One muted accent per card. Full class names (not built strings) so
+// Tailwind can see them.
+const TONE = {
+  orders: {
+    card: "border-[#D6E4EA] bg-[#F5F9FB]",
+    line: "from-[#2E6F86] via-[#6FA8BD] to-[#2E6F86]",
+    chip: "bg-[#1F4E5F] text-[#CFE8F1]",
+  },
+  refunds: {
+    card: "border-[#EBD3CC] bg-[#FCF6F4]",
+    line: "from-[#B5523F] via-[#E0907F] to-[#B5523F]",
+    chip: "bg-[#8A3B2E] text-[#F7D3CA]",
+  },
+  paid: {
+    card: "border-[#CFE6DA] bg-[#F4FAF7]",
+    line: "from-[#2F9E6B] via-[#7CCBA1] to-[#2F9E6B]",
+    chip: "bg-[#14573A] text-[#C6EFD7]",
+  },
+} as const;
+
 type QuietProps = {
   title: string;
   icon: LucideIcon;
   value: number;
   format: (n: number) => string;
+  tone: keyof typeof TONE;
   index: number;
   approx?: string | null;
   hint?: string;
@@ -507,10 +529,12 @@ function QuietCard({
   icon: Icon,
   value,
   format,
+  tone,
   index,
   approx,
   hint,
 }: QuietProps) {
+  const t = TONE[tone];
   const reduce = useReducedMotion();
   const size = sizeFor(format(value), [
     "text-[18px]",
@@ -525,18 +549,26 @@ function QuietCard({
       viewport={{ once: true, margin: "-30px" }}
       whileHover={reduce ? undefined : { y: -2 }}
       transition={{ duration: 0.6, ease: EASE, delay: index * 0.08 }}
-      className="relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-aff-border bg-white p-4 pt-5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] transition-shadow duration-300 [@media(hover:hover)]:hover:shadow-[0_16px_30px_-18px_rgba(172,131,78,0.55)]"
+      className={cn(
+        "relative isolate flex h-full flex-col overflow-hidden rounded-2xl border p-4 pt-5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] transition-shadow duration-300 [@media(hover:hover)]:hover:shadow-[0_16px_30px_-18px_rgba(172,131,78,0.55)]",
+        t.card,
+      )}
     >
       <span
         aria-hidden
-        className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-aff-gold-600 via-aff-gold-300 to-aff-gold-600 opacity-70"
+        className={cn("absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r", t.line)}
       />
 
       <div className="flex items-start justify-between gap-2">
         <p className="font-sans text-[13px] font-medium text-aff-muted">
           {title}
         </p>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-aff-green-900 text-aff-gold-300">
+        <span
+          className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
+            t.chip,
+          )}
+        >
           <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
         </span>
       </div>
@@ -739,6 +771,7 @@ export function StatCards({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <QuietCard
           index={1}
+          tone="orders"
           title="Total orders"
           icon={ShoppingBag}
           value={counts.totalOrders}
@@ -747,6 +780,7 @@ export function StatCards({
         />
         <QuietCard
           index={2}
+          tone="refunds"
           title="Refunds"
           icon={Undo2}
           value={counts.refundedOrders}
@@ -755,6 +789,7 @@ export function StatCards({
         />
         <QuietCard
           index={3}
+          tone="paid"
           title="Paid out"
           icon={BadgeCheck}
           value={earnings.paidUsd}

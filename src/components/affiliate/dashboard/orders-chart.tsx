@@ -152,7 +152,7 @@ export function OrdersChart({
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-aff-border bg-white p-4 pt-5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] transition-opacity sm:p-5 sm:pt-6",
+        "relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-aff-border bg-gradient-to-b from-aff-ivory to-white p-4 pt-5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] transition-opacity sm:p-5 sm:pt-6",
         isPending && "opacity-60",
       )}
     >

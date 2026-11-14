@@ -115,7 +115,7 @@
 // import Image from "next/image";
 // import Link from "next/link";
 // import { usePathname } from "next/navigation";
-// import { LogOut, X } from "lucide-react";
+// import { ChevronLeft, LogOut, X } from "lucide-react";
 // import { motion } from "motion/react";
 // import { cn } from "@/lib/utils";
 // import { signOutAction } from "@/lib/auth/actions";
@@ -254,7 +254,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut, X } from "lucide-react";
+import { ChevronLeft, LogOut, X } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { signOutAction } from "@/lib/auth/actions";
@@ -267,14 +267,37 @@ import { affiliateNav, isNavActive } from "./affiliate-nav";
 export function AffiliateSidebar({
   onNavigate,
   collapsed = false,
+  onToggleCollapse,
 }: {
   onNavigate?: () => void;
   collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }) {
   const pathname = usePathname();
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[radial-gradient(ellipse_at_25%_18%,var(--color-aff-green-800)_0%,var(--color-aff-green-900)_48%,var(--color-aff-green-950)_100%)]">
+    <div className="relative h-full">
+      {onToggleCollapse && (
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
+          aria-controls="affiliate-sidebar"
+          className="group/handle absolute -right-3.5 top-[104px] z-20 hidden h-7 w-7 cursor-pointer touch-manipulation items-center justify-center rounded-full border border-aff-gold-400/60 bg-aff-green-950 text-aff-gold-300 shadow-[0_6px_16px_-6px_rgba(3,24,7,0.6)] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aff-gold-300 active:scale-90 motion-reduce:transition-none lg:inline-flex [@media(hover:hover)]:hover:border-aff-gold-300 [@media(hover:hover)]:hover:bg-aff-gold-300 [@media(hover:hover)]:hover:text-aff-green-950 [@media(hover:hover)]:hover:shadow-[0_0_18px_rgba(241,204,156,0.55)]"
+        >
+          <ChevronLeft
+            className={cn(
+              "h-4 w-4 transition-transform duration-300 motion-reduce:transition-none",
+              collapsed && "rotate-180",
+            )}
+            strokeWidth={2.2}
+            aria-hidden="true"
+          />
+        </button>
+      )}
+
+      <div className="relative flex h-full flex-col overflow-hidden bg-[radial-gradient(ellipse_at_25%_18%,var(--color-aff-green-800)_0%,var(--color-aff-green-900)_48%,var(--color-aff-green-950)_100%)]">
       {/* Right vertical golden edge line */}
       <span
         aria-hidden="true"
@@ -298,6 +321,7 @@ export function AffiliateSidebar({
             className="h-24 w-auto drop-shadow-[0_4px_20px_rgba(241,204,156,0.35)]"
           />
         </Link>
+         
         <button
           type="button"
           onClick={onNavigate}
@@ -379,6 +403,7 @@ export function AffiliateSidebar({
             </button>
           </motion.div>
         </form>
+      </div>
       </div>
     </div>
   );

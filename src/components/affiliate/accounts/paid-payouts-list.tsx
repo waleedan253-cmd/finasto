@@ -139,13 +139,11 @@ export default function PaidPayoutsList({
       render: (_: unknown, r) =>
         r.proofUrl ? (
           <Button
-            type="link"
             size="small"
             href={r.proofUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="!text-[#1F7A52] hover:!text-aff-green-900 hover:underline"
-            style={{ padding: 0 }}
+            className="!rounded-full !border-[rgba(47,158,107,0.3)] !bg-[rgba(47,158,107,0.10)] !px-3 !font-medium !text-[#1F7A52] hover:!border-aff-gold-500 hover:!text-aff-green-900"
           >
             View proof
           </Button>
@@ -159,12 +157,12 @@ export default function PaidPayoutsList({
     <Card
       className="aff-card aff-payout-card"
       bordered={false}
-      style={{ background: "var(--color-white)" }}
+     
       title="Paid payouts"
     >
       <Table<PaidPayout>
         size="middle"
-        className="aff-orders-table"
+        className="aff-orders-table hidden md:block"
         rowKey="id"
         columns={columns}
         dataSource={payouts}
@@ -184,7 +182,7 @@ export default function PaidPayoutsList({
         }}
         expandable={{
           expandedRowRender: (r) => (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div className="flex flex-col gap-3 rounded-xl border border-aff-border border-l-[3px] border-l-aff-gold-500 bg-aff-ivory p-3 sm:p-4">
               <Descriptions
                 size="small"
                 column={{ xs: 1, sm: 2, lg: 3 }}
@@ -230,6 +228,67 @@ export default function PaidPayoutsList({
           ),
         }}
       />
+            {/* Phones: one card per payout */}
+      <ul className="flex flex-col gap-3 md:hidden">
+        {payouts.length === 0 && (
+          <li>
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="No payouts have been paid yet."
+            />
+          </li>
+        )}
+        {payouts.map((r) => {
+          const converted = withApprox(r.totalUsd, "USD", currency, rates);
+          return (
+            <li
+              key={r.id}
+              className="relative overflow-hidden rounded-xl border border-aff-border bg-aff-ivory p-3.5"
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-aff-gold-300 to-transparent"
+              />
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-sans text-[14px] font-semibold text-aff-green-900">
+                    {r.requestNumber}
+                  </p>
+                  <p className="font-sans text-[12px] text-aff-muted">
+                    {dateOnly(r.paidAt)} · {r.orders.length}{" "}
+                    {r.orders.length === 1 ? "order" : "orders"}
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="font-display text-[16px] font-semibold text-aff-green-900">
+                    {converted.original}
+                  </p>
+                  {converted.approx && (
+                    <p className="font-sans text-[11px] text-aff-muted">
+                      {converted.approx}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {r.paymentReference && (
+                <p className="mt-2 break-all font-sans text-[12px] text-aff-muted">
+                  Ref: {r.paymentReference}
+                </p>
+              )}
+              {r.proofUrl && (
+                <a
+                  href={r.proofUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex h-9 items-center rounded-full border border-[rgba(47,158,107,0.3)] bg-[rgba(47,158,107,0.10)] px-4 font-sans text-[13px] font-medium text-[#1F7A52] active:scale-[0.97]"
+                >
+                  View proof
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Card>
   );
 }

@@ -117,11 +117,15 @@ export default function RequestPayoutDialog({
             </Descriptions.Item>
           )}
           <Descriptions.Item label="Total">
-            <Typography.Text strong>{usd(totalUsd)}</Typography.Text>
+            <span className="font-display text-[18px] font-semibold text-aff-green-900">
+              {usd(totalUsd)}
+            </span>
           </Descriptions.Item>
         </Descriptions>
 
-        <Typography.Text strong>Payment will be sent to</Typography.Text>
+        <p className="font-sans text-[13px] font-semibold text-aff-green-900">
+          Payment will be sent to
+        </p>
         <Descriptions
           column={1}
           size="small"

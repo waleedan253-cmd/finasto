@@ -121,7 +121,7 @@ export default function PayoutRequestsList({
     <Card
       className="aff-card aff-payout-card"
       bordered={false}
-      style={{ background: "var(--color-white)" }}
+      
       title="Request history"
     >
       <Table<MyPayoutRequest>
@@ -142,7 +142,7 @@ export default function PayoutRequestsList({
             .filter((r) => r.status === "rejected")
             .map((r) => r.id),
           expandedRowRender: (r) => (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        <div className="flex flex-col gap-3 rounded-xl border border-aff-border border-l-[3px] border-l-aff-gold-500 bg-aff-ivory p-3 sm:p-4">
               {r.status === "rejected" && (
                 <Alert
                   type="error"

@@ -130,7 +130,7 @@ export function BankDetailsForm({
     <Card
       className="aff-card aff-antd-card"
       bordered={false}
-      style={{ background: "var(--color-white)" }}
+     
       title="Bank details"
       extra={
         <span className="text-[13px] text-aff-muted">

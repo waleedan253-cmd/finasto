@@ -22,7 +22,7 @@ export function ReferralStrip({ link }: { link: MyReferralLink }) {
   }
 
   return (
-    <div className="relative isolate flex flex-wrap items-center gap-x-5 gap-y-3 overflow-hidden rounded-2xl border border-aff-border bg-white px-4 py-3.5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] sm:px-5">
+    <div className="relative isolate flex flex-wrap items-center gap-x-5 gap-y-3 overflow-hidden rounded-2xl border border-aff-border bg-gradient-to-b from-aff-ivory to-white px-4 py-3.5 shadow-[0_6px_16px_-12px_rgba(3,24,7,0.3)] sm:px-5">
       {/* thin gold line on top, same as the other cards */}
       <span
         aria-hidden="true"
