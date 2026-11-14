@@ -117,7 +117,7 @@ export function AffiliateShell({
             </button>
             <div className="min-w-0">
               <p className="hidden font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-aff-gold-600 sm:block">
-                Affiliate
+              Brand Promoter
               </p>
               <h1 className="truncate font-display text-[20px] font-semibold leading-tight tracking-tight text-aff-green-900 sm:text-[22px]">
                 {title}
@@ -141,7 +141,7 @@ export function AffiliateShell({
               </div>
               <div className="hidden min-w-0 md:block">
                 <p className="max-w-[160px] truncate font-sans text-[13px] leading-tight text-aff-green-900">
-                  {name || "Affiliate"}
+                  {name || "Brand Promoter"}
                 </p>
                 <p className="max-w-[160px] truncate font-sans text-[11px] leading-tight text-aff-muted">
                   {email}

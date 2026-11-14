@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { Coffee, Minus, Plus, X } from "lucide-react";
 import { MAX_QUANTITY, useCart } from "@/components/providers/cart-provider";
 import { useMarket } from "@/components/providers/market-provider";
 import { getPriceInfo, type Product } from "@/data/products";
@@ -77,17 +77,28 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
             key="cart-panel"
             role="dialog"
             aria-modal="true"
-            aria-label="Shopping bag"
+            aria-label="Shopping cart"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[420px] flex-col border-l border-border bg-cream shadow-2xl"
+            className="fixed inset-y-0 right-0 z-50 isolate flex w-full max-w-[420px] flex-col overflow-hidden border-l border-border bg-gradient-to-b from-[#f7f1e6] via-cream to-[#eef3ea] shadow-2xl "
           >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 -z-10 opacity-[0.05] [background-image:radial-gradient(#234d2a_1px,transparent_1px)] [background-size:20px_20px]"
+            />
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h2 className="font-display text-[22px] text-espresso">
-                Your Bag
+            <div className="flex items-center justify-between border-b border-border bg-white/60 px-5 py-4 backdrop-blur-xl">
+              <h2 className="flex items-center gap-2.5 font-display text-[22px] text-espresso">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-green-deep to-green text-cream ring-1 ring-copper/40">
+                  <Coffee
+                    className="h-[18px] w-[18px]"
+                    strokeWidth={1.7}
+                    aria-hidden="true"
+                  />
+                </span>
+                Your Cart
                 {count > 0 && (
                   <span className="ml-2 font-sans text-[13px] text-warm-gray">
                     ({count})
@@ -101,8 +112,8 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 ref={closeButtonRef}
                 type="button"
                 onClick={closeCart}
-                aria-label="Close bag"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-expresos/70 transition-colors hover:bg-copper/5 hover:text-espresso"
+                aria-label="Close cart"
+                className="inline-flex h-11 w-11 touch-manipulation items-center justify-center rounded-full text-espresso/70 transition-colors active:bg-copper/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper [@media(hover:hover)]:hover:bg-copper/5 [@media(hover:hover)]:hover:text-espresso"
               >
                 <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
               </button>
@@ -111,13 +122,15 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
             {items.length === 0 ? (
               /* Empty state */
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
-                <ShoppingBag
-                  className="h-8 w-8 text-warm-gray"
-                  strokeWidth={1.3}
-                  aria-hidden="true"
-                />
+                <span className="flex h-20 w-20 items-center justify-center rounded-full border border-copper/30 bg-white/80 text-green-deep shadow-[0_14px_30px_-18px_rgba(16,38,15,0.5)] ring-8 ring-[#eef3ea]">
+                  <Coffee
+                    className="h-9 w-9"
+                    strokeWidth={1.3}
+                    aria-hidden="true"
+                  />
+                </span>
                 <p className="mt-4 font-sans text-[15px] font-medium text-espresso">
-                  Your bag is empty
+                  Your cart is empty
                 </p>
                 <p className="mt-1 font-sans text-[13px] text-warm-gray">
                   Discover our teas and add your favorites.
@@ -125,7 +138,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 <Link
                   href="/shop"
                   onClick={closeCart}
-                  className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-gradient-to-b from-espresso to-espresso-deep px-6 font-sans text-[13px] font-medium text-cream shadow-sm transition-shadow hover:shadow-md dark:bg-none dark:bg-copper dark:text-espresso-deep dark:shadow-none dark:hover:bg-copper-light"
+                  className="mt-6 inline-flex h-11 touch-manipulation items-center justify-center rounded-full border border-copper/50 bg-green px-6 font-sans text-[13px] font-medium text-cream shadow-sm transition-all duration-200 active:scale-[0.97] active:bg-espresso focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copper [@media(hover:hover)]:hover:bg-espresso [@media(hover:hover)]:hover:shadow-md"
                 >
                   Continue shopping
                 </Link>
@@ -240,7 +253,7 @@ export function CartDrawer({ products = [] }: { products?: Product[] }) {
                 </ul>
 
                 {/* Footer */}
-                <div className="border-t border-border bg-white px-5 py-5">
+                <div className="border-t border-border bg-white/90 px-5 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] backdrop-blur-xl">
                   <div className="flex items-center justify-between">
                     <span className="font-sans text-[14px] text-espresso/80">
                       Subtotal

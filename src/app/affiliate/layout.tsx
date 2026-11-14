@@ -5,7 +5,7 @@ import { signOutAction } from "@/lib/auth/actions";
 import { AffiliateShell } from "@/components/affiliate/layout/affiliate-shell";
 
 export const metadata: Metadata = {
-  title: "Affiliate — Finasto",
+  title: "Brand Promoter — Finasto",
   robots: { index: false, follow: false },
 };
 
